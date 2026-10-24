@@ -1,0 +1,22 @@
+[
+  {
+    "tool": "손",
+    "mouseTriggeredAudio": [
+      {
+        "delayMs": 32.39999999990687,
+        "offset": 0.2,
+        "duration": 0.40798185941043086
+      }
+    ]
+  },
+  {
+    "tool": "양푼",
+    "mouseTriggeredAudio": [
+      {
+        "delayMs": 27.699999999720603,
+        "offset": 0.05,
+        "duration": 0.4440816326530612
+      }
+    ]
+  }
+]

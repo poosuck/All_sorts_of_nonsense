@@ -1,0 +1,23 @@
+{
+  "archive": "pudding-play-source-v24.zip",
+  "archive_sha256": "586d92a0453709fdc973e0228529c0c75164b45a0a8820beedb993995c805bd8",
+  "files": {
+    "app/page.tsx": "7505edf8243bfc2b3ee6db8d628e1c65cfc1a4ed0de91077f0c1d056e6e7d6ce",
+    "app/globals.css": "60a97390c0dce6a491cc302999e716120da1a048ea4210cafdb0808900639612",
+    "package.json": "fd8d6b6b9ce7f860d4bc4e1015f73cb2d6dab11324baa8f7e99910615a52e49c",
+    "lib/pudding-engine.ts": "4d2e4c8ec711540cf2d8ea20ad3e0363e88e6345ee6da4bce4113b27e46d81e7",
+    "lib/pudding-flavors.ts": "76b1703e09dd2ea30cd395a7c8f2008bdd0a241622e0fdc29aa26394168335a2",
+    "lib/pudding-input.ts": "84fced73cc5793283b4db4db14dc70601f9e3e570b867f4a591ad14e227d4409",
+    "lib/pudding-physics.ts": "40d1613002097bcb5ecb695c98001064ff8a0102e2b57e48d32beda99fa314da",
+    "lib/pudding-strike.ts": "0f7b480fca59a61e999ad78b30e6afc49e0d707e29eff4d2e621ed2d9a69110b",
+    "lib/pudding-tools.ts": "945cd6df7df5cd1e3270647a4b703ee6c03295ee4433be93274ff32ace1a5d2c",
+    "lib/pudding-whip.ts": "ada22a4b2270db8c0610b6c997285b45ebb4ac68e20a17a838cca70afe53251d",
+    "lib/strike-audio.ts": "441c4ad879ef7bf6edc25e4839368ac422978acd8f54675432b7204d481aaf01",
+    "lib/strike-audio-data.ts": "d2d57c66c08409dd028780879234fee7fc29b0e16bc57527e6cb4205180297c1",
+    "lib/bowl-audio-data.ts": "58ec7e8b2c262618d6fb6993abd6bf411d81401530dc260f2c874c462c93aa45",
+    "lib/whip-audio-data.ts": "4ce82e86cdf3a636255ff196b90dc60f227bdfd4231b4c3f4ad43481b3d51f3f",
+    "lib/whip-contact.ts": "74a4bfb35997eede4bd35bb3d2f78f4071f3043a8924bf6c9c48b0a702e65426",
+    "lib/whip-overlay.ts": "05cc41536e0453b96012a732ef0635dce8dfe7cca5900ce1670aa3b295f4e824",
+    "lib/whip-rope.ts": "0a18fed219f4edb2156432fd521db98dee33656ed977aeadf3f0d757abb3c9ae"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "sourceArchive": "pudding-play-source-v24.zip",
+  "archiveSha256": "586d92a0453709fdc973e0228529c0c75164b45a0a8820beedb993995c805bd8",
+  "audio": [
+    {
+      "file": "hand.mp3",
+      "sourceModule": "strike-audio-data.ts",
+      "export": "STRIKE_AUDIO_BASE64",
+      "bytes": 16320,
+      "sha256": "b7e634fde737574a8ca1ec35b5b2479d0e05912304d0417f2ebcac6e57aa6f27"
+    },
+    {
+      "file": "bowl.mp3",
+      "sourceModule": "bowl-audio-data.ts",
+      "export": "BOWL_AUDIO_BASE64",
+      "bytes": 8882,
+      "sha256": "baa35f7de6c7a86143a26e3d3f09af32a6f3bca4e00b6ae83025ad42a415627c"
+    },
+    {
+      "file": "whip.mp3",
+      "sourceModule": "whip-audio-data.ts",
+      "export": "WHIP_HIT_AUDIO",
+      "bytes": 38400,
+      "sha256": "9f354fb795d8b07fd4aa113aafb89002d44dbc5d07015a784f7050686982e956"
+    },
+    {
+      "file": "whip-swing.mp3",
+      "sourceModule": "whip-audio-data.ts",
+      "export": "WHIP_SWING_AUDIO",
+      "bytes": 27840,
+      "sha256": "c9fec5e91c9e0492fc521c75d404c64df5da10163267b1a66776affcdedf082e"
+    }
+  ]
+}
