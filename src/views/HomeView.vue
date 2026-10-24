@@ -69,13 +69,14 @@ import PuddingArt from "../components/PuddingArt.vue";
             <span class="card-arrow">↗</span>
           </div>
         </RouterLink>
-        <article
+        <RouterLink
+          to="/pigeon"
           class="content-card pigeon-card"
           aria-labelledby="pigeon-title"
         >
           <div class="card-art pigeon-card-art">
             <span class="card-index">NO. 002</span
-            ><span class="card-badge soon-badge">기획 중</span>
+            ><span class="card-badge soon-badge">제작 중 · 미리보기</span>
             <svg
               class="pigeon-art"
               viewBox="0 0 400 280"
@@ -119,17 +120,17 @@ import PuddingArt from "../components/PuddingArt.vue";
               />
             </svg>
             <span class="pigeon-thought">밥은 언제 주나요.</span
-            ><span class="card-art-note">현재 공복으로 기획 중</span>
+            ><span class="card-art-note">우선, 뒤뚱거림부터 연구 중</span>
           </div>
           <div class="card-info">
             <div>
               <span class="card-category">도심 힐링 · 조류 교감</span>
-              <h3 id="pigeon-title">비둘기 밥주기</h3>
-              <p>조금만 기다려 주세요. 모이 사러 갔어요.</p>
+              <h3 id="pigeon-title">비둘기 모이주기</h3>
+              <p>비둘기가 먼저 왔어요. 움직임을 구경하세요.</p>
             </div>
-            <span class="coming-icon">···</span>
+            <span class="card-arrow">↗</span>
           </div>
-        </article>
+        </RouterLink>
       </div>
     </section>
     <aside class="closing-note">

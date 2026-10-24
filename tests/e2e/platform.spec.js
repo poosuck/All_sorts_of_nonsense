@@ -39,17 +39,15 @@ async function swing(page, tool) {
   await page.mouse.move(x + 90, y, { steps: 3 });
 }
 
-test("home, planned content, independent route, reload and home return", async ({
+test("home, content preview, independent route, reload and home return", async ({
   page,
 }) => {
   await page.goto("/");
   await expect(
     page.getByRole("heading", { name: /할 일은 없고/ }),
   ).toBeVisible();
-  await expect(page.locator(".pigeon-card")).toContainText("기획 중");
-  await expect(page.locator(".pigeon-card a, .pigeon-card button")).toHaveCount(
-    0,
-  );
+  await expect(page.locator(".pigeon-card")).toContainText("제작 중 · 미리보기");
+  await expect(page.locator(".pigeon-card")).toHaveAttribute("href", "/pigeon");
   await page.getByRole("link", { name: "말랑 푸딩 시작하기" }).click();
   await expect(page).toHaveURL("/pudding");
   await expect(page.locator(".canvas-mount canvas")).toBeVisible();

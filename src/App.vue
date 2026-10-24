@@ -5,6 +5,7 @@ import BrandLogo from "./components/BrandLogo.vue";
 const route = useRoute();
 const main = ref(null);
 const isPudding = computed(() => route.name === "pudding");
+const isContent = computed(() => ["pudding", "pigeon"].includes(route.name));
 watch(
   isPudding,
   (value) => document.body.classList.toggle("pudding-route", value),
@@ -21,7 +22,7 @@ watch(
 
 <template>
   <a class="skip-link" href="#main">본문으로 건너뛰기</a>
-  <header v-if="!isPudding" class="site-header">
+  <header v-if="!isContent" class="site-header">
     <RouterLink to="/" class="brand-link" aria-label="별짓 홈"
       ><BrandLogo
     /></RouterLink>
@@ -34,7 +35,7 @@ watch(
     </nav>
   </header>
   <main id="main" ref="main" tabindex="-1"><RouterView /></main>
-  <footer v-if="!isPudding" class="site-footer">
+  <footer v-if="!isContent" class="site-footer">
     <BrandLogo small />
     <span>생산성은 잠시 내려두세요.</span>
     <span class="footer-end"

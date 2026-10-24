@@ -17,6 +17,12 @@ const router = createRouter({
       meta: { title: "말랑 푸딩 — 별짓" },
     },
     {
+      path: "/pigeon",
+      name: "pigeon",
+      component: () => import("./views/PigeonView.vue"),
+      meta: { title: "비둘기 모이주기 · 제작 미리보기 — 별짓" },
+    },
+    {
       path: "/:pathMatch(.*)*",
       component: () => import("./views/NotFoundView.vue"),
       meta: { title: "길 잃은 별짓" },

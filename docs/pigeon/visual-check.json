@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-24",
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "renderer": "Chromium headless, SwiftShader",
+  "viewport": {
+    "width": 1600,
+    "height": 1000,
+    "deviceScaleFactor": 1
+  },
+  "source": "production dist, Vite preview",
+  "eating": {
+    "testid": "pigeon-scene",
+    "ready": "true",
+    "motion": "eat",
+    "kind": "normal",
+    "frame": "47",
+    "time": "2.300",
+    "height": "0.000",
+    "wingAngle": "0.000",
+    "beakHeight": "0.247",
+    "footZ": "1.395"
+  },
+  "flight": {
+    "testid": "pigeon-scene",
+    "ready": "true",
+    "motion": "fly",
+    "kind": "normal",
+    "frame": "76",
+    "time": "3.700",
+    "height": "2.073",
+    "wingAngle": "1.826",
+    "beakHeight": "3.586",
+    "footZ": "1.205"
+  },
+  "errors": [],
+  "externalRequests": []
+}
