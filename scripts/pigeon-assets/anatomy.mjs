@@ -4,8 +4,8 @@ import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
 import { seededRandom } from "../../src/features/pigeon/resources.js";
 
 export const ANATOMY = {
-  normal: { neckY: .90, neckZ: .34, headY: 1.28, headZ: .53, headRadius: .225, peckDrop: 1.1, peckReach: .20, wingY: .90, wingX: .47, width: .62 },
-  chicken: { neckY: .97, neckZ: .52, headY: 1.26, headZ: .63, headRadius: .25, peckDrop: 2.05, peckReach: .35, wingY: .89, wingX: .78, width: 1.03 },
+  normal: { neckY: .84, neckZ: .40, headY: 1.22, headZ: .59, headRadius: .23, peckDrop: .98, peckReach: .17, wingY: .82, wingX: .50, width: .64 },
+  chicken: { neckY: 1.00, neckZ: .50, headY: 1.34, headZ: .64, headRadius: .27, peckDrop: 2.18, peckReach: .34, wingY: .92, wingX: .76, width: .98 },
 };
 
 const union = (a, b, k) => {
@@ -21,11 +21,13 @@ function ellipsoid(x, y, z, center, radii) {
 }
 export function signedDistance(kind, x, y, z) {
   const chicken = kind === "chicken", a = ANATOMY[kind];
-  const body = ellipsoid(x, y, z, [0, chicken ? .61 : .66, chicken ? -.22 : -.20], chicken ? [1.03, .57, 1.10] : [.62, .47, .88]);
-  const breast = ellipsoid(x, y, z, [0, chicken ? .63 : .68, chicken ? .42 : .34], chicken ? [.84, .55, .78] : [.49, .47, .54]);
-  const neck = ellipsoid(x, y, z, [0, chicken ? 1.09 : 1.04, chicken ? .55 : .44], chicken ? [.34, .29, .31] : [.245, .29, .28]);
-  const head = ellipsoid(x, y, z, [0, a.headY, a.headZ], [a.headRadius, chicken ? .245 : .24, chicken ? .25 : .24]);
-  const skin = union(union(union(body, breast, .20), neck, .15), head, .12);
+  const body = ellipsoid(x, y, z, [0, chicken ? .62 : .59, chicken ? -.24 : -.25], chicken ? [.98, .64, 1.04] : [.64, .43, .94]);
+  const breast = ellipsoid(x, y, z, [0, chicken ? .64 : .61, chicken ? .39 : .37], chicken ? [.82, .60, .76] : [.52, .39, .55]);
+  const shoulder = ellipsoid(x, y, z, [0, chicken ? .84 : .78, -.20], chicken ? [.90, .48, .78] : [.60, .38, .68]);
+  const neck = ellipsoid(x, y, z, [0, chicken ? 1.16 : 1.00, chicken ? .54 : .48], chicken ? [.34, .31, .32] : [.255, .30, .29]);
+  const head = ellipsoid(x, y, z, [0, a.headY, a.headZ], [a.headRadius, chicken ? .26 : .245, chicken ? .255 : .245]);
+  const torso = union(union(body, breast, .20), shoulder, .16);
+  const skin = union(union(torso, neck, .15), head, .12);
   return Math.max(skin, (chicken ? .055 : .17) - y);
 }
 export function flankX(kind, y, z) {
@@ -53,7 +55,7 @@ export function colorAt(point, kind) {
   color.lerp(new THREE.Color("#d3cec5"), (1 - THREE.MathUtils.smoothstep(point.y, .3, .75)) * .32);
   const forward = THREE.MathUtils.smoothstep(point.z, -.08, a.neckZ);
   const neck = THREE.MathUtils.smoothstep(point.y, a.neckY + .02, a.neckY + .17) * (1 - THREE.MathUtils.smoothstep(point.y, a.headY - .03, a.headY + .10)) * forward;
-  const throat = new THREE.Color("#705073").lerp(new THREE.Color("#356c60"), THREE.MathUtils.smoothstep(point.y, a.neckY + .14, a.headY - .04));
+  const throat = new THREE.Color("#6d3e72").lerp(new THREE.Color("#1f6a5e"), THREE.MathUtils.smoothstep(point.y, a.neckY + .14, a.headY - .04));
   color.lerp(throat, neck);
   color.lerp(new THREE.Color("#444e60"), THREE.MathUtils.smoothstep(point.y, a.headY - .04, a.headY + .12));
   return color;

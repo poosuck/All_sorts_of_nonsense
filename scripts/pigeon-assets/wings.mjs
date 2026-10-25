@@ -23,7 +23,7 @@ function morphGeometry(closed, spread) {
 }
 function pigment(y, z) {
   const q = z + .17 * (y - .7);
-  const stripe = Math.max(1 - THREE.MathUtils.smoothstep(Math.abs(q + .35), .03, .07), 1 - THREE.MathUtils.smoothstep(Math.abs(q + .72), .03, .07));
+  const stripe = Math.max(1 - THREE.MathUtils.smoothstep(Math.abs(q + .35), .015, .038), 1 - THREE.MathUtils.smoothstep(Math.abs(q + .72), .015, .038));
   return new THREE.Color("#8792a0").lerp(new THREE.Color("#343e4d"), stripe);
 }
 
@@ -76,9 +76,10 @@ export function createWings(body, materials, kind) {
     }
     // Small overlapping coverts provide actual relief and uneven feather edges.
     for (let row = 0; row < 5; row++) for (let col = 0; col < 11; col++) {
-      const y = .075 - row * .061 + Math.sin(col * .8 + row) * .009;
-      const z = .25 - col * (chicken ? .074 : .088) - row * .030 + (row % 2) * .028;
-      const length = (.155 + row * .018) * (chicken ? 1.04 : 1);
+      const jitter = Math.sin((row + 1) * 12.989 + col * 7.233);
+      const y = .075 - row * .061 + Math.sin(col * .8 + row) * .009 + jitter * .005;
+      const z = .25 - col * (chicken ? .074 : .088) - row * .030 + (row % 2) * .028 + jitter * .008;
+      const length = (.155 + row * .018 + jitter * .009) * (chicken ? 1.04 : 1);
       const material = "covert";
       const closedMatrix = featherMatrix(side, [0, y, z], length, .29);
       const openMatrix = featherMatrix(side, [side * (.067 + row * .002), -.19 + row * .060, .16 - col * .094 - row * .028], length, .29, Math.PI / 2);
@@ -104,7 +105,8 @@ export function createWings(body, materials, kind) {
       let cursor = 0;
       for (const part of parts) for (let i = 0; i < part.geometry.attributes.position.count; i++, cursor++) {
         const y = positions.getY(cursor) + wing.position.y, z = positions.getZ(cursor) + wing.position.z;
-        positions.setX(cursor, side * (flankX(kind, y, z) + part.layerOffset) - wing.position.x);
+        const relief = Math.max(0, side * positions.getX(cursor));
+        positions.setX(cursor, side * (flankX(kind, y, z) + part.layerOffset + relief) - wing.position.x);
       }
       geometry.computeVertexNormals();
       if (name === "covert") {

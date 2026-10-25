@@ -59,16 +59,16 @@ export async function createMaterials(kind = "normal") {
     }
   }, 128);
   const materials = {
-    body: new THREE.MeshPhysicalMaterial({ map: featherColor, vertexColors: true, normalMap: featherNormal, normalScale: new THREE.Vector2(.08, .08), roughness: .9, roughnessMap, sheen: .24, sheenColor: '#c7c3be', sheenRoughness: .9, metalness: .015, iridescence: .55, iridescenceMap: sheenMask, iridescenceIOR: 1.3, iridescenceThicknessRange: [230, 430], side: THREE.DoubleSide }),
+    body: new THREE.MeshPhysicalMaterial({ color: '#e4e0da', map: featherColor, vertexColors: true, normalMap: featherNormal, normalScale: new THREE.Vector2(.12, .12), roughness: .9, roughnessMap, sheen: .28, sheenColor: '#c7c3be', sheenRoughness: .9, metalness: .015, iridescence: .62, iridescenceMap: sheenMask, iridescenceIOR: 1.3, iridescenceThicknessRange: [230, 430], side: THREE.DoubleSide }),
     wing: new THREE.MeshPhysicalMaterial({ color: '#ffffff', vertexColors: true, roughness: .9, map: featherColor, sheen: .2, side: THREE.DoubleSide }),
     covert: new THREE.MeshPhysicalMaterial({ color: '#ffffff', vertexColors: true, roughness: .9, map: vane, sheen: .2, side: THREE.DoubleSide }),
     bar: new THREE.MeshPhysicalMaterial({ color: '#414b5c', roughness: .87, map: vane, sheen: .25, side: THREE.DoubleSide }),
     lid: new THREE.MeshStandardMaterial({ color: '#444e60', map: featherColor, roughness: .88, side: THREE.DoubleSide }),
-    pale: new THREE.MeshStandardMaterial({ color: "#b9bec6", roughness: .86, map: vane, side: THREE.DoubleSide }),
+    pale: new THREE.MeshStandardMaterial({ color: "#77818f", roughness: .9, map: vane, side: THREE.DoubleSide }),
     dark: new THREE.MeshStandardMaterial({ color: "#444a55", roughness: .84, map: vane, side: THREE.DoubleSide }),
-    beak: new THREE.MeshStandardMaterial({ color: "#77746d", roughness: .63 }),
-    cere: new THREE.MeshStandardMaterial({ color: "#c5c0b3", roughness: .84 }),
-    feet: new THREE.MeshStandardMaterial({ color: "#9d564c", roughness: .84 }),
+    beak: new THREE.MeshStandardMaterial({ color: "#696762", roughness: .68 }),
+    cere: new THREE.MeshStandardMaterial({ color: "#b8b2a6", roughness: .84 }),
+    feet: new THREE.MeshStandardMaterial({ color: "#b45c50", roughness: .84 }),
     claw: new THREE.MeshStandardMaterial({ color: "#5f5651", roughness: .8 }),
     eyeRim: new THREE.MeshStandardMaterial({ color: "#655e57", roughness: .75 }),
     iris: new THREE.MeshPhysicalMaterial({ map: irisMap, roughness: .21, clearcoat: 1, clearcoatRoughness: .08 }),

@@ -24,21 +24,32 @@ export function createAuthoredPigeon(materials, kind = "normal") {
     root.add(mesh); root.updateMatrixWorld(true); mesh.bind(skeleton);
   }
   createFace(head, materials, kind); createWings(body, materials, kind);
-  const feather = featherGeometry(1, .2, .014, 12, 6), dummy = new THREE.Object3D(), tails = [];
+  const feather = featherGeometry(1, .2, .014, 12, 6), dummy = new THREE.Object3D(), tails = [], tailTips = [];
   for (let i = 0; i < 10; i++) {
-    dummy.position.set((i - 4.5) * .040, chicken ? .40 : .43, chicken ? -.91 : -.76);
-    dummy.rotation.set(1.49, (i - 4.5) * -.032, 0); dummy.scale.set(.34, chicken ? .50 : .44, 1); dummy.updateMatrix();
+    const offset = i - 4.5;
+    const center = 1 - Math.abs(offset) / 4.5;
+    const length = (chicken ? .38 : .34) + center * .06;
+    const rootZ = chicken ? -1.10 : -.91;
+    const root = new THREE.Vector3(offset * .05, chicken ? .43 : .44, rootZ);
+    dummy.position.copy(root);
+    dummy.rotation.set(1.19 + center * .27, offset * -.045, offset * .012); dummy.scale.set(.40, length, 1); dummy.updateMatrix();
     tails.push({ geometry: feather, matrix: dummy.matrix.clone() });
+    const tipLength = .11;
+    dummy.position.copy(root).add(new THREE.Vector3(0, -(length - tipLength), 0).applyEuler(dummy.rotation));
+    dummy.scale.set(.40, tipLength, 1); dummy.updateMatrix();
+    tailTips.push({ geometry: feather, matrix: dummy.matrix.clone() });
   }
-  object(joinGeometry(tails), materials.dark, "Tail", body); feather.dispose();
+  const tail = new THREE.Group(); tail.name = "Tail"; body.add(tail);
+  object(joinGeometry(tails), materials.pale, "TailFeathers", tail);
+  object(joinGeometry(tailTips), materials.dark, "TailTips", tail); feather.dispose();
   const tube = new THREE.CylinderGeometry(1, 1, 1, 8), cone = new THREE.ConeGeometry(1, 1, 10);
   for (const side of [-1, 1]) {
     const foot = new THREE.Group(); foot.name = side < 0 ? "Foot_L" : "Foot_R"; root.add(foot);
     object(tube, materials.feet, side < 0 ? "Shin_L" : "Shin_R", root);
     for (const [i, angle, length] of [[0, -.55, .20], [1, 0, .24], [2, .65, .18], [3, Math.PI, .10]]) {
       const toe = object(tube, materials.feet, `Toe_${side}_${i}`, foot);
-      const end = [Math.sin(angle) * length, -.018, Math.cos(angle) * length]; aimSegment(toe, [0, .008, 0], end, .0105);
-      const claw = object(cone, materials.claw, `Claw_${side}_${i}`, foot, end, [.013, .04, .012]); claw.rotation.x = Math.PI / 2;
+      const end = [Math.sin(angle) * length, -.018, Math.cos(angle) * length]; aimSegment(toe, [0, .008, 0], end, chicken ? .015 : .013);
+      const claw = object(cone, materials.claw, `Claw_${side}_${i}`, foot, end, [.016, .045, .014]); claw.rotation.x = Math.PI / 2;
     }
   }
   root.traverse((node) => {

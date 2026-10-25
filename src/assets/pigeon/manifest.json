@@ -5,9 +5,9 @@
   "files": [
     {
       "file": "normal-v3.glb",
-      "bytes": 6437964,
-      "sha256": "3f00751df8710e16481752421648b8d9205b8806821691c4c11c5cd2e713d1e5",
-      "triangles": 52717,
+      "bytes": 6575008,
+      "sha256": "0df169a29cbeac3db9dde75a4dbe7984e60248f0623950f69c1a368f49ac9f3d",
+      "triangles": 55499,
       "clips": [
         {
           "name": "idle",
@@ -29,9 +29,9 @@
     },
     {
       "file": "chicken-v3.glb",
-      "bytes": 7293068,
-      "sha256": "01ee519be60a8416ccbc8413a1195250384d7ad785986d77b485af49c351c36c",
-      "triangles": 63832,
+      "bytes": 7208096,
+      "sha256": "68d6fc423b76f84fbfe12fea06e6cb6feb9b2c4c1d58ead1bbf375b39f3bb67e",
+      "triangles": 65203,
       "clips": [
         {
           "name": "idle",
@@ -54,15 +54,15 @@
   ],
   "sources": {
     "scripts/pigeon-assets/geometry.mjs": "891c8656ff15892a8c6a51c701ed458c986fe8b78bbbfe0d304b5c771388fa75",
-    "scripts/pigeon-assets/anatomy.mjs": "43f9c8ddf966b05410e0c6ec1cc707706bff249696e1caab9ca8bb800e217884",
-    "scripts/pigeon-assets/wings.mjs": "f3668df6822844dca786aadb32fa9c00122e10120b141e5c6b9685627ae3064a",
-    "scripts/pigeon-assets/face.mjs": "5f8271da7e427b81c1955ccec7ff44bcc45915d79c28291f65d991b2acd376a9",
-    "scripts/pigeon-assets/model.mjs": "387b88d81f65ffb969cc9e713ddf7894e7fd9161165329c9f9475138cb02496e",
-    "scripts/pigeon-assets/materials.mjs": "9149cac6aea0e4363600935f6b87ea3e4eb768352aa934292b1f248d6f8ecaa7",
+    "scripts/pigeon-assets/anatomy.mjs": "49aa62ea9e2c5faf1f0db5d15812671949686564a11b416930c3b70d93fff235",
+    "scripts/pigeon-assets/wings.mjs": "fb59f87371b57645efffe36ae9717099a122b2dec9878cb34d22eb7e7e6a5c67",
+    "scripts/pigeon-assets/face.mjs": "8d2bdd4337b71c8b97d1855168c68afcbeec0817f4cba71c6d736ca2f841079f",
+    "scripts/pigeon-assets/model.mjs": "4f3162aa0713509609451ec25adc9b9fcc4b55254d81cfcb4d882f8d8b045c08",
+    "scripts/pigeon-assets/materials.mjs": "f3d0a2dec45fcf5173fde977ace9d01adbdcce56e5749a46da175b845fe29a4b",
     "scripts/pigeon-assets/bake.html": "a439f42eeb55ac6b1fd1173e3c36279308279405f2eb2bcaf3ff92f32ea00106",
     "scripts/pigeon-assets/textures/feather-albedo.png": "065aff7ba11380b316a107f89907539a7c02d6884a357278a0645d0f71c4af0a",
     "scripts/pigeon-assets/textures/PROVENANCE.md": "2a763e5d29701bed93b052be09c4f0281c4f2595705979dd9dc8e3a085a25aa2",
-    "src/features/pigeon/rig.js": "a42f8d2fec43897a861cf4063fa67680f105f1c60db704b232a5ff0ce9985715",
+    "src/features/pigeon/rig.js": "60ece88bad5dd4f5368cb0aa9b3acb33be72bd6a1ead0320e650d891186967e8",
     "src/features/pigeon/motion.js": "2f856f2352f5af0a9c9a92d1bf9debcd4a909d810d137810183e44d1d4cabd60"
   }
 }

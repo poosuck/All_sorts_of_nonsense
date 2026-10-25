@@ -43,15 +43,15 @@ function beakGeometry(lower = false) {
 
 export function createFace(head, materials, kind) {
   const anatomy = ANATOMY[kind];
-  const eyeX = flankX(kind, anatomy.headY + .035, anatomy.headZ + .115) + .004;
+  const eyeX = flankX(kind, anatomy.headY + .035, anatomy.headZ + .115) + .002;
   const sphere = new THREE.SphereGeometry(1, 24, 18);
   for (const side of [-1, 1]) {
     const eye = new THREE.Group(); eye.name = side < 0 ? "Eye_L" : "Eye_R";
-    eye.position.set(side * eyeX, .035, .115); eye.scale.setScalar(.86);
+    eye.position.set(side * eyeX, .035, .115); eye.scale.setScalar(.80);
     eye.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), new THREE.Vector3(side * .9, .035, .44).normalize()); head.add(eye);
-    mesh(sphere, materials.eyeRim, `EyeRim_${side}`, eye, [0, 0, 0], [.045, .046, .010]);
-    mesh(sphere, materials.iris, `Iris_${side}`, eye, [0, 0, .008], [.035, .036, .012]);
-    mesh(sphere, materials.pupil, `Pupil_${side}`, eye, [0, 0, .018], [.017, .019, .006]);
+    mesh(sphere, materials.eyeRim, `EyeRim_${side}`, eye, [0, 0, 0], [.044, .045, .010]);
+    mesh(sphere, materials.iris, `Iris_${side}`, eye, [0, 0, .008], [.033, .034, .012]);
+    mesh(sphere, materials.pupil, `Pupil_${side}`, eye, [0, 0, .018], [.014, .016, .006]);
     mesh(sphere, materials.glint, `Highlight_${side}`, eye, [-.008, .011, .024], [.0038, .0045, .0018]);
     mesh(lidGeometry(), materials.lid, side < 0 ? "Lid_L" : "Lid_R", eye);
     const edge = [];

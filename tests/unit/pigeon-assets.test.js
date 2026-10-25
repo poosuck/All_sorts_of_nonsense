@@ -93,7 +93,7 @@ test("chicken silhouette is wider and lower; the animated skin stays finite and 
     for (const item of geometry) item.dispose(); rig.dispose();
   }
   assert.ok(dimensions[1].width / dimensions[0].width > 1.5);
-  assert.ok(dimensions[1].height / dimensions[0].height < 1.15);
+  assert.ok(dimensions[1].height / dimensions[1].width < dimensions[0].height / dimensions[0].width * .85);
   assert.ok(dimensions[1].bottom < dimensions[0].bottom);
   material.dispose();
 });

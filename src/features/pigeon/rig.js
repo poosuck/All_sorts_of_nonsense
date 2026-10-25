@@ -30,7 +30,7 @@ export function bindPigeonRig(root, chicken = false) {
     root, torso, neck, head, wings,
     pose(motion) {
       const dip = THREE.MathUtils.clamp(motion.neckAngle / 1.28, 0, 1);
-      torso.rotation.x = motion.bodyPitch * (motion.wingOpen > .1 ? (chicken ? .5 : 1.1) : chicken ? .28 : .75);
+      torso.rotation.x = motion.bodyPitch * (motion.wingOpen > .1 ? (chicken ? .35 : 1.1) : chicken ? .28 : .75);
       torso.rotation.z = motion.leftStep * (chicken ? .15 : .055);
       const breathing = (motion.breath ?? .5) - .5;
       torso.scale.set(1 + breathing * .009, 1 + breathing * .012, 1 + breathing * .006);
@@ -50,9 +50,9 @@ export function bindPigeonRig(root, chicken = false) {
         for (const mesh of spreading[i]) mesh.morphTargetInfluences[0] = motion.wingOpen;
         const step = i ? motion.rightStep : motion.leftStep;
         const lift = i ? motion.rightLift : motion.leftLift;
-        feet[i].position.set(side * (chicken ? .26 : .185), .06 + lift * (chicken ? .75 : 1) + motion.legTuck * .32, .13 + step * (chicken ? .7 : 1) - motion.legTuck * .25);
+        feet[i].position.set(side * (chicken ? .40 : .20), .06 + lift * (chicken ? .75 : 1) + motion.legTuck * .32, .13 + step * (chicken ? .7 : 1) - motion.legTuck * .25);
         feet[i].rotation.x = -motion.legTuck * .85;
-        segment(shins[i], [side * (chicken ? .29 : .2), chicken ? .3 : .39, -.025], feet[i].position.toArray(), chicken ? .020 : .018);
+        segment(shins[i], [side * (chicken ? .43 : .22), chicken ? .3 : .37, -.025], feet[i].position.toArray(), chicken ? .025 : .022);
       }
     },
     inspect() {

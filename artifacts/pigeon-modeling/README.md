@@ -4,8 +4,9 @@
 
 - `pigeon.png`, `pigeon.jpg`: 일반 비둘기
 - `chicken-pigeon.png`, `chicken-pigeon.jpg`: 닭둘기
+- `chicken-pigeon-side.png`, `chicken-pigeon-side.jpg`: 닭둘기 측면과 꼬리 겹깃
 - `pair.png`, `pair.jpg`: 두 체형 비교
-- `comparison.jpg`: 위 결과를 한 장으로 합친 비교 이미지
+- `comparison.jpg`: 네 시점을 한 장으로 합친 비교 이미지
 - `pigeon-modeling-screenshots.zip`: PNG 원본과 비교 JPG 묶음
 
 ## 로컬 확인
@@ -19,11 +20,11 @@ npm run dev
 
 ## 이전 버전 확인
 
-이번 모델링 직전 버전은 원격 브랜치 `archive/pigeon-v3-before-solo-modeling`과 태그 `pigeon-v3-before-solo-modeling`로 보존합니다.
+이번 디벨롭 직전 버전은 태그 `pigeon-solo-modeling-preview`로 보존합니다. 단독 모델링을 시작하기 전 버전도 원격 브랜치 `archive/pigeon-v3-before-solo-modeling`과 태그 `pigeon-v3-before-solo-modeling`로 남아 있습니다.
 
 ```sh
 git fetch --all --tags
-git switch -c inspect-pigeon-v3 pigeon-v3-before-solo-modeling
+git switch -c inspect-previous pigeon-solo-modeling-preview
 ```
 
 현재 버전으로 돌아올 때는 `git switch master`를 사용합니다.
