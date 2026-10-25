@@ -28,13 +28,13 @@ function beakGeometry(lower = false) {
   const positions = [], indices = [], rows = 16, cols = 16;
   for (let row = 0; row <= rows; row++) {
     const t = row / rows;
-    const width = .058 * (1 - t) ** .7 + .001;
-    const height = (lower ? .014 : .031) * (1 - t) ** .65 + .001;
+    const width = .052 * (1 - t) ** .7 + .001;
+    const height = (lower ? .012 : .027) * (1 - t) ** .65 + .001;
     for (let col = 0; col <= cols; col++) {
       const theta = col / cols * Math.PI * 2;
-      const upperHeight = .031 * (1 - t) ** .65 + .001;
-      const center = -.082 - t * .031 - (lower ? upperHeight + height + .001 : 0);
-      positions.push(Math.cos(theta) * width * (lower ? .91 : 1), center + Math.sin(theta) * height, .222 + t * .21);
+      const upperHeight = .027 * (1 - t) ** .65 + .001;
+      const center = -.078 - t * .027 - (lower ? upperHeight + height + .001 : 0);
+      positions.push(Math.cos(theta) * width * (lower ? .91 : 1), center + Math.sin(theta) * height, .215 + t * .18);
       if (row < rows && col < cols) { const i = row * (cols + 1) + col; indices.push(i, i + 1, i + cols + 1, i + 1, i + cols + 2, i + cols + 1); }
     }
   }
@@ -64,9 +64,9 @@ export function createFace(head, materials, kind) {
   mesh(beakGeometry(), materials.beak, "UpperBeak", head);
   const jaw = new THREE.Group(); jaw.name = "Jaw"; jaw.position.set(0, -.09, .22); head.add(jaw);
   mesh(beakGeometry(true), materials.beak, "LowerBeak", jaw, [0, .09, -.22]);
+  mesh(sphere, materials.cere, "Cere", head, [0, -.052, .226], [.036, .011, .027]);
   for (const side of [-1, 1]) {
-    mesh(sphere, materials.cere, `Cere_${side}`, head, [side * .024, -.055, .235], [.024, .014, .040]);
-    mesh(sphere, materials.claw, `Nostril_${side}`, head, [side * .033, -.061, .267], [.007, .003, .009]);
+    mesh(sphere, materials.claw, `Nostril_${side}`, head, [side * .025, -.057, .245], [.005, .0025, .007]);
   }
-  const tip = new THREE.Object3D(); tip.name = "BeakTip"; tip.position.set(0, -.112, .432); head.add(tip);
+  const tip = new THREE.Object3D(); tip.name = "BeakTip"; tip.position.set(0, -.105, .395); head.add(tip);
 }

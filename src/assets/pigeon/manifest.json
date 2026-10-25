@@ -5,9 +5,9 @@
   "files": [
     {
       "file": "normal-v3.glb",
-      "bytes": 6119596,
-      "sha256": "64b86f9ec1daa1508bf897c38fc02f5fed96ac83f6ff8e4d5e327ae0fa8b02d0",
-      "triangles": 48119,
+      "bytes": 6437964,
+      "sha256": "3f00751df8710e16481752421648b8d9205b8806821691c4c11c5cd2e713d1e5",
+      "triangles": 52717,
       "clips": [
         {
           "name": "idle",
@@ -29,9 +29,9 @@
     },
     {
       "file": "chicken-v3.glb",
-      "bytes": 6978492,
-      "sha256": "47cf8126e44beb886c7090dd1cfc4a64213c45eb84d1049cf96e2c443b8c8f29",
-      "triangles": 59531,
+      "bytes": 7293068,
+      "sha256": "01ee519be60a8416ccbc8413a1195250384d7ad785986d77b485af49c351c36c",
+      "triangles": 63832,
       "clips": [
         {
           "name": "idle",
@@ -54,10 +54,10 @@
   ],
   "sources": {
     "scripts/pigeon-assets/geometry.mjs": "891c8656ff15892a8c6a51c701ed458c986fe8b78bbbfe0d304b5c771388fa75",
-    "scripts/pigeon-assets/anatomy.mjs": "9300658569453e831e677a866a003faa4a6eecb9181d358ed3de17ec66f30903",
-    "scripts/pigeon-assets/wings.mjs": "c85cd35b3c05ae2934fcfce96448e8162bbc2667bd8ed63958fc224e7af67894",
-    "scripts/pigeon-assets/face.mjs": "035c389906e6e6f16f5a1449b382d2902e4d0cb0e32086de2c6fc39f6b539255",
-    "scripts/pigeon-assets/model.mjs": "61c01153dd34194604bed95c606cefe7a9abab98d6d7e95c6035423529be83f7",
+    "scripts/pigeon-assets/anatomy.mjs": "43f9c8ddf966b05410e0c6ec1cc707706bff249696e1caab9ca8bb800e217884",
+    "scripts/pigeon-assets/wings.mjs": "f3668df6822844dca786aadb32fa9c00122e10120b141e5c6b9685627ae3064a",
+    "scripts/pigeon-assets/face.mjs": "5f8271da7e427b81c1955ccec7ff44bcc45915d79c28291f65d991b2acd376a9",
+    "scripts/pigeon-assets/model.mjs": "387b88d81f65ffb969cc9e713ddf7894e7fd9161165329c9f9475138cb02496e",
     "scripts/pigeon-assets/materials.mjs": "9149cac6aea0e4363600935f6b87ea3e4eb768352aa934292b1f248d6f8ecaa7",
     "scripts/pigeon-assets/bake.html": "a439f42eeb55ac6b1fd1173e3c36279308279405f2eb2bcaf3ff92f32ea00106",
     "scripts/pigeon-assets/textures/feather-albedo.png": "065aff7ba11380b316a107f89907539a7c02d6884a357278a0645d0f71c4af0a",

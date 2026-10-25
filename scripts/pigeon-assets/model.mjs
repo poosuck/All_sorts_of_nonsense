@@ -25,9 +25,9 @@ export function createAuthoredPigeon(materials, kind = "normal") {
   }
   createFace(head, materials, kind); createWings(body, materials, kind);
   const feather = featherGeometry(1, .2, .014, 12, 6), dummy = new THREE.Object3D(), tails = [];
-  for (let i = 0; i < 12; i++) {
-    dummy.position.set((i - 5.5) * .045, chicken ? .45 : .49, chicken ? -1.00 : -.82);
-    dummy.rotation.set(1.49, (i - 5.5) * -.035, 0); dummy.scale.set(.42, chicken ? .61 : .54, 1); dummy.updateMatrix();
+  for (let i = 0; i < 10; i++) {
+    dummy.position.set((i - 4.5) * .040, chicken ? .40 : .43, chicken ? -.91 : -.76);
+    dummy.rotation.set(1.49, (i - 4.5) * -.032, 0); dummy.scale.set(.34, chicken ? .50 : .44, 1); dummy.updateMatrix();
     tails.push({ geometry: feather, matrix: dummy.matrix.clone() });
   }
   object(joinGeometry(tails), materials.dark, "Tail", body); feather.dispose();

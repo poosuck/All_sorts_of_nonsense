@@ -24,7 +24,7 @@ function morphGeometry(closed, spread) {
 function pigment(y, z) {
   const q = z + .17 * (y - .7);
   const stripe = Math.max(1 - THREE.MathUtils.smoothstep(Math.abs(q + .35), .03, .07), 1 - THREE.MathUtils.smoothstep(Math.abs(q + .72), .03, .07));
-  return new THREE.Color("#8e98a8").lerp(new THREE.Color("#404b5b"), stripe);
+  return new THREE.Color("#8792a0").lerp(new THREE.Color("#343e4d"), stripe);
 }
 
 export function createWings(body, materials, kind) {
@@ -40,8 +40,8 @@ export function createWings(body, materials, kind) {
       const s = .015 + row / rows * .97;
       for (let col = 0; col <= cols; col++) {
         const v = col / cols * 2 - 1;
-        const y = a.wingY + .06 - s * .37 + v * (chicken ? .31 : .25) * Math.sin(Math.PI * s) ** .55;
-        const z = .23 - s * (chicken ? 1.51 : 1.32);
+        const y = a.wingY + .05 - s * (chicken ? .27 : .32) + v * (chicken ? .23 : .24) * Math.sin(Math.PI * s) ** .55;
+        const z = .24 - s * (chicken ? 1.30 : 1.36);
         const puff = (1 - v * v) * Math.sin(Math.PI * s) * .045;
         const offset = layer ? .014 : .018 + puff * .10;
         const x = side * (flankX(kind, y, z) + offset);
@@ -75,27 +75,27 @@ export function createWings(body, materials, kind) {
       batches[name].push({ geometry: feather, matrix: closedMatrix, openMatrix, layerOffset });
     }
     // Small overlapping coverts provide actual relief and uneven feather edges.
-    for (let row = 0; row < 4; row++) for (let col = 0; col < 9; col++) {
-      const y = .055 - row * .085 + Math.sin(col * .8) * .012;
-      const z = .24 - col * .105 - row * .045;
-      const length = (.22 + row * .025) * (chicken ? 1.13 : 1);
+    for (let row = 0; row < 5; row++) for (let col = 0; col < 11; col++) {
+      const y = .075 - row * .061 + Math.sin(col * .8 + row) * .009;
+      const z = .25 - col * (chicken ? .074 : .088) - row * .030 + (row % 2) * .028;
+      const length = (.155 + row * .018) * (chicken ? 1.04 : 1);
       const material = "covert";
-      const closedMatrix = featherMatrix(side, [0, y, z], length, .43);
-      const openMatrix = featherMatrix(side, [side * (.069 + row * .002), -.19 + row * .075, .14 - col * .115 - row * .035], length, .43, Math.PI / 2);
-      addFeather(material, closedMatrix, openMatrix, .027 + row * .001 + col * .0002);
+      const closedMatrix = featherMatrix(side, [0, y, z], length, .29);
+      const openMatrix = featherMatrix(side, [side * (.067 + row * .002), -.19 + row * .060, .16 - col * .094 - row * .028], length, .29, Math.PI / 2);
+      addFeather(material, closedMatrix, openMatrix, .024 + row * .0008 + col * .00015);
     }
     // Secondary feathers form a rounded trailing edge, with separate longer primaries.
-    for (let i = 0; i < 9; i++) {
-      const length = .34 + Math.sin(i / 8 * Math.PI) * .11;
-      const closedMatrix = featherMatrix(side, [0, -.22 - i * .004, -.13 - i * .075], length, .43);
-      const openMatrix = featherMatrix(side, [side * .05, -.08, -.12 - i * .10], length, .43, Math.PI / 2);
+    for (let i = 0; i < 8; i++) {
+      const length = .32 + Math.sin(i / 7 * Math.PI) * .10;
+      const closedMatrix = featherMatrix(side, [0, -.19 - i * .004, -.16 - i * .080], length, .36);
+      const openMatrix = featherMatrix(side, [side * .05, -.08, -.12 - i * .11], length, .36, Math.PI / 2);
       addFeather("pale", closedMatrix, openMatrix, .025 + i * .0003);
     }
-    for (let i = 0; i < 10; i++) {
-      const length = (.60 + Math.sin(i / 10 * Math.PI * .85) * .30) * (chicken ? 1.1 : 1);
-      const closedMatrix = featherMatrix(side, [0, -.15 - i * .016, -.26 - i * .026], length, .44);
-      const openMatrix = featherMatrix(side, [side * (.053 + i * .0006), -.08 + i * .008, -.57 - i * .025], length, .46, -.3 + i / 9 * 1.04);
-      addFeather(i > 6 ? "dark" : "pale", closedMatrix, openMatrix, .025 + i * .0003);
+    for (let i = 0; i < 8; i++) {
+      const length = (.55 + Math.sin(i / 8 * Math.PI * .85) * .25) * (chicken ? .94 : 1);
+      const closedMatrix = featherMatrix(side, [0, -.14 - i * .014, -.30 - i * .029], length, .36);
+      const openMatrix = featherMatrix(side, [side * (.053 + i * .0006), -.08 + i * .008, -.56 - i * .030], length, .38, -.28 + i / 7 * 1.00);
+      addFeather(i > 5 ? "dark" : "pale", closedMatrix, openMatrix, .025 + i * .0003);
     }
     for (const [name, parts] of Object.entries(batches)) {
       if (!parts.length) continue;

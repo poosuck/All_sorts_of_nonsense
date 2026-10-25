@@ -4,8 +4,8 @@ import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
 import { seededRandom } from "../../src/features/pigeon/resources.js";
 
 export const ANATOMY = {
-  normal: { neckY: .94, neckZ: .30, headY: 1.35, headZ: .48, headRadius: .235, peckDrop: 1.2, peckReach: .22, wingY: .94, wingX: .43, width: .57 },
-  chicken: { neckY: 1.02, neckZ: .50, headY: 1.30, headZ: .60, headRadius: .24, peckDrop: 2.17, peckReach: .38, wingY: 1.02, wingX: .76, width: 1.00 },
+  normal: { neckY: .90, neckZ: .34, headY: 1.28, headZ: .53, headRadius: .225, peckDrop: 1.1, peckReach: .20, wingY: .90, wingX: .47, width: .62 },
+  chicken: { neckY: .97, neckZ: .52, headY: 1.26, headZ: .63, headRadius: .25, peckDrop: 2.05, peckReach: .35, wingY: .89, wingX: .78, width: 1.03 },
 };
 
 const union = (a, b, k) => {
@@ -21,12 +21,12 @@ function ellipsoid(x, y, z, center, radii) {
 }
 export function signedDistance(kind, x, y, z) {
   const chicken = kind === "chicken", a = ANATOMY[kind];
-  const body = ellipsoid(x, y, z, [0, chicken ? .66 : .71, -.17], chicken ? [1.00, .61, 1.06] : [.565, .49, .81]);
-  const breast = ellipsoid(x, y, z, [0, chicken ? .66 : .72, chicken ? .40 : .30], chicken ? [.82, .58, .74] : [.465, .49, .50]);
-  const neck = ellipsoid(x, y, z, [0, chicken ? 1.16 : 1.08, chicken ? .49 : .40], chicken ? [.335, .32, .31] : [.25, .315, .265]);
-  const head = ellipsoid(x, y, z, [0, a.headY, a.headZ], [a.headRadius, .265, .255]);
+  const body = ellipsoid(x, y, z, [0, chicken ? .61 : .66, chicken ? -.22 : -.20], chicken ? [1.03, .57, 1.10] : [.62, .47, .88]);
+  const breast = ellipsoid(x, y, z, [0, chicken ? .63 : .68, chicken ? .42 : .34], chicken ? [.84, .55, .78] : [.49, .47, .54]);
+  const neck = ellipsoid(x, y, z, [0, chicken ? 1.09 : 1.04, chicken ? .55 : .44], chicken ? [.34, .29, .31] : [.245, .29, .28]);
+  const head = ellipsoid(x, y, z, [0, a.headY, a.headZ], [a.headRadius, chicken ? .245 : .24, chicken ? .25 : .24]);
   const skin = union(union(union(body, breast, .20), neck, .15), head, .12);
-  return Math.max(skin, (chicken ? .055 : .205) - y);
+  return Math.max(skin, (chicken ? .055 : .17) - y);
 }
 export function flankX(kind, y, z) {
   if (signedDistance(kind, 0, y, z) >= 0) return .08;
@@ -49,11 +49,11 @@ export function weightsAt(point, kind) {
 export function colorAt(point, kind) {
   const a = ANATOMY[kind];
   const front = THREE.MathUtils.smoothstep(point.z, -.5, .55);
-  const color = new THREE.Color("#959da9").lerp(new THREE.Color("#ddd9d4"), front * .85);
-  color.lerp(new THREE.Color("#e0dcd5"), (1 - THREE.MathUtils.smoothstep(point.y, .3, .75)) * .35);
+  const color = new THREE.Color("#7f8794").lerp(new THREE.Color("#c5c1bb"), front * .82);
+  color.lerp(new THREE.Color("#d3cec5"), (1 - THREE.MathUtils.smoothstep(point.y, .3, .75)) * .32);
   const forward = THREE.MathUtils.smoothstep(point.z, -.08, a.neckZ);
   const neck = THREE.MathUtils.smoothstep(point.y, a.neckY + .02, a.neckY + .17) * (1 - THREE.MathUtils.smoothstep(point.y, a.headY - .03, a.headY + .10)) * forward;
-  const throat = new THREE.Color("#694073").lerp(new THREE.Color("#24675b"), THREE.MathUtils.smoothstep(point.y, a.neckY + .14, a.headY - .04));
+  const throat = new THREE.Color("#705073").lerp(new THREE.Color("#356c60"), THREE.MathUtils.smoothstep(point.y, a.neckY + .14, a.headY - .04));
   color.lerp(throat, neck);
   color.lerp(new THREE.Color("#444e60"), THREE.MathUtils.smoothstep(point.y, a.headY - .04, a.headY + .12));
   return color;
@@ -61,7 +61,7 @@ export function colorAt(point, kind) {
 function surfaceUV(point, kind) {
   const a = ANATOMY[kind];
   const centerZ = THREE.MathUtils.lerp(-.17, a.headZ, THREE.MathUtils.smoothstep(point.y, .8, a.headY));
-  return [(Math.atan2(point.x, point.z - centerZ) / (Math.PI * 2) + .5) * 3, point.y * 2.2];
+  return [(Math.atan2(point.x, point.z - centerZ) / (Math.PI * 2) + .5) * 4.5, point.y * 3.4];
 }
 
 export function sculptBody(kind) {
@@ -83,7 +83,7 @@ export function sculptBody(kind) {
   // Keep triangles crossing the longitude seam from sampling the whole texture.
   for (let i = 0; i < uvs.length; i += 6) {
     const values = [uvs[i], uvs[i + 2], uvs[i + 4]];
-    if (Math.max(...values) - Math.min(...values) > 1.5) for (let j = 0; j < 6; j += 2) if (uvs[i + j] < 1.5) uvs[i + j] += 3;
+    if (Math.max(...values) - Math.min(...values) > 2.25) for (let j = 0; j < 6; j += 2) if (uvs[i + j] < 2.25) uvs[i + j] += 4.5;
   }
   const raw = new THREE.BufferGeometry();
   raw.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
