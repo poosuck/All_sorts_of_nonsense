@@ -1,0 +1,55 @@
+{
+  "revision": 2,
+  "authored": "2026-10-25",
+  "provenance": "Original contour meshes, skinned plumage, articulated feather vanes and generated PBR textures. No downloaded third-party model or image.",
+  "files": [
+    {
+      "file": "normal-v2.glb",
+      "bytes": 3551776,
+      "sha256": "edd48fce32f5978a4b971f69bb044affeafdbfde8dddd7fd24c3f63c8487c54c",
+      "triangles": 41828,
+      "clips": [
+        {
+          "name": "walk",
+          "duration": 0.7139983303613165
+        },
+        {
+          "name": "eat",
+          "duration": 2.6
+        },
+        {
+          "name": "fly",
+          "duration": 7.6
+        }
+      ]
+    },
+    {
+      "file": "chicken-v2.glb",
+      "bytes": 3697756,
+      "sha256": "f3238355786427abedbd7f0f0cfd9e0e9b9d24c113a995d244a78fbdaf1e671b",
+      "triangles": 44324,
+      "clips": [
+        {
+          "name": "walk",
+          "duration": 0.7139983303613165
+        },
+        {
+          "name": "eat",
+          "duration": 2.6
+        },
+        {
+          "name": "fly",
+          "duration": 7.6
+        }
+      ]
+    }
+  ],
+  "sources": {
+    "scripts/pigeon-assets/geometry.mjs": "a9fd97c80f44600e8676123b3d6a418c02e10a09bd4edf9cfec81cb96300beb0",
+    "scripts/pigeon-assets/model.mjs": "5557f53dfcc2c28a7cfdba44f2732ff4d24554bcd4b3b9b01946450c1cde6f45",
+    "scripts/pigeon-assets/materials.mjs": "89e58142045526f737c874bd815d8146c729cc4701a2eeee66ef33765ce4de3e",
+    "scripts/pigeon-assets/bake.html": "74cf46eb9550a1dbb1f8db0d47e7047bd6ae4c6265d9ad6b6f3d6d1aee18f275",
+    "src/features/pigeon/rig.js": "323355eb66c36756a9b54ec681a65d78a874500e02e4de35bc5e388e8ece40db",
+    "src/features/pigeon/motion.js": "ed8cd3f1c5e470af7d67c186267e6f7fac17569a5751f282e03a8d3d67dcd2b1"
+  }
+}

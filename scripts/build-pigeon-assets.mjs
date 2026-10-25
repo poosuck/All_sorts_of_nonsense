@@ -19,13 +19,13 @@ try {
   const results = await page.evaluate(() => window.bakePigeons());
   const directory = new URL("../src/assets/pigeon/", import.meta.url);
   await mkdir(directory, { recursive: true });
-  const manifest = { revision: 2, authored: "2026-10-25", provenance: "Original contour meshes, skinned plumage, articulated feather vanes and generated PBR textures. No downloaded third-party model or image.", files: [], sources: {} };
+  const manifest = { revision: 3, authored: "2026-10-25", provenance: "Original blended-surface pigeon anatomy, skinned soft filaments, layered flight feathers, eyelids and beak. Body albedo generated with OpenAI image_gen; see scripts/pigeon-assets/textures/PROVENANCE.md. No supplied reference image is used as a rendered scene.", files: [], sources: {} };
   for (const result of results) {
-    const filename = `${result.kind}-v2.glb`, buffer = Buffer.from(result.data, "base64");
+    const filename = `${result.kind}-v3.glb`, buffer = Buffer.from(result.data, "base64");
     await writeFile(new URL(filename, directory), buffer);
     manifest.files.push({ file: filename, bytes: buffer.length, sha256: createHash("sha256").update(buffer).digest("hex"), triangles: result.triangles, clips: result.clips });
   }
-  for (const name of ["geometry.mjs", "model.mjs", "materials.mjs", "bake.html"]) {
+  for (const name of ["geometry.mjs", "anatomy.mjs", "wings.mjs", "face.mjs", "model.mjs", "materials.mjs", "bake.html", "textures/feather-albedo.png", "textures/PROVENANCE.md"]) {
     const buffer = await readFile(new URL(`pigeon-assets/${name}`, import.meta.url));
     manifest.sources[`scripts/pigeon-assets/${name}`] = createHash("sha256").update(buffer).digest("hex");
   }

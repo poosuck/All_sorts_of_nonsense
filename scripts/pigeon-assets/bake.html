@@ -9,12 +9,12 @@ import { sampleMotion, FLIGHT_DURATION } from '../../src/features/pigeon/motion.
 window.bakePigeons = async () => {
   const output = [];
   for (const kind of ['normal', 'chicken']) {
-    const root = createAuthoredPigeon(createMaterials(), kind);
+    const root = createAuthoredPigeon(await createMaterials(kind), kind);
     const rig = bindPigeonRig(root, kind === 'chicken');
-    const animationNodes = ['Body', 'Neck', 'Head', 'Wing_L', 'Wing_R', 'Fold_L', 'Fold_R', 'Foot_L', 'Foot_R', 'Shin_L', 'Shin_R'];
+    const animationNodes = ['Body', 'Neck', 'Head', 'Jaw', 'Tail', 'Wing_L', 'Wing_R', 'Fold_L', 'Fold_R', 'Foot_L', 'Foot_R', 'Shin_L', 'Shin_R'];
     root.traverse((node) => { if (node.morphTargetInfluences?.length) animationNodes.push(node.name); });
     const clips = [];
-    for (const [mode, duration] of [['walk', Math.PI * 2 / 8.8], ['eat', 2.6], ['fly', FLIGHT_DURATION]]) {
+    for (const [mode, duration] of [['idle', 5.1], ['walk', Math.PI * 2 / 8.8], ['eat', 2.6], ['fly', FLIGHT_DURATION]]) {
       const samples = Math.ceil(duration * 24);
       const times = [], keys = Object.fromEntries(animationNodes.map((name) => [name, { position: [], quaternion: [], scale: [], weights: [] }]));
       for (let i = 0; i <= samples; i++) {
@@ -34,8 +34,8 @@ window.bakePigeons = async () => {
       }
       clips.push(new THREE.AnimationClip(mode, duration, tracks));
     }
-    rig.pose(sampleMotion('eat', 0)); root.updateMatrixWorld(true);
-    const binary = await new GLTFExporter().parseAsync(root, { binary: true, animations: clips, onlyVisible: false });
+    rig.pose(sampleMotion('idle', 0)); root.updateMatrixWorld(true);
+    const binary = await new GLTFExporter().parseAsync(root, { binary: true, animations: clips, onlyVisible: false, maxTextureSize: 1024 });
     let encoded = ''; const bytes = new Uint8Array(binary);
     for (let i = 0; i < bytes.length; i += 8192) encoded += String.fromCharCode(...bytes.subarray(i, i + 8192));
     let triangles = 0;

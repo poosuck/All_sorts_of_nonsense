@@ -1,4 +1,5 @@
 export const MOTIONS = Object.freeze({
+  idle: "쉬기",
   walk: "걷기",
   eat: "먹기",
   fly: "날기",
@@ -18,8 +19,16 @@ export function sampleMotion(mode, seconds, seed = 0) {
     neckAngle: 0, neckBob: 0, leftStep: 0, rightStep: 0,
     leftLift: 0, rightLift: 0, wingOpen: 0, wingFlap: 0,
     legTuck: 0, phase: "휴식", peck: 0,
+    breath: mode === "idle" ? .5 + Math.sin(t / 5.1 * TAU * 2) * .5 : .5, blink: 0, headTurn: 0,
   };
-  if (mode === "walk") {
+  const blinkPhase = ((t + seed * .31) % 5.1 - 3.4) / .24;
+  if (blinkPhase > 0 && blinkPhase < 1) result.blink = Math.sin(blinkPhase * Math.PI) ** .7;
+  if (mode === "idle") {
+    result.neckAngle = Math.sin(t / 5.1 * TAU) * .012;
+    result.neckBob = Math.sin(t / 5.1 * TAU * 2) * .003;
+    result.headTurn = Math.sin(t / 5.1 * TAU) * .065;
+    result.phase = "가만히 숨 고르는 중";
+  } else if (mode === "walk") {
     const travel = t * 0.33;
     const stride = t * 8.8;
     result.x = 0.92 * (1 - Math.cos(travel));
@@ -56,10 +65,10 @@ export function sampleMotion(mode, seconds, seed = 0) {
     result.x = (1 - Math.cos(circuit)) * 1.15;
     result.z = Math.sin(circuit) * 0.6;
     result.yaw = Math.atan2(1.15 * Math.sin(circuit), 0.6 * Math.cos(circuit));
-    result.bodyPitch = envelope * 0.25;
+    result.bodyPitch = envelope * 0.35;
     result.neckAngle = -envelope * 0.2;
     result.wingOpen = Math.min(1, envelope * 5);
-    result.wingFlap = Math.sin(t * 19) * 0.55 * result.wingOpen;
+    result.wingFlap = Math.sin(t * 19) * 0.85 * result.wingOpen;
     result.legTuck = Math.min(1, envelope * 3);
     result.phase = p < 0.15 ? "날개 펴고 이륙" : p < 0.66 ? "가볍게 비행 중"
       : p < 0.88 ? "발을 내리고 착륙" : "착륙 후 휴식";

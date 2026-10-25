@@ -21,17 +21,27 @@ export function bindPigeonRig(root, chicken = false) {
   )));
   const feet = [node("Foot_L"), node("Foot_R")], shins = [node("Shin_L"), node("Shin_R")];
   const baseNeck = neck.position.clone();
+  let anatomy;
+  root.traverse((item) => { if (item.userData.anatomy) anatomy = item.userData.anatomy; });
+  const lids = [root.getObjectByName("Lid_L"), root.getObjectByName("Lid_R")].filter(Boolean);
+  const jaw = root.getObjectByName("Jaw"), tail = root.getObjectByName("Tail");
   const probe = new THREE.Vector3();
   return {
     root, torso, neck, head, wings,
     pose(motion) {
       const dip = THREE.MathUtils.clamp(motion.neckAngle / 1.28, 0, 1);
-      torso.rotation.x = motion.bodyPitch;
+      torso.rotation.x = motion.bodyPitch * (motion.wingOpen > .1 ? (chicken ? .5 : 1.1) : chicken ? .28 : .75);
       torso.rotation.z = motion.leftStep * (chicken ? .15 : .055);
+      const breathing = (motion.breath ?? .5) - .5;
+      torso.scale.set(1 + breathing * .009, 1 + breathing * .012, 1 + breathing * .006);
       neck.rotation.x = motion.neckAngle;
-      neck.position.y = baseNeck.y + motion.neckBob * (chicken ? 2.3 : 1.8);
-      neck.position.z = baseNeck.z + dip * (chicken ? .34 : .22) + motion.neckBob * .22 * (1 - dip);
+      neck.position.y = baseNeck.y + motion.neckBob * (anatomy?.peckDrop ?? (chicken ? 2.3 : 1.8));
+      neck.position.z = baseNeck.z + dip * (anatomy?.peckReach ?? (chicken ? .34 : .22)) + motion.neckBob * .22 * (1 - dip);
       head.rotation.x = dip * -.05;
+      head.rotation.y = motion.headTurn || 0;
+      if (jaw) jaw.rotation.x = (motion.peck || 0) * .11;
+      if (tail) tail.rotation.z = motion.leftStep * .12;
+      for (const lid of lids) lid.morphTargetInfluences[0] = motion.blink || 0;
       for (let i = 0; i < 2; i++) {
         const side = i ? 1 : -1;
         wings[i].rotation.z = side * motion.wingFlap;
@@ -42,7 +52,7 @@ export function bindPigeonRig(root, chicken = false) {
         const lift = i ? motion.rightLift : motion.leftLift;
         feet[i].position.set(side * (chicken ? .26 : .185), .06 + lift * (chicken ? .75 : 1) + motion.legTuck * .32, .13 + step * (chicken ? .7 : 1) - motion.legTuck * .25);
         feet[i].rotation.x = -motion.legTuck * .85;
-        segment(shins[i], [side * (chicken ? .29 : .2), chicken ? .3 : .39, -.025], feet[i].position.toArray(), .024);
+        segment(shins[i], [side * (chicken ? .29 : .2), chicken ? .3 : .39, -.025], feet[i].position.toArray(), chicken ? .020 : .018);
       }
     },
     inspect() {

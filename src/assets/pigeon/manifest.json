@@ -1,14 +1,18 @@
 {
-  "revision": 2,
+  "revision": 3,
   "authored": "2026-10-25",
-  "provenance": "Original contour meshes, skinned plumage, articulated feather vanes and generated PBR textures. No downloaded third-party model or image.",
+  "provenance": "Original blended-surface pigeon anatomy, skinned soft filaments, layered flight feathers, eyelids and beak. Body albedo generated with OpenAI image_gen; see scripts/pigeon-assets/textures/PROVENANCE.md. No supplied reference image is used as a rendered scene.",
   "files": [
     {
-      "file": "normal-v2.glb",
-      "bytes": 3551776,
-      "sha256": "edd48fce32f5978a4b971f69bb044affeafdbfde8dddd7fd24c3f63c8487c54c",
-      "triangles": 41828,
+      "file": "normal-v3.glb",
+      "bytes": 6119596,
+      "sha256": "64b86f9ec1daa1508bf897c38fc02f5fed96ac83f6ff8e4d5e327ae0fa8b02d0",
+      "triangles": 48119,
       "clips": [
+        {
+          "name": "idle",
+          "duration": 5.1
+        },
         {
           "name": "walk",
           "duration": 0.7139983303613165
@@ -24,11 +28,15 @@
       ]
     },
     {
-      "file": "chicken-v2.glb",
-      "bytes": 3697756,
-      "sha256": "f3238355786427abedbd7f0f0cfd9e0e9b9d24c113a995d244a78fbdaf1e671b",
-      "triangles": 44324,
+      "file": "chicken-v3.glb",
+      "bytes": 6978492,
+      "sha256": "47cf8126e44beb886c7090dd1cfc4a64213c45eb84d1049cf96e2c443b8c8f29",
+      "triangles": 59531,
       "clips": [
+        {
+          "name": "idle",
+          "duration": 5.1
+        },
         {
           "name": "walk",
           "duration": 0.7139983303613165
@@ -45,11 +53,16 @@
     }
   ],
   "sources": {
-    "scripts/pigeon-assets/geometry.mjs": "a9fd97c80f44600e8676123b3d6a418c02e10a09bd4edf9cfec81cb96300beb0",
-    "scripts/pigeon-assets/model.mjs": "5557f53dfcc2c28a7cfdba44f2732ff4d24554bcd4b3b9b01946450c1cde6f45",
-    "scripts/pigeon-assets/materials.mjs": "89e58142045526f737c874bd815d8146c729cc4701a2eeee66ef33765ce4de3e",
-    "scripts/pigeon-assets/bake.html": "74cf46eb9550a1dbb1f8db0d47e7047bd6ae4c6265d9ad6b6f3d6d1aee18f275",
-    "src/features/pigeon/rig.js": "323355eb66c36756a9b54ec681a65d78a874500e02e4de35bc5e388e8ece40db",
-    "src/features/pigeon/motion.js": "ed8cd3f1c5e470af7d67c186267e6f7fac17569a5751f282e03a8d3d67dcd2b1"
+    "scripts/pigeon-assets/geometry.mjs": "891c8656ff15892a8c6a51c701ed458c986fe8b78bbbfe0d304b5c771388fa75",
+    "scripts/pigeon-assets/anatomy.mjs": "9300658569453e831e677a866a003faa4a6eecb9181d358ed3de17ec66f30903",
+    "scripts/pigeon-assets/wings.mjs": "c85cd35b3c05ae2934fcfce96448e8162bbc2667bd8ed63958fc224e7af67894",
+    "scripts/pigeon-assets/face.mjs": "035c389906e6e6f16f5a1449b382d2902e4d0cb0e32086de2c6fc39f6b539255",
+    "scripts/pigeon-assets/model.mjs": "61c01153dd34194604bed95c606cefe7a9abab98d6d7e95c6035423529be83f7",
+    "scripts/pigeon-assets/materials.mjs": "9149cac6aea0e4363600935f6b87ea3e4eb768352aa934292b1f248d6f8ecaa7",
+    "scripts/pigeon-assets/bake.html": "a439f42eeb55ac6b1fd1173e3c36279308279405f2eb2bcaf3ff92f32ea00106",
+    "scripts/pigeon-assets/textures/feather-albedo.png": "065aff7ba11380b316a107f89907539a7c02d6884a357278a0645d0f71c4af0a",
+    "scripts/pigeon-assets/textures/PROVENANCE.md": "2a763e5d29701bed93b052be09c4f0281c4f2595705979dd9dc8e3a085a25aa2",
+    "src/features/pigeon/rig.js": "a42f8d2fec43897a861cf4063fa67680f105f1c60db704b232a5ff0ce9985715",
+    "src/features/pigeon/motion.js": "2f856f2352f5af0a9c9a92d1bf9debcd4a909d810d137810183e44d1d4cabd60"
   }
 }

@@ -30,8 +30,9 @@ test("pigeon study opens from the home card, reloads directly and returns home",
 test("actual rig walks, pecks, flies, lands and pauses; both body types can be observed", async ({ page }) => {
   test.setTimeout(120000);
   const scene = await openPark(page);
-  // Observe the detailed rig in the two-model comparison scene. Park rendering,
-  // navigation and download lifecycle are covered separately below.
+  await expect(scene).toHaveAttribute("data-view", "threequarter");
+  await expect(scene).toHaveAttribute("data-model-revision", "3");
+  await expect(scene).toHaveAttribute("data-motion", "idle");
   await page.getByRole("button", { name: "정면 비교", exact: true }).click();
   await page.getByRole("button", { name: "걷기", exact: true }).click();
   await expect(scene).toHaveAttribute("data-motion", "walk");
@@ -60,7 +61,7 @@ test("actual rig walks, pecks, flies, lands and pauses; both body types can be o
   await expect.poll(async () => number(scene, "beak-height")).toBeLessThan(0.23);
   await page.getByRole("button", { name: "장면 처음부터" }).click();
   await expect(scene).toHaveAttribute("data-kind", "normal");
-  await expect(scene).toHaveAttribute("data-motion", "eat");
+  await expect(scene).toHaveAttribute("data-motion", "idle");
   await expect(page.getByRole("button", { name: "동작 일시정지" })).toBeVisible();
 });
 
@@ -83,27 +84,35 @@ test("two authored models load and comparison views can scrub a real eating pose
   await page.goto("/pigeon?view=front");
   const scene = page.getByTestId("pigeon-scene");
   await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 45000 });
-  expect(models.some((url) => url.includes("normal-v2"))).toBe(true);
-  expect(models.some((url) => url.includes("chicken-v2"))).toBe(true);
+  expect(models.some((url) => url.includes("normal-v3"))).toBe(true);
+  expect(models.some((url) => url.includes("chicken-v3"))).toBe(true);
   await expect(scene).toHaveAttribute("data-view", "front");
   await page.getByRole("button", { name: "측면 비교", exact: true }).click();
   const seek = async (value) => {
     await page.locator("#pigeon-time").evaluate((element, value) => { element.value = value; element.dispatchEvent(new Event("input", { bubbles: true })); }, value);
     await expect(scene).toHaveAttribute("data-time", value.toFixed(3));
   };
+  await page.getByRole("button", { name: "먹기", exact: true }).click();
   await seek(0);
   const raised = await number(scene, "beak-height");
   await seek(1.1);
   expect(raised - await number(scene, "beak-height")).toBeGreaterThan(.8);
   await expect(page.getByRole("button", { name: "동작 재개" })).toBeVisible();
+  const oldFrame = await number(scene, "frame");
+  await page.getByRole("button", { name: /닭둘기 존재감/ }).click();
+  await expect(scene).toHaveAttribute("data-kind", "chicken");
+  await expect.poll(async () => number(scene, "frame")).toBeGreaterThan(oldFrame);
+  await expect(scene).toHaveAttribute("data-time", "1.100");
+  expect(await number(scene, "beak-height")).toBeLessThan(.20);
+  await expect(page.getByRole("button", { name: "동작 재개" })).toBeVisible();
   await page.getByRole("button", { name: "돌려보기", exact: true }).click();
   await expect(scene).toHaveAttribute("data-view", "turntable");
-  await page.getByRole("button", { name: "공원", exact: true }).click();
-  await expect(scene).toHaveAttribute("data-view", "park");
+  await page.getByRole("button", { name: "크기 비교", exact: true }).click();
+  await expect(scene).toHaveAttribute("data-view", "pair");
 });
 
 test("a corrupt model shows retry and a valid retry opens the scene", async ({ page }) => {
-  const pattern = /normal-v2.*\.glb/;
+  const pattern = /normal-v3.*\.glb/;
   await page.route(pattern, (route) => route.fulfill({ status: 200, contentType: "model/gltf-binary", body: "invalid glb fixture" }));
   await page.goto("/pigeon");
   await expect(page.getByRole("button", { name: "장면 다시 불러오기" })).toBeVisible({ timeout: 30000 });

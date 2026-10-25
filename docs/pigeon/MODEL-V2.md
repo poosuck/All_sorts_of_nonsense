@@ -1,5 +1,7 @@
 # 비둘기 모이주기 — 외형·재질 개선 v2
 
+> 이전 v2 구현의 이력입니다. 현재 비둘기 우선 작업은 [v3 기록](MODEL-V3.md)을 참고하세요.
+
 작업일: 2026-10-25 (한국 시간). 기준은 사용자 제공 명세 v1.0과 A+ 시안입니다. 사용자가 선택한 다음 산출물인 **일반 비둘기·닭둘기의 외형·재질 개선, 같은 빛에서의 정면·측면·먹는 자세 비교와 동작 검토**를 구현한 개선본입니다. 게임 전체 기능 완료와 구분합니다.
 
 ## 확인 방법
@@ -37,7 +39,7 @@ npm run dev
 - 일반형 41,828 삼각형 / 3,551,776 bytes, 닭둘기 44,324 삼각형 / 3,697,756 bytes. 비둘기 페이지 진입 때만 요청합니다.
 - 화면의 작은 배경 개체는 잔깃 메시를 숨겨 렌더링 부담을 줄입니다.
 - 페이지 이탈 시 로딩 취소, 관절별 복제 자원과 공유 메시·재질·이미지·WebGL 컨텍스트 정리.
-- [자산·제작 소스 체크섬](../../src/assets/pigeon/manifest.json)은 `npm test`에서 확인합니다.
+- [자산·제작 소스 체크섬](v2/assets-manifest.json)은 `npm test`에서 확인합니다.
 
 제작 소스를 바꾼 경우 `npm run assets:pigeon`으로 GLB를 다시 생성합니다. Playwright Chromium이 필요합니다. Linux 시스템 Chromium을 쓰려면 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run assets:pigeon`을 사용할 수 있습니다. 일반 실행과 빌드는 이미 보존된 GLB를 사용합니다.
 

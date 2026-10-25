@@ -3,8 +3,8 @@ import { clone } from "three/addons/utils/SkeletonUtils.js";
 import { bindPigeonRig } from "./rig.js";
 
 const URLs = {
-  normal: new URL("../../assets/pigeon/normal-v2.glb", import.meta.url).href,
-  chicken: new URL("../../assets/pigeon/chicken-v2.glb", import.meta.url).href,
+  normal: new URL("../../assets/pigeon/normal-v3.glb", import.meta.url).href,
+  chicken: new URL("../../assets/pigeon/chicken-v3.glb", import.meta.url).href,
 };
 
 function disposeModels(models) {
