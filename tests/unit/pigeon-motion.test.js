@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { FLIGHT_DURATION, advanceClock, sampleMotion } from "../../src/features/pigeon/motion.js";
-import { createPigeon } from "../../src/features/pigeon/pigeon-model.js";
+import { createAuthoredPigeon } from "../../scripts/pigeon-assets/model.mjs";
+import { bindPigeonRig } from "../../src/features/pigeon/rig.js";
 import { createResourcePool } from "../../src/features/pigeon/resources.js";
 
 test("pigeon visible clock stops while paused and bounds stale-tab deltas", () => {
@@ -45,7 +46,7 @@ test("both actual 3D rigs lower their beaks to the grain layer and alternate the
   const material = pool.material({ color: "#cccccc" });
   const materials = new Proxy({}, { get: () => material });
   for (const chicken of [false, true]) {
-    const bird = createPigeon(pool, materials, { chicken });
+    const bird = bindPigeonRig(createAuthoredPigeon(materials, chicken ? "chicken" : "normal"), chicken);
     let low = Infinity, high = -Infinity;
     for (let i = 0; i < 260; i++) {
       bird.pose(sampleMotion("eat", i / 100));

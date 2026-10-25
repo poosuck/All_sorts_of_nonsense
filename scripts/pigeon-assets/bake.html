@@ -1,0 +1,47 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Pigeon asset authoring</title>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import { createAuthoredPigeon } from './model.mjs';
+import { createMaterials } from './materials.mjs';
+import { bindPigeonRig } from '../../src/features/pigeon/rig.js';
+import { sampleMotion, FLIGHT_DURATION } from '../../src/features/pigeon/motion.js';
+window.bakePigeons = async () => {
+  const output = [];
+  for (const kind of ['normal', 'chicken']) {
+    const root = createAuthoredPigeon(createMaterials(), kind);
+    const rig = bindPigeonRig(root, kind === 'chicken');
+    const animationNodes = ['Body', 'Neck', 'Head', 'Wing_L', 'Wing_R', 'Fold_L', 'Fold_R', 'Foot_L', 'Foot_R', 'Shin_L', 'Shin_R'];
+    root.traverse((node) => { if (node.morphTargetInfluences?.length) animationNodes.push(node.name); });
+    const clips = [];
+    for (const [mode, duration] of [['walk', Math.PI * 2 / 8.8], ['eat', 2.6], ['fly', FLIGHT_DURATION]]) {
+      const samples = Math.ceil(duration * 24);
+      const times = [], keys = Object.fromEntries(animationNodes.map((name) => [name, { position: [], quaternion: [], scale: [], weights: [] }]));
+      for (let i = 0; i <= samples; i++) {
+        const t = i / samples * duration; times.push(t); rig.pose(sampleMotion(mode, t));
+        for (const name of animationNodes) {
+          const node = root.getObjectByName(name);
+          keys[name].position.push(...node.position.toArray()); keys[name].quaternion.push(...node.quaternion.toArray()); keys[name].scale.push(...node.scale.toArray());
+          keys[name].weights.push(...(node.morphTargetInfluences || []));
+        }
+      }
+      const tracks = [];
+      for (const name of animationNodes) {
+        tracks.push(new THREE.VectorKeyframeTrack(`${name}.position`, times, keys[name].position));
+        tracks.push(new THREE.QuaternionKeyframeTrack(`${name}.quaternion`, times, keys[name].quaternion));
+        tracks.push(new THREE.VectorKeyframeTrack(`${name}.scale`, times, keys[name].scale));
+        if (keys[name].weights.length) tracks.push(new THREE.NumberKeyframeTrack(`${name}.morphTargetInfluences`, times, keys[name].weights));
+      }
+      clips.push(new THREE.AnimationClip(mode, duration, tracks));
+    }
+    rig.pose(sampleMotion('eat', 0)); root.updateMatrixWorld(true);
+    const binary = await new GLTFExporter().parseAsync(root, { binary: true, animations: clips, onlyVisible: false });
+    let encoded = ''; const bytes = new Uint8Array(binary);
+    for (let i = 0; i < bytes.length; i += 8192) encoded += String.fromCharCode(...bytes.subarray(i, i + 8192));
+    let triangles = 0;
+    root.traverse((node) => { if (node.isMesh) triangles += (node.geometry.index?.count || node.geometry.attributes.position.count) / 3; });
+    output.push({ kind, data: btoa(encoded), bytes: bytes.length, triangles, clips: clips.map((clip) => ({ name: clip.name, duration: clip.duration })) });
+  }
+  return output;
+};
+</script></html>

@@ -11,9 +11,13 @@ const ready = ref(false);
 const paused = ref(false);
 const kind = ref("normal");
 const motion = ref("eat");
+const requestedView = new URLSearchParams(location.search).get("view");
+const view = ref(["park", "front", "side", "turntable"].includes(requestedView) ? requestedView : "park");
+const scrub = ref(0);
 const metrics = ref({ frame: 0, time: 0, height: 0, wingAngle: 0, beakHeight: 0, footZ: 0, phase: "공원 문을 여는 중", count: 6 });
 let scene;
 let alive = true;
+let loadController;
 const animalName = computed(() => kind.value === "chicken" ? "닭둘기" : "일반 비둘기");
 const motionNotes = {
   walk: { title: "한 걸음에 한 번, 까딱.", body: "발은 번갈아 딛고, 고개는 한 박자 먼저. 작은 몸에 제법 확실한 보폭이 있습니다." },
@@ -22,30 +26,39 @@ const motionNotes = {
 };
 
 async function start() {
+  loadController?.abort();
+  const controller = new AbortController(); loadController = controller;
   scene?.dispose(); scene = undefined;
   ready.value = false; error.value = "";
   await nextTick();
   if (!alive || !mount.value) return;
   try {
-    scene = createPigeonScene(mount.value, {
+    const created = await createPigeonScene(mount.value, {
+      signal: controller.signal, initialView: view.value,
       onMetrics(value) {
         if (!alive) return;
         metrics.value = value; ready.value = true;
         motion.value = value.mode; kind.value = value.kind;
+        if (!value.paused) scrub.value = value.clipTime % 7.6;
       },
       onError(message) { error.value = message; ready.value = false; },
     });
+    if (!alive || controller.signal.aborted) { created.dispose(); return; }
+    scene = created;
     paused.value = false;
-  } catch {
-    error.value = "이 브라우저에서 3D 장면을 열지 못했습니다. Chrome의 그래픽 가속 설정을 확인해 주세요.";
+  } catch (failure) {
+    if (!alive || controller.signal.aborted || failure.name === "AbortError") return;
+    error.value = "비둘기 모델 또는 3D 장면을 불러오지 못했습니다. 연결 상태와 브라우저의 그래픽 가속 설정을 확인해 주세요.";
   }
 }
 function setMotion(value) { motion.value = value; scene?.setMotion(value); }
 function selectKind(value) { kind.value = value; scene?.selectKind(value); }
 function togglePause() { paused.value = !paused.value; scene?.setPaused(paused.value); }
 function reset() { paused.value = false; kind.value = "normal"; motion.value = "eat"; scene?.reset(); }
+function setView(value) { view.value = value; scene?.setView(value); }
+function seek(event) { scrub.value = Number(event.target.value); paused.value = true; scene?.seek(scrub.value); }
 onMounted(start);
-onBeforeUnmount(() => { alive = false; scene?.dispose(); });
+onBeforeUnmount(() => { alive = false; loadController?.abort(); scene?.dispose(); });
 </script>
 
 <template>
@@ -54,7 +67,7 @@ onBeforeUnmount(() => { alive = false; scene?.dispose(); });
       <RouterLink to="/" class="pigeon-home" aria-label="별짓 홈으로"><ArrowLeft :size="17" /><span>별짓<span class="pigeon-brand-star">✳</span></span></RouterLink>
       <span class="pigeon-top-divider" />
       <span class="pigeon-top-label">쓸모없는 관찰, 두 번째.</span>
-      <span class="pigeon-stage-tag"><i /> 제작 중 · 1단계</span>
+      <span class="pigeon-stage-tag"><i /> 제작 중 · 모델 개선 v2</span>
     </header>
 
     <section class="pigeon-world" aria-label="비둘기 모이주기 제작 미리보기">
@@ -71,12 +84,17 @@ onBeforeUnmount(() => { alive = false; scene?.dispose(); });
         :data-wing-angle="metrics.wingAngle.toFixed(3)"
         :data-beak-height="metrics.beakHeight.toFixed(3)"
         :data-foot-z="metrics.footZ.toFixed(3)"
+        :data-view="view"
+        data-model-revision="2"
       />
 
       <div class="pigeon-title-block">
         <span class="pigeon-eyebrow">THE COLLECTION / NO. 002</span>
         <h1>비둘기 모이주기<span>오늘도, 평화로울 예정.</span></h1>
-        <p>모이보다 먼저, 비둘기가 도착했습니다.</p>
+        <p>{{ view === 'park' ? '모이보다 먼저, 비둘기가 도착했습니다.' : '왼쪽 일반 비둘기 · 오른쪽 닭둘기' }}</p>
+        <div class="pigeon-view-tabs" aria-label="모델 비교 시점">
+          <button v-for="(label, value) in { park: '공원', front: '정면 비교', side: '측면 비교', turntable: '돌려보기' }" :key="value" :aria-pressed="view === value" :disabled="!ready" @click="setView(value)">{{ label }}</button>
+        </div>
       </div>
 
       <div class="pigeon-scene-caption"><span class="pigeon-location-dot" />별짓 공원<span class="pigeon-caption-rule" />오후의 햇살, 적당한 참견.</div>
@@ -97,6 +115,7 @@ onBeforeUnmount(() => { alive = false; scene?.dispose(); });
           <button v-for="(label, value) in MOTIONS" :key="value" :aria-pressed="motion === value" :disabled="!ready" @click="setMotion(value)">{{ label }}<ArrowUpRight v-if="motion === value" :size="13" /></button>
         </div>
         <div class="pigeon-motion-note"><h3>{{ motionNotes[motion].title }}</h3><p>{{ motionNotes[motion].body }}</p></div>
+        <label v-if="view !== 'park'" class="pigeon-scrub">자세 시점 <output for="pigeon-time">{{ scrub.toFixed(1) }}초</output><input id="pigeon-time" type="range" min="0" max="7.6" step="0.05" :value="scrub" @input="seek" /></label>
         <div class="pigeon-live-state"><i :class="{ paused }" /><span>{{ paused ? '관찰을 잠시 멈췄습니다.' : metrics.phase }}</span><span>{{ animalName }}</span></div>
       </aside>
 
@@ -107,7 +126,7 @@ onBeforeUnmount(() => { alive = false; scene?.dispose(); });
       </div>
 
       <div class="pigeon-bottom-bar">
-        <div class="pigeon-phase-note"><span>01</span><div><b>우선, 잘 움직이는 것부터.</b><small>외형 · 걷기 · 먹기 · 비행을 확인하는 제작 미리보기입니다.</small></div></div>
+        <div class="pigeon-phase-note"><span>02</span><div><b>같은 빛 아래, 다른 통통함.</b><small>두 체형의 외형 · 재질 · 움직임을 비교하는 제작 미리보기입니다.</small></div></div>
         <div class="pigeon-scene-controls">
           <button :disabled="!ready" :aria-label="paused ? '동작 재개' : '동작 일시정지'" :aria-pressed="paused" @click="togglePause"><Play v-if="paused" :size="15" /><Pause v-else :size="15" /><span>{{ paused ? '재개' : '일시정지' }}</span></button>
           <button :disabled="!ready" aria-label="장면 처음부터" @click="reset"><RotateCcw :size="15" /><span>처음부터</span></button>
@@ -117,8 +136,8 @@ onBeforeUnmount(() => { alive = false; scene?.dispose(); });
 
     <footer class="pigeon-study-footer">
       <span><Sparkles :size="14" /> 작은 동작을 만드는 중입니다.</span>
-      <p>코드로 제작한 3D 모델입니다. 시안의 깃털 질감과 차이가 있으며, 투척·싸움·도감·효과음은 후속 단계입니다.</p>
-      <span class="pigeon-study-edition">ANIMATION STUDY — 01</span>
+      <p>직접 제작한 3D 모델의 외형·재질 개선본입니다. 시안과의 미술 품질 차이는 검토 중이며 투척·싸움·도감은 후속 단계입니다.</p>
+      <span class="pigeon-study-edition">MODEL STUDY — 02</span>
     </footer>
   </div>
 </template>

@@ -13,7 +13,8 @@
     "test": "node --test tests/unit/*.test.js",
     "test:e2e": "playwright test",
     "source:sync": "node scripts/sync-pudding-source.mjs",
-    "source:check": "node scripts/sync-pudding-source.mjs --check"
+    "source:check": "node scripts/sync-pudding-source.mjs --check",
+    "assets:pigeon": "node scripts/build-pigeon-assets.mjs"
   },
   "dependencies": {
     "@lucide/vue": "1.31.0",
