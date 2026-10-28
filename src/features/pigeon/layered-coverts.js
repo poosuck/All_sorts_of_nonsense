@@ -1,95 +1,94 @@
 import * as THREE from 'three';
-import { featherGeometry, joinGeometry } from '../../../scripts/pigeon-assets/geometry.mjs';
 
-// Small skinned vanes fitted to the imported wing. Source assets stay untouched.
+// Rounded surface-following feathers. Each vertex samples the same source triangle
+// for position, skin weights and morph deltas, avoiding floating or torn patches.
 export function installLayeredCoverts(root) {
-  const additions = [], geometries = [], materials = [];
+  const additions = [], owned = [];
   const sources = [];
   root.traverse(mesh => { if (mesh.isSkinnedMesh) sources.push(mesh); });
   for (const mesh of sources) {
-    const { position: pos, normal: normals, skinIndex, skinWeight } = mesh.geometry.attributes;
+    const { position: source, skinIndex, skinWeight } = mesh.geometry.attributes;
     if (!skinIndex || !skinWeight) continue;
-    const feather = featherGeometry(1, .5, .0012, 12, 10);
-    geometries.push(feather);
-    const material = new THREE.MeshPhysicalMaterial({
-      color: '#c5bec4', vertexColors: true, roughness: .88,
-      sheen: .2, sheenRoughness: .85, side: THREE.DoubleSide,
-      polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
-    });
-    materials.push(material);
-    const parts = [], joints = [], weights = [], colors = [], lifts = [];
-    const surfaceMaterial = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
-    const surface = new THREE.Mesh(mesh.geometry, surfaceMaterial);
-    surface.updateMatrixWorld(true);
+    const probeMaterial = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
+    const probe = new THREE.Mesh(mesh.geometry, probeMaterial);
+    probe.updateMatrixWorld(true);
     const ray = new THREE.Raycaster();
-    const hitSurface = (side, y, z) => {
+    const positions = [], indices = [], colors = [], joints = [], weights = [];
+    const sourceMorphs = mesh.geometry.morphAttributes.position || [];
+    const morphs = sourceMorphs.map(() => []);
+    const vertex = (side, y, z, lift, shade) => {
       ray.set(new THREE.Vector3(side, y, z), new THREE.Vector3(-side, 0, 0));
-      return ray.intersectObject(surface, false)[0];
-    };
-    for (const side of [-1, 1]) for (let row = 0; row < 5; row++) for (let col = 0; col < 8; col++) {
-      const y = .375 - row * .030, z = .09 - col * .041 - (row % 2) * .016;
-      const hit = hitSurface(side, y, z);
-      if (!hit || Math.abs(hit.point.x) < .055) continue;
-      const best = hit.face.a;
-      const anchor = hit.point.clone();
-      const normal = (hit.normal || hit.face.normal).clone().normalize();
-      const growth = new THREE.Vector3(0, -.45, -.9);
-      growth.addScaledVector(normal, -growth.dot(normal)).normalize();
-      const across = new THREE.Vector3().crossVectors(growth, normal).normalize();
-      const matrix = new THREE.Matrix4().makeBasis(across, growth.clone().negate(), normal);
-      matrix.scale(new THREE.Vector3(.049 + row * .002, .062 + row * .003, 1));
-      matrix.setPosition(anchor.addScaledVector(normal, .002 + row * .0006));
-      parts.push({ geometry: feather, matrix });
-      lifts.push(.014 + row * .003 + col * .0004);
-      const stripe = col === 3 || col === 6;
-      const color = new THREE.Color(stripe ? '#424453' : '#c5bec4');
-      color.multiplyScalar(1 - .018 * Math.sin(row * 9 + col * 3));
-      for (let i = 0; i < feather.attributes.position.count; i++) {
-        joints.push(skinIndex.getX(best), skinIndex.getY(best), skinIndex.getZ(best), skinIndex.getW(best));
-        weights.push(skinWeight.getX(best), skinWeight.getY(best), skinWeight.getZ(best), skinWeight.getW(best));
-        colors.push(...color.toArray());
-      }
-    }
-    const geo = joinGeometry(parts); geometries.push(geo);
-    // Fit every vane vertex to the wing, avoiding floating planar tiles.
-    const fitted = geo.attributes.position;
-    for (let i = 0; i < fitted.count; i++) {
-      const side = fitted.getX(i) < 0 ? -1 : 1;
-      const hit = hitSurface(side, fitted.getY(i), fitted.getZ(i));
-      if (!hit) continue;
-      fitted.setX(i, hit.point.x + side * lifts[Math.floor(i / feather.attributes.position.count)]);
-      const normal = (hit.normal || hit.face.normal).clone().normalize();
-      geo.attributes.normal.setXYZ(i, normal.x, normal.y, normal.z);
+      const hit = ray.intersectObject(probe, false)[0];
+      if (!hit || Math.abs(hit.point.x) < .045) return -1;
+      const vertices = [hit.face.a, hit.face.b, hit.face.c];
       const bary = THREE.Triangle.getBarycoord(hit.point,
-        new THREE.Vector3().fromBufferAttribute(pos, hit.face.a),
-        new THREE.Vector3().fromBufferAttribute(pos, hit.face.b),
-        new THREE.Vector3().fromBufferAttribute(pos, hit.face.c), new THREE.Vector3());
+        ...vertices.map(i => new THREE.Vector3().fromBufferAttribute(source, i)), new THREE.Vector3());
+      const fractions = [bary.x, bary.y, bary.z];
       const blended = new Map();
-      for (const [index, fraction] of [[hit.face.a, bary.x], [hit.face.b, bary.y], [hit.face.c, bary.z]]) {
-        for (let j = 0; j < 4; j++) {
-          const joint = skinIndex.array[index * 4 + j];
-          blended.set(joint, (blended.get(joint) || 0) + skinWeight.array[index * 4 + j] * fraction);
-        }
+      for (let v = 0; v < 3; v++) for (let j = 0; j < 4; j++) {
+        const i = vertices[v] * 4 + j, joint = skinIndex.array[i];
+        blended.set(joint, (blended.get(joint) || 0) + skinWeight.array[i] * fractions[v]);
       }
       const selected = [...blended].sort((a,b) => b[1] - a[1]).slice(0,4);
-      const sum = selected.reduce((s,entry) => s + entry[1], 0) || 1;
-      for (let j = 0; j < 4; j++) { joints[i * 4 + j] = selected[j]?.[0] || 0; weights[i * 4 + j] = (selected[j]?.[1] || 0) / sum; }
+      const sum = selected.reduce((s,e) => s + e[1], 0) || 1;
+      const index = positions.length / 3;
+      positions.push(hit.point.x + side * lift, y, z);
+      for (let j = 0; j < 4; j++) { joints.push(selected[j]?.[0] || 0); weights.push((selected[j]?.[1] || 0) / sum); }
+      // Two continuous curved bands, not alternating dark polygon tiles.
+      const axis = z + (y - .30) * .5;
+      const band = Math.min(Math.abs(axis + .13), Math.abs(axis + .255)) < .013;
+      const color = new THREE.Color(band ? '#41414e' : '#beb7bc');
+      color.multiplyScalar(shade); colors.push(...color.toArray());
+      sourceMorphs.forEach((attribute, m) => {
+        const p = new THREE.Vector3();
+        vertices.forEach((i,v) => p.addScaledVector(new THREE.Vector3().fromBufferAttribute(attribute,i), fractions[v]));
+        if (!mesh.geometry.morphTargetsRelative) p.x += side * lift;
+        morphs[m].push(...p.toArray());
+      });
+      return index;
+    };
+    for (const side of [-1,1]) for (let row = 0; row < 9; row++) for (let col = 0; col < 12; col++) {
+      const cy = .425 - row * .025;
+      const cz = .135 - col * .038 + (row % 2) * .019;
+      // One oval wing envelope, broad at the shoulder and tapering at the tail.
+      if (((cy - .32) / .125) ** 2 + ((cz + .09) / .255) ** 2 > 1) continue;
+      const grid = [];
+      const length = .043 + row * .0015, width = .023;
+      for (let r = 0; r <= 10; r++) {
+        const t = r / 10, outline = Math.pow(Math.sin(Math.PI * t), .55);
+        const line = [];
+        for (let c = 0; c <= 8; c++) {
+          const u = c / 8 * 2 - 1;
+          const y = cy - t * length, z = cz + u * width * outline - t * .012;
+          const dome = Math.sin(t * Math.PI) * (1-u*u);
+          line.push(vertex(side, y, z, .0035 + (8-row) * .0007 + dome * .0025, .97 + dome * .055));
+        }
+        grid.push(line);
+      }
+      for (let r = 0; r < 10; r++) for (let c = 0; c < 8; c++) {
+        const a = grid[r][c], b = grid[r+1][c], d = grid[r][c+1], e = grid[r+1][c+1];
+        if (Math.min(a,b,d,e) < 0) continue;
+        indices.push(a,b,d,d,b,e);
+      }
     }
-    surfaceMaterial.dispose();
-    geo.setAttribute('skinIndex' , new THREE.Uint16BufferAttribute(joints, 4));
-    geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(weights, 4));
-    geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-    material.color.set('#ffffff');
-    const coverts = new THREE.SkinnedMesh(geo, material);
-    coverts.name = 'ReferenceLayeredCoverts';
-    coverts.frustumCulled = false; coverts.castShadow = false; coverts.receiveShadow = false;
+    probeMaterial.dispose();
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions,3));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(colors,3));
+    geo.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(joints,4));
+    geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(weights,4));
+    geo.setIndex(indices); geo.computeVertexNormals();
+    geo.morphTargetsRelative = mesh.geometry.morphTargetsRelative;
+    geo.morphAttributes.position = morphs.map(values => new THREE.Float32BufferAttribute(values,3));
+    const material = new THREE.MeshPhysicalMaterial({ color:'#ffffff', vertexColors:true,
+      roughness:.87, sheen:.18, sheenRoughness:.9, side:THREE.DoubleSide });
+    const coverts = new THREE.SkinnedMesh(geo,material);
+    coverts.name = 'ReferenceLayeredCoverts'; coverts.frustumCulled = false;
+    coverts.castShadow = false; coverts.receiveShadow = true;
     coverts.position.copy(mesh.position); coverts.quaternion.copy(mesh.quaternion); coverts.scale.copy(mesh.scale);
-    mesh.parent.add(coverts); coverts.bind(mesh.skeleton, mesh.bindMatrix);
-    additions.push(coverts);
+    mesh.parent.add(coverts); coverts.bind(mesh.skeleton,mesh.bindMatrix);
+    if (mesh.morphTargetInfluences) coverts.morphTargetInfluences = mesh.morphTargetInfluences;
+    additions.push(coverts); owned.push(geo, material);
   }
-  return () => {
-    for (const mesh of additions) mesh.removeFromParent();
-    for (const geo of geometries) geo.dispose();
-    for (const material of materials) material.dispose();
-  };
+  return () => { additions.forEach(mesh=>mesh.removeFromParent()); owned.forEach(value=>value.dispose()); };
 }

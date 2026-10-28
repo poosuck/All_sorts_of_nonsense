@@ -29,26 +29,38 @@ export function enhancePigeonPlumage(root) {
           float head = smoothstep(.45, .55, p.y);
           float neck = smoothstep(.32, .43, p.y) * (1.0 - smoothstep(.47, .54, p.y)) * smoothstep(-.03, .10, p.z);
           vec3 pigment = mix(vec3(.33, .31, .34), vec3(.25, .29, .35), head);
-          vec3 throat = mix(vec3(.29, .18, .33), vec3(.16, .33, .30), smoothstep(.38, .48, p.y));
+          vec3 throat = mix(vec3(.24, .12, .28), vec3(.085, .235, .19), smoothstep(.38, .48, p.y));
           pigment = mix(pigment, throat, neck * .85);
           // Rounded scallops run down the chest; neck feathers are smaller.
-          float size = mix(85.0, 180.0, max(neck, head));
+          float size = mix(58.0, 115.0, max(neck, head));
           vec2 grid = vec2(atan(p.x, p.z + .04) * .11, p.y) * size;
           float row = floor(grid.y);
           vec2 cell = vec2(fract(grid.x + mod(row, 2.0) * .5), fract(grid.y));
           float edge = abs(cell.y - (.23 + .48 * pow(abs(cell.x - .5) * 2.0, 2.0)));
-          float seam = 1.0 - smoothstep(.025, .095, edge);
+          float filterWidth = max(fwidth(edge), .015);
+          float seam = 1.0 - smoothstep(.035, .065 + filterWidth, edge);
+          float featherRelief = smoothstep(.0, .20, edge) * (1.0 - smoothstep(.68, .96, cell.y));
           pigment *= 1.0 - seam * mix(.13, .20, neck);
           float tail = 1.0 - smoothstep(-.29, -.18, p.z);
           pigment = mix(pigment, vec3(.15, .17, .21), tail * .75);
           // Preserve the original eyes, beak and cere, but remove its mottled body atlas.
-          float face = smoothstep(.46, .52, p.y);
+          float face = smoothstep(.49, .54, p.y);
           float feet = (1.0 - smoothstep(.09, .125, p.y)) * smoothstep(-.14, -.06, p.z);
           vec3 detail = mix(diffuseColor.rgb, vec3(.52, .19, .15), feet * .80);
 
           diffuseColor.rgb = mix(pigment, detail, max(face, feet));
+          featherRelief *= (1.0 - max(face, feet)) * (1.0 - tail * .75);
         `);
-        shader.fragmentShader = shader.fragmentShader.replace('#include <roughnessmap_fragment>', `
+        shader.fragmentShader = shader.fragmentShader.replace('#include <normal_fragment_maps>', `
+          #include <normal_fragment_maps>
+          // Shallow actual normal relief; no high-frequency speckle/noise.
+          vec3 dpdx = dFdx(-vViewPosition), dpdy = dFdy(-vViewPosition);
+          vec3 rx = cross(dpdy, normal), ry = cross(normal, dpdx);
+          float determinant = dot(dpdx, rx);
+          vec3 gradient = dFdx(featherRelief * .00065) * rx + dFdy(featherRelief * .00065) * ry;
+          normal = normalize(abs(determinant) * normal - sign(determinant) * gradient);
+        `);
+        shader.fragmentShader = shader.fragmentShader.replace('#include <roughnessmap_fragment>' , `
           #include <roughnessmap_fragment>
           roughnessFactor = mix(.88, .56, neck);
         `);
@@ -59,7 +71,7 @@ export function enhancePigeonPlumage(root) {
           #endif
         `);
       };
-      material.customProgramCacheKey = () => 'pigeon-stylized-reference-1';
+      material.customProgramCacheKey = () => 'pigeon-stylized-reference-2';
       replacements.set(original, material);
       return material;
     });

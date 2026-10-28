@@ -12,6 +12,10 @@ test('layered coverts follow the skinned surface and survive reversible roundnes
   const weights = new Float32Array(count * 4);
   for (let i = 0; i < count; i++) weights[i * 4] = 1;
   geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(weights, 4));
+  geo.morphTargetsRelative = true;
+  const morph = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) morph[i * 3] = .001;
+  geo.morphAttributes.position = [new THREE.Float32BufferAttribute(morph, 3)];
   const original = Float32Array.from(geo.attributes.position.array);
   const mat = new THREE.MeshStandardMaterial();
   const mesh = new THREE.SkinnedMesh(geo, mat);
@@ -22,6 +26,9 @@ test('layered coverts follow the skinned surface and survive reversible roundnes
   const coverts = root.getObjectByName('ReferenceLayeredCoverts');
   assert.ok(coverts?.isSkinnedMesh);
   assert.equal(coverts.skeleton, mesh.skeleton);
+  assert.equal(coverts.morphTargetInfluences, mesh.morphTargetInfluences);
+  assert.equal(coverts.geometry.morphAttributes.position[0].count, coverts.geometry.attributes.position.count);
+  for (const delta of coverts.geometry.morphAttributes.position[0].array) assert.ok(Number.isFinite(delta));
   const attrs = coverts.geometry.attributes;
   assert.ok(attrs.position.count > 100);
   for (let i = 0; i < attrs.position.count; i++) {

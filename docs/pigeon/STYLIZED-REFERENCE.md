@@ -13,3 +13,9 @@ The supplied reference remains a visual target, not a claim of an exact match. T
 Attribution: [Pigeon by kenchoo](https://sketchfab.com/3d-models/pigeon-ddd5ef4a94eb4159937a9de25c45697c), CC BY 4.0. Source files remain unchanged; runtime shape and material modifications are described above.
 
 Validation: six unit-test files pass; production build passes. Chromium/SwiftShader rendered front, side and three-quarter views without console/page errors. Final smoke check also changes roundness 0 → 100 → 82 and switches walk/eat/fly/idle. This verifies rendering and controls, not real-time GPU performance or every animation pose. See `stylized-reference/side.png` for the final side view. Wing vanes remain a first-pass approximation of the reference and need artistic refinement.
+
+## Second detail pass
+
+Lighting is unchanged from the first pass. Rear torso compression and stronger vertical belly volume shorten the triangular silhouette; tail shortening is increased. Coverts are rebuilt as individual rounded, staggered vanes over an oval wing envelope. Per-vertex surface intersections interpolate both rig weights and source morph targets; the overlay shares the original morph influences. Two bind-space curved bands replace per-tile color assignment. The body uses filtered scallop edges and shallow normal relief rather than speckled pigment; facial details and feet are excluded from this relief.
+
+The side preview is updated for this pass. Reference matching still depends on pose: the neutral standing bird is not forced into the supplied feeding pose.

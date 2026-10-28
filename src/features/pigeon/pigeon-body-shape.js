@@ -32,6 +32,8 @@ export function sculptPigeonPoint(point, weights, roundness) {
   const length = smooth(-0.34, -0.11, point.z) *
     (1 - smooth(0.20, 0.345, point.z));
   const field = strength * tissue * vertical * length;
+  const torso = strength * tissue * smooth(.10, .23, point.y) * (1 - smooth(.43, .53, point.y));
+  const rear = 1 - smooth(-.20, -.04, point.z);
   // Elliptical, rounded belly: widen, deepen and subtly drop the abdomen.
   // Widen the neck and slightly enlarge the head around its own center.
   // Feet remain exact; the tail shortens towards its root rather than stretching.
@@ -41,8 +43,8 @@ export function sculptPigeonPoint(point, weights, roundness) {
   const tail = strength * weights.tail * (1 - smooth(-.19, -.05, point.z));
   return {
     x: point.x * (1 + field * 1.12 + head * .22 + neck * .40),
-    y: 0.305 + (point.y - 0.305) * (1 + field * 0.31) - field * 0.018 - (head + neck) * .028 + (point.y - .55) * head * .12,
-    z: 0.015 + (point.z - 0.015) * (1 + field * 0.12) + field * 0.014 + (point.z - .17) * head * .12 - (point.z + .15) * tail * .20,
+    y: 0.305 + (point.y - 0.305) * (1 + field * 0.62) - field * 0.024 - (head + neck) * .028 + (point.y - .55) * head * .12,
+    z: 0.015 + (point.z - 0.015) * (1 + field * 0.12) + field * 0.014 + torso * rear * .075 + (point.z - .17) * head * .12 - (point.z + .15) * tail * .42,
     influence: field,
   };
 }
@@ -93,9 +95,9 @@ export function installPigeonBodySculpt(root, initialRoundness = 82) {
           // Approximate inverse-transpose of local ellipsoidal scaling.
           // Preserve the authored normals to avoid introducing UV seam artifacts.
           const [nx, ny, nz] = normalize(
-            originalNormal[k] / (1 + 0.92 * p.influence),
-            originalNormal[k + 1] / (1 + 0.31 * p.influence),
-            originalNormal[k + 2] / (1 + 0.40 * p.influence),
+            originalNormal[k] / (1 + 1.12 * p.influence),
+            originalNormal[k + 1] / (1 + 0.62 * p.influence),
+            originalNormal[k + 2] / (1 + 0.12 * p.influence),
           );
           normal.setXYZ(i, nx, ny, nz);
         }
