@@ -26,6 +26,27 @@ function disposeModels(models) {
   for (const value of textures) { value.dispose(); value.source?.data?.close?.(); }
 }
 
+async function loadKenchooModel(signal) {
+  const metadata = {
+    name: "Pigeon (kenchoo)",
+    author: "kenchoo",
+    license: "CC-BY-4.0",
+    source: "https://sketchfab.com/3d-models/pigeon-ddd5ef4a94eb4159937a9de25c45697c",
+    attribution: "Pigeon by kenchoo (CC BY 4.0); original glTF imported without modification",
+  };
+  const loader = new GLTFLoader();
+  // Original .gltf references its .bin and two texture PNGs relatively.
+  const url = import.meta.env.BASE_URL + "models/kenchoo/scene.gltf";
+  const response = await fetch(url, { signal });
+  if (!response.ok || !response.headers.get("content-type")?.includes("json")) {
+    throw new Error("kenchoo 3D 모델 JSON을 찾을 수 없습니다: " + url);
+  }
+  const gltf = await loader.loadAsync(url);
+  if (signal?.aborted) throw new DOMException("Pigeon loading aborted", "AbortError");
+  if (!gltf.scene || !gltf.scene.children.length) throw new Error("kenchoo GLTF 장면이 비어 있습니다.");
+  return { gltf, metadata };
+}
+
 async function loadOpenSourceModel(loader, signal) {
   // SPA fallbacks may return index.html with HTTP 200 for missing files.
   // Require a real metadata JSON before attempting to load the GLB.
@@ -62,7 +83,7 @@ export async function loadPigeonAssets(signal) {
       const data = await response.arrayBuffer();
       return [kind, await loader.parseAsync(data, "")];
     }),
-    loadOpenSourceModel(loader, signal),
+    loadKenchooModel(signal),
   ]);
   const loaded = results.slice(0, 2).filter((result) => result.status === "fulfilled").map((result) => result.value);
   const open = results[2].status === "fulfilled" ? results[2].value : null;
