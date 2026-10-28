@@ -68,7 +68,7 @@ export async function createPigeonScene(container, { onMetrics, onError, signal,
     (view === "park" ? origins : origins.slice(0, 2)).forEach((origin, i) => {
       const model = assets.create(origin.chicken);
       // Fine foreground plumage is unnecessary on the smaller background birds.
-      if (i >= 2) model.root.getObjectByName("FinePlumage").visible = false;
+      if (i >= 2) { const plumage = model.root.getObjectByName("FinePlumage"); if (plumage) plumage.visible = false; }
       model.root.scale.setScalar(origin.scale);
       model.root.position.set(origin.x, 0, origin.z);
       model.root.rotation.y = origin.heading;
@@ -119,7 +119,7 @@ export async function createPigeonScene(container, { onMetrics, onError, signal,
           for (const key of Object.keys(sample)) {
             if (typeof sample[key] === "number") bird.poseState[key] += (sample[key] - bird.poseState[key]) * blend;
           }
-          model.pose(bird.poseState);
+          model.pose(bird.poseState, Math.max(0, time - bird.startTime), bird.mode);
           bird.shadow.position.x = model.root.position.x;
           bird.shadow.position.z = model.root.position.z;
           bird.shadow.material.opacity = 1 / (1 + model.root.position.y * 0.65);
@@ -145,6 +145,8 @@ export async function createPigeonScene(container, { onMetrics, onError, signal,
       onMetrics?.({
         ready: true, frame, time, paused: paused || document.hidden, view, revision: 3,
         kind: active.origin.chicken ? "chicken" : "normal", mode: active.mode,
+        modelSource: !active.origin.chicken && assets.externalSource ? "open" : "original-v3",
+        modelName: !active.origin.chicken && assets.externalSource ? assets.externalSource.name : active.origin.chicken ? "닭둘기 v3" : "일반 비둘기 v3",
         clipTime: Math.max(0, time - active.startTime),
         phase: active.phase, count: birds.length,
         ...active.model.inspect(),
