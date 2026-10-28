@@ -1,99 +1,72 @@
 import * as THREE from "three";
 
-// Non-destructive material treatment. Original color textures and skinning remain intact.
-function featherMaps(source) {
-  const image = source?.image;
-  if (!image || !image.width || !image.height || typeof document === "undefined") return null;
-  const width = Math.min(768, image.width), height = Math.min(768, image.height);
-  const canvas = document.createElement("canvas");
-  canvas.width = width; canvas.height = height;
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  if (!ctx) return null;
-  ctx.drawImage(image, 0, 0, width, height);
-  let sourceData;
-  try { sourceData = ctx.getImageData(0, 0, width, height); }
-  catch { return null; }
-  const bumpData = ctx.createImageData(width, height);
-  const maskData = ctx.createImageData(width, height);
-  const src = sourceData.data, bump = bumpData.data, mask = maskData.data;
-  const lumas = new Float32Array(width * height);
-  for (let i = 0; i < lumas.length; i++) {
-    const j = i * 4;
-    lumas[i] = (0.2126 * src[j] + 0.7152 * src[j + 1] + 0.0722 * src[j + 2]) / 255;
-  }
-  function lum(x, y) {
-    return lumas[Math.min(height - 1, Math.max(0, y)) * width + Math.min(width - 1, Math.max(0, x))];
-  }
-  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
-    const i = y * width + x, j = i * 4;
-    const r = src[j] / 255, g = src[j + 1] / 255, b = src[j + 2] / 255;
-    const greenNeck = g > r * 1.13 && g > b * 1.04 && g > 0.16;
-    const purpleNeck = b > g * 0.92 && r > g * 1.05 && b > 0.12 && r < 0.60;
-    const neck = greenNeck || purpleNeck;
-    const fine = lum(x, y) - (lum(x - 2, y) + lum(x + 2, y) + lum(x, y - 2) + lum(x, y + 2)) * 0.25;
-    const relief = THREE.MathUtils.clamp(0.5 + fine * 1.8, 0, 1);
-    bump[j] = bump[j + 1] = bump[j + 2] = Math.round(relief * 255);
-    bump[j + 3] = 255;
-    // Same mask drives selective iridescence (R) and roughness (G).
-    mask[j] = neck ? 225 : 0;
-    mask[j + 1] = neck ? 72 : (lum(x, y) < 0.20 ? 210 : 188);
-    mask[j + 2] = 255;
-    mask[j + 3] = 255;
-  }
-  const maps = [];
-  for (const data of [bumpData, maskData]) {
-    const c = document.createElement("canvas"); c.width = width; c.height = height;
-    c.getContext("2d").putImageData(data, 0, 0);
-    const t = new THREE.CanvasTexture(c);
-    t.flipY = source.flipY;
-    t.wrapS = source.wrapS; t.wrapT = source.wrapT;
-    t.colorSpace = THREE.NoColorSpace;
-    t.anisotropy = 4;
-    t.needsUpdate = true;
-    maps.push(t);
-  }
-  return { bump: maps[0], properties: maps[1] };
-}
-
+// The licensed atlas remains loaded only for small facial/foot details.
+// Body pigment is evaluated in bind space so baked photographic shadows disappear.
 export function enhancePigeonPlumage(root) {
-  const materials = new Map(), created = new Set(), auxiliary = [];
-  root.traverse((object) => {
+  const replacements = new Map(), assignments = [];
+  root.traverse(object => {
     if (!object.isMesh || !object.material) return;
-    object.material = [object.material].flat().map((original) => {
-      if (materials.has(original)) return materials.get(original);
-      // Keep the complete original color atlas and UVs.
+    const originals = object.material;
+    assignments.push([object, originals]);
+    const materials = [originals].flat().map(original => {
+      if (replacements.has(original)) return replacements.get(original);
       const material = new THREE.MeshPhysicalMaterial({
-        name: original.name + " · feather shading",
-        map: original.map || null,
-        side: original.side,
-        transparent: original.transparent,
-        alphaTest: original.alphaTest,
-        color: original.color,
-        metalness: 0.0,
-        roughness: 0.78,
-        envMapIntensity: 0.72,
-        iridescence: 0.65,
-        iridescenceIOR: 1.22,
-        iridescenceThicknessRange: [110, 260],
+        name: "Reference pigeon · matte plumage",
+        map: original.map, side: original.side,
+        transparent: original.transparent, alphaTest: original.alphaTest,
+        color: '#ffffff', roughness: .86, metalness: 0,
+        sheen: .24, sheenColor: new THREE.Color('#d4c4cb'), sheenRoughness: .85,
+        iridescence: .34, iridescenceIOR: 1.3,
+        iridescenceThicknessRange: [220, 380], envMapIntensity: .35,
       });
-      const maps = featherMaps(original.map);
-      if (maps) {
-        material.bumpMap = maps.bump;
-        material.bumpScale = 0.018;
-        material.roughnessMap = maps.properties;
-        material.iridescenceMap = maps.properties;
-        auxiliary.push(maps.bump, maps.properties);
-      } else {
-        material.iridescence = 0;
-      }
-      material.userData.originalLicense = "CC-BY-4.0";
-      materials.set(original, material); created.add(material);
+      material.onBeforeCompile = shader => {
+        shader.vertexShader = 'varying vec3 vPlumagePosition;\n' + shader.vertexShader;
+        shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvPlumagePosition = position;');
+        shader.fragmentShader = 'varying vec3 vPlumagePosition;\n' + shader.fragmentShader;
+        shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', `
+          #include <color_fragment>
+          vec3 p = vPlumagePosition;
+          float head = smoothstep(.45, .55, p.y);
+          float neck = smoothstep(.32, .43, p.y) * (1.0 - smoothstep(.47, .54, p.y)) * smoothstep(-.03, .10, p.z);
+          vec3 pigment = mix(vec3(.33, .31, .34), vec3(.25, .29, .35), head);
+          vec3 throat = mix(vec3(.29, .18, .33), vec3(.16, .33, .30), smoothstep(.38, .48, p.y));
+          pigment = mix(pigment, throat, neck * .85);
+          // Rounded scallops run down the chest; neck feathers are smaller.
+          float size = mix(85.0, 180.0, max(neck, head));
+          vec2 grid = vec2(atan(p.x, p.z + .04) * .11, p.y) * size;
+          float row = floor(grid.y);
+          vec2 cell = vec2(fract(grid.x + mod(row, 2.0) * .5), fract(grid.y));
+          float edge = abs(cell.y - (.23 + .48 * pow(abs(cell.x - .5) * 2.0, 2.0)));
+          float seam = 1.0 - smoothstep(.025, .095, edge);
+          pigment *= 1.0 - seam * mix(.13, .20, neck);
+          float tail = 1.0 - smoothstep(-.29, -.18, p.z);
+          pigment = mix(pigment, vec3(.15, .17, .21), tail * .75);
+          // Preserve the original eyes, beak and cere, but remove its mottled body atlas.
+          float face = smoothstep(.46, .52, p.y);
+          float feet = (1.0 - smoothstep(.09, .125, p.y)) * smoothstep(-.14, -.06, p.z);
+          vec3 detail = mix(diffuseColor.rgb, vec3(.52, .19, .15), feet * .80);
+
+          diffuseColor.rgb = mix(pigment, detail, max(face, feet));
+        `);
+        shader.fragmentShader = shader.fragmentShader.replace('#include <roughnessmap_fragment>', `
+          #include <roughnessmap_fragment>
+          roughnessFactor = mix(.88, .56, neck);
+        `);
+        shader.fragmentShader = shader.fragmentShader.replace('#include <lights_physical_fragment>', `
+          #include <lights_physical_fragment>
+          #ifdef USE_IRIDESCENCE
+            material.iridescence *= neck;
+          #endif
+        `);
+      };
+      material.customProgramCacheKey = () => 'pigeon-stylized-reference-1';
+      replacements.set(original, material);
       return material;
     });
-    if (object.material.length === 1) object.material = object.material[0];
+    object.material = Array.isArray(originals) ? materials : materials[0];
   });
   return () => {
-    for (const m of created) m.dispose();
-    for (const t of auxiliary) t.dispose();
+    for (const [object, originals] of assignments) object.material = originals;
+    for (const material of replacements.values()) material.dispose();
   };
 }

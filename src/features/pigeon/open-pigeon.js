@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { clone as cloneSkinned } from "three/addons/utils/SkeletonUtils.js";
 import { enhancePigeonPlumage } from "./feather-material.js";
+import { installLayeredCoverts } from "./layered-coverts.js";
 import { installPigeonBodySculpt } from "./pigeon-body-shape.js";
 
 const CLIP_MATCH = Object.freeze({
@@ -21,6 +22,7 @@ function namedPart(root, pattern) {
 export function createOpenPigeon(gltf, metadata = {}) {
   const model = cloneSkinned(gltf.scene);
   const releasePlumage = /kenchoo/i.test(metadata.name || "") ? enhancePigeonPlumage(model) : () => {};
+  const releaseCoverts = /kenchoo/i.test(metadata.name || "") ? installLayeredCoverts(model) : () => {};
   const bodySculpt = /kenchoo/i.test(metadata.name || "") ? installPigeonBodySculpt(model, 82) : null;
   const bounds = new THREE.Box3().setFromObject(model);
   if (bounds.isEmpty()) throw new Error("무료 비둘기 GLB에 3D 형상이 없습니다.");
@@ -84,7 +86,7 @@ export function createOpenPigeon(gltf, metadata = {}) {
     root,
     source: "open",
     setRoundness(value) { bodySculpt?.setRoundness(value); },
-    dispose() { bodySculpt?.dispose(); releasePlumage(); },
+    dispose() { bodySculpt?.dispose(); releaseCoverts(); releasePlumage(); },
     animations: gltf.animations.map((clip) => clip.name),
     pose(motion, seconds = 0, mode = "idle") {
       if (lastMode !== mode) {

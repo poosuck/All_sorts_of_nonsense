@@ -1,6 +1,6 @@
 // Reversible, non-destructive body reshaping for the original kenchoo rig.
 // Positions are in the model's bind-space (meters) before GPU skinning.
-// Never adjust head, toes, tail tips, bone transforms, UVs or source assets.
+// Preserve feet, rig transforms, UVs and source assets; reshape the cloned surface.
 const clamp01 = x => Math.max(0, Math.min(1, x));
 const smooth = (edge0, edge1, x) => {
   const t = clamp01((x - edge0) / (edge1 - edge0));
@@ -25,7 +25,7 @@ export function anatomicalWeights(bones, indices, values) {
 export function sculptPigeonPoint(point, weights, roundness) {
   const strength = clamp01(roundness / 100);
   const tissue = clamp01(weights.chest + weights.body * 0.95 +
-    weights.tail * 0.48 + weights.neck * 0.22);
+    weights.tail * 0.48 + weights.neck * 0.48);
   // Original kenchoo bird: X is width, Y is height, +Z is chest/head.
   const vertical = smooth(0.065, 0.19, point.y) *
     (1 - smooth(0.455, 0.59, point.y));
@@ -33,10 +33,16 @@ export function sculptPigeonPoint(point, weights, roundness) {
     (1 - smooth(0.20, 0.345, point.z));
   const field = strength * tissue * vertical * length;
   // Elliptical, rounded belly: widen, deepen and subtly drop the abdomen.
+  // Widen the neck and slightly enlarge the head around its own center.
+  // Feet remain exact; the tail shortens towards its root rather than stretching.
+  const upper = smooth(.39, .48, point.y);
+  const head = strength * weights.head * upper;
+  const neck = strength * weights.neck * upper;
+  const tail = strength * weights.tail * (1 - smooth(-.19, -.05, point.z));
   return {
-    x: point.x * (1 + field * 0.92),
-    y: 0.305 + (point.y - 0.305) * (1 + field * 0.31) - field * 0.018,
-    z: 0.015 + (point.z - 0.015) * (1 + field * 0.40) + field * 0.014,
+    x: point.x * (1 + field * 1.12 + head * .22 + neck * .40),
+    y: 0.305 + (point.y - 0.305) * (1 + field * 0.31) - field * 0.018 - (head + neck) * .028 + (point.y - .55) * head * .12,
+    z: 0.015 + (point.z - 0.015) * (1 + field * 0.12) + field * 0.014 + (point.z - .17) * head * .12 - (point.z + .15) * tail * .20,
     influence: field,
   };
 }

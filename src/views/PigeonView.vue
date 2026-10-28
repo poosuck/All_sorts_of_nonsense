@@ -101,7 +101,7 @@ onBeforeUnmount(() => { alive = false; loadController?.abort(); scene?.dispose()
         </div>
       </div>
 
-      <a v-if="metrics.modelSource === 'open'" class="pigeon-model-credit" href="https://sketchfab.com/3d-models/pigeon-ddd5ef4a94eb4159937a9de25c45697c" target="_blank" rel="noopener noreferrer">3D Pigeon by kenchoo · CC BY 4.0 · 원본 모델 사용</a>
+      <a v-if="metrics.modelSource === 'open'" class="pigeon-model-credit" href="https://sketchfab.com/3d-models/pigeon-ddd5ef4a94eb4159937a9de25c45697c" target="_blank" rel="noopener noreferrer">3D Pigeon by kenchoo · CC BY 4.0 · 참고 이미지 기반 형태·재질 수정</a>
       <div class="pigeon-scene-caption"><span class="pigeon-location-dot" />별짓 관찰실<span class="pigeon-caption-rule" />지금은 비둘기를 만드는 중.</div>
 
       <aside class="pigeon-observation" aria-labelledby="observation-title">
@@ -118,7 +118,7 @@ onBeforeUnmount(() => { alive = false; loadController?.abort(); scene?.dispose()
         <label class="pigeon-roundness">
           <span>몸통 통통함 <strong>{{ roundness }}%</strong></span>
           <input type="range" min="0" max="100" step="1" :value="roundness" :disabled="!ready" aria-label="비둘기 가슴과 배 볼륨" @input="setRoundness" />
-          <small>가슴·배만 풍성하게 · 머리·발은 그대로</small>
+          <small>둥근 몸통 · 짧은 목 · 도톰한 머리</small>
         </label>
         <div class="pigeon-motion-label"><span>동작 관찰</span><span>04 MODES</span></div>
         <div class="pigeon-motion-tabs" aria-label="동작 선택">

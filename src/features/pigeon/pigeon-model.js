@@ -32,7 +32,7 @@ async function loadKenchooModel(signal) {
     author: "kenchoo",
     license: "CC-BY-4.0",
     source: "https://sketchfab.com/3d-models/pigeon-ddd5ef4a94eb4159937a9de25c45697c",
-    attribution: "Pigeon by kenchoo (CC BY 4.0); original glTF imported without modification",
+    attribution: "Pigeon by kenchoo (CC BY 4.0); original glTF with runtime reference-style proportions and plumage",
   };
   const loader = new GLTFLoader();
   // Original .gltf references its .bin and two texture PNGs relatively.
