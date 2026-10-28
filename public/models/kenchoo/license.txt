@@ -1,0 +1,15 @@
+Model Information:
+* title:	Pigeon
+* source:	https://sketchfab.com/3d-models/pigeon-ddd5ef4a94eb4159937a9de25c45697c
+* author:	kenchoo (https://sketchfab.com/kenchoo)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Pigeon" (https://sketchfab.com/3d-models/pigeon-ddd5ef4a94eb4159937a9de25c45697c) by kenchoo (https://sketchfab.com/kenchoo) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+Imported into 별짓 / pigeon on 2026-10-28.
+Original model, textures, rig and animation preserved (no modifications to source files).
+Source GitHub mirror: https://github.com/water-melonie/Dating-Sim/tree/main/assets/models/pigeon
