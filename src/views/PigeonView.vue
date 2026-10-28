@@ -11,6 +11,7 @@ const ready = ref(false);
 const paused = ref(false);
 const kind = ref("normal");
 const motion = ref("idle");
+const roundness = ref(82);
 const requestedView = new URLSearchParams(location.search).get("view");
 const view = ref(["park", "threequarter", "front", "side", "turntable", "pair"].includes(requestedView) ? requestedView : "threequarter");
 const scrub = ref(0);
@@ -46,12 +47,14 @@ async function start() {
     });
     if (!alive || controller.signal.aborted) { created.dispose(); return; }
     scene = created;
+    scene.setRoundness(roundness.value);
     paused.value = false;
   } catch (failure) {
     if (!alive || controller.signal.aborted || failure.name === "AbortError") return;
     error.value = "비둘기 모델 또는 3D 장면을 불러오지 못했습니다. 연결 상태와 브라우저의 그래픽 가속 설정을 확인해 주세요.";
   }
 }
+function setRoundness(event) { roundness.value = Number(event.target.value); scene?.setRoundness(roundness.value); }
 function setMotion(value) { motion.value = value; scrub.value = 0; scene?.setMotion(value); }
 function selectKind(value) { kind.value = value; scene?.selectKind(value); }
 function togglePause() { paused.value = !paused.value; scene?.setPaused(paused.value); }
@@ -112,6 +115,11 @@ onBeforeUnmount(() => { alive = false; loadController?.abort(); scene?.dispose()
             <Check v-if="kind === item.id" :size="15" /><ChevronRight v-else :size="15" />
           </button>
         </div>
+        <label class="pigeon-roundness">
+          <span>몸통 통통함 <strong>{{ roundness }}%</strong></span>
+          <input type="range" min="0" max="100" step="1" :value="roundness" :disabled="!ready" aria-label="비둘기 가슴과 배 볼륨" @input="setRoundness" />
+          <small>가슴·배만 풍성하게 · 머리·발은 그대로</small>
+        </label>
         <div class="pigeon-motion-label"><span>동작 관찰</span><span>04 MODES</span></div>
         <div class="pigeon-motion-tabs" aria-label="동작 선택">
           <button v-for="(label, value) in MOTIONS" :key="value" :aria-pressed="motion === value" :disabled="!ready" @click="setMotion(value)">{{ label }}<ArrowUpRight v-if="motion === value" :size="13" /></button>
