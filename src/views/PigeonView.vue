@@ -14,7 +14,7 @@ const motion = ref("idle");
 const requestedView = new URLSearchParams(location.search).get("view");
 const view = ref(["park", "threequarter", "front", "side", "turntable", "pair"].includes(requestedView) ? requestedView : "threequarter");
 const scrub = ref(0);
-const metrics = ref({ frame: 0, time: 0, height: 0, wingAngle: 0, beakHeight: 0, footZ: 0, phase: "비둘기를 불러오는 중", count: 2 });
+const metrics = ref({ frame: 0, time: 0, height: 0, wingAngle: 0, beakHeight: 0, footZ: 0, phase: "비둘기를 불러오는 중", count: 2, modelSource: "original-v3", modelName: "일반 비둘기 v3" });
 let scene;
 let alive = true;
 let loadController;
@@ -68,7 +68,7 @@ onBeforeUnmount(() => { alive = false; loadController?.abort(); scene?.dispose()
       <RouterLink to="/" class="pigeon-home" aria-label="별짓 홈으로"><ArrowLeft :size="17" /><span>별짓<span class="pigeon-brand-star">✳</span></span></RouterLink>
       <span class="pigeon-top-divider" />
       <span class="pigeon-top-label">쓸모없는 관찰, 두 번째.</span>
-      <span class="pigeon-stage-tag"><i /> 비둘기 우선 · 모델 v3</span>
+      <span class="pigeon-stage-tag"><i /> {{ metrics.modelSource === "open" ? "오픈 라이선스 모델 적용" : "기존 모델 v3" }}</span>
     </header>
 
     <section class="pigeon-world" aria-label="비둘기 모이주기 제작 미리보기">
@@ -92,7 +92,7 @@ onBeforeUnmount(() => { alive = false; loadController?.abort(); scene?.dispose()
       <div class="pigeon-title-block">
         <span class="pigeon-eyebrow">THE COLLECTION / NO. 002</span>
         <h1>비둘기 모이주기<span>비둘기부터, 제대로.</span></h1>
-        <p>{{ view === 'pair' ? '왼쪽 일반 비둘기 · 오른쪽 닭둘기' : '같은 빛 아래에서, 비둘기를 살펴보세요.' }}</p>
+        <p>{{ view === 'pair' ? '왼쪽 일반 비둘기 · 오른쪽 닭둘기' : '선택 모델: ' + (metrics.modelName || "불러오는 중") }}</p>
         <div class="pigeon-view-tabs" aria-label="모델 비교 시점">
           <button v-for="(label, value) in { threequarter: '모델 보기', front: '정면 비교', side: '측면 비교', pair: '크기 비교', turntable: '돌려보기' }" :key="value" :aria-pressed="view === value" :disabled="!ready" @click="setView(value)">{{ label }}</button>
         </div>
