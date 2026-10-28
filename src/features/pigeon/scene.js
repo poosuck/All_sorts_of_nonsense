@@ -165,6 +165,13 @@ export async function createPigeonScene(container, { onMetrics, onError, signal,
     resize();
     clock.frameId = requestAnimationFrame(draw);
     return {
+      setRoundness(value) {
+        for (const bird of birds) {
+          if (!bird.origin.chicken) bird.model.setRoundness?.(value);
+        }
+        dirty = true;
+        lastReport = -1;
+      },
       setMotion(mode) {
         if (!Object.hasOwn(MOTIONS, mode)) return;
         birds[selected].mode = mode;
