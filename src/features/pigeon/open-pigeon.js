@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { clone as cloneSkinned } from "three/addons/utils/SkeletonUtils.js";
+import { enhancePigeonPlumage } from "./feather-material.js";
 
 const CLIP_MATCH = Object.freeze({
   idle: /idle|stand|rest|breath|waiting/i,
@@ -18,6 +19,7 @@ function namedPart(root, pattern) {
 
 export function createOpenPigeon(gltf, metadata = {}) {
   const model = cloneSkinned(gltf.scene);
+  const releasePlumage = /kenchoo/i.test(metadata.name || "") ? enhancePigeonPlumage(model) : () => {};
   const bounds = new THREE.Box3().setFromObject(model);
   if (bounds.isEmpty()) throw new Error("무료 비둘기 GLB에 3D 형상이 없습니다.");
   const dimensions = bounds.getSize(new THREE.Vector3());
@@ -79,6 +81,7 @@ export function createOpenPigeon(gltf, metadata = {}) {
   return {
     root,
     source: "open",
+    dispose() { releasePlumage(); },
     animations: gltf.animations.map((clip) => clip.name),
     pose(motion, seconds = 0, mode = "idle") {
       if (lastMode !== mode) {
