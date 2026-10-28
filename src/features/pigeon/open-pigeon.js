@@ -16,7 +16,7 @@ function namedPart(root, pattern) {
   return match;
 }
 
-export function createOpenPigeon(gltf) {
+export function createOpenPigeon(gltf, metadata = {}) {
   const model = cloneSkinned(gltf.scene);
   const bounds = new THREE.Box3().setFromObject(model);
   if (bounds.isEmpty()) throw new Error("무료 비둘기 GLB에 3D 형상이 없습니다.");
@@ -33,7 +33,13 @@ export function createOpenPigeon(gltf) {
   model.position.set(-center.x * scale, -bounds.min.y * scale, -center.z * scale);
   const root = new THREE.Group();
   root.name = "OpenLicensePigeon";
-  root.add(model);
+  // The uploaded Urban Pigeon faces its local +X axis, whereas the
+  // scene review camera assumes +Z. Rotate the centered model pivot.
+  const orientation = new THREE.Group();
+  orientation.name = "PigeonOrientation";
+  orientation.rotation.y = /urban pigeon/i.test(metadata.name || "") ? -Math.PI / 2 : 0;
+  orientation.add(model);
+  root.add(orientation);
 
   root.traverse((object) => {
     if (object.isMesh) {
