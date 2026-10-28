@@ -32,7 +32,7 @@ export async function createPigeonScene(container, { onMetrics, onError, signal,
     renderer.domElement.setAttribute("aria-label", "비둘기 3D 모델·동작 미리보기");
     renderer.domElement.setAttribute("role", "img");
     container.append(renderer.domElement);
-    const ambient = new THREE.HemisphereLight("#edf3ff", "#b6aa93", .8); scene.add(ambient);
+    const ambient = new THREE.HemisphereLight("#edf3ff", "#b6aa93", .55); scene.add(ambient);
     sun = new THREE.DirectionalLight("#fff0d8", 1.9);
     sun.position.set(-4, 7, 5);
     sun.castShadow = true;
@@ -45,7 +45,7 @@ export async function createPigeonScene(container, { onMetrics, onError, signal,
     const fill = new THREE.DirectionalLight("#dbe7ff", .5); fill.position.set(4, 3, -2); scene.add(fill);
     const pmrem = new THREE.PMREMGenerator(renderer), room = new RoomEnvironment();
     studioLighting = pmrem.fromScene(room, .04); room.dispose(); pmrem.dispose();
-    scene.environment = studioLighting.texture; scene.environmentIntensity = .6;
+    scene.environment = studioLighting.texture; scene.environmentIntensity = .42;
     const environment = new THREE.Group(); scene.add(environment);
     if (view === "park") createPark(environment, pool);
     const studio = new THREE.Mesh(pool.geometry("studio-floor", () => new THREE.PlaneGeometry(100, 100)), pool.material({ color: "#eee6d7", roughness: .95 }));

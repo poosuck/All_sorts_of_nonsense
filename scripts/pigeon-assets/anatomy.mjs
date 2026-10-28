@@ -51,11 +51,11 @@ export function weightsAt(point, kind) {
 export function colorAt(point, kind) {
   const a = ANATOMY[kind];
   const front = THREE.MathUtils.smoothstep(point.z, -.5, .55);
-  const color = new THREE.Color("#7f8794").lerp(new THREE.Color("#c5c1bb"), front * .82);
-  color.lerp(new THREE.Color("#d3cec5"), (1 - THREE.MathUtils.smoothstep(point.y, .3, .75)) * .32);
+  const color = new THREE.Color("#747e90").lerp(new THREE.Color("#b8b6b6"), front * .82);
+  color.lerp(new THREE.Color("#cbc6c2"), (1 - THREE.MathUtils.smoothstep(point.y, .3, .75)) * .32);
   const forward = THREE.MathUtils.smoothstep(point.z, -.08, a.neckZ);
   const neck = THREE.MathUtils.smoothstep(point.y, a.neckY + .02, a.neckY + .17) * (1 - THREE.MathUtils.smoothstep(point.y, a.headY - .03, a.headY + .10)) * forward;
-  const throat = new THREE.Color("#6d3e72").lerp(new THREE.Color("#1f6a5e"), THREE.MathUtils.smoothstep(point.y, a.neckY + .14, a.headY - .04));
+  const throat = new THREE.Color("#744b7e").lerp(new THREE.Color("#286e63"), THREE.MathUtils.smoothstep(point.y, a.neckY + .14, a.headY - .04));
   color.lerp(throat, neck);
   color.lerp(new THREE.Color("#444e60"), THREE.MathUtils.smoothstep(point.y, a.headY - .04, a.headY + .12));
   return color;
@@ -111,7 +111,7 @@ export function softFilaments(bodyGeometry, kind) {
     area += b.sub(a).cross(c.sub(a)).length() * .5; cdf.push(area); areas.push(i);
   }
   const positions = [], normals = [], uvs = [], colors = [], joints = [], weights = [];
-  const tufts = kind === "chicken" ? 3000 : 2100;
+  const tufts = kind === "chicken" ? 1800 : 1200;
   for (let k = 0; k < tufts; k++) {
     const target = random() * area;
     let lo = 0, hi = cdf.length - 1;
@@ -126,10 +126,10 @@ export function softFilaments(bodyGeometry, kind) {
     if (Math.abs(normal.x) > .45 && anchor.z < .30 && anchor.y > .40 && anchor.y < 1.28) continue;
     const growth = new THREE.Vector3(0, -.8, -.35); growth.addScaledVector(normal, -growth.dot(normal)).normalize();
     const across = new THREE.Vector3().crossVectors(growth, normal).normalize();
-    const length = (.008 + random() * .014) * (anchor.y > 1.3 ? .55 : 1);
+    const length = (.004 + random() * .007) * (anchor.y > 1.3 ? .55 : 1);
     for (let strand = 0; strand < 3; strand++) {
       const root = anchor.clone().addScaledVector(across, (strand - 1) * .003).addScaledVector(normal, .001);
-      const tip = root.clone().addScaledVector(growth, length).addScaledVector(normal, .003 + random() * .005);
+      const tip = root.clone().addScaledVector(growth, length).addScaledVector(normal, .001 + random() * .002);
       for (const point of [root.clone().addScaledVector(across, -.0012), root.clone().addScaledVector(across, .0012), tip]) {
         positions.push(...point.toArray()); normals.push(...normal.toArray()); uvs.push(...surfaceUV(point, kind)); colors.push(...colorAt(point, kind).toArray()); joints.push(0, 1, 2, 0); weights.push(...weightsAt(point, kind));
       }

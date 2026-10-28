@@ -19,7 +19,7 @@ try {
   const results = await page.evaluate(() => window.bakePigeons());
   const directory = new URL("../src/assets/pigeon/", import.meta.url);
   await mkdir(directory, { recursive: true });
-  const manifest = { revision: 3, authored: "2026-10-25", provenance: "Original blended-surface pigeon anatomy, skinned soft filaments, layered flight feathers, eyelids and beak. Body albedo generated with OpenAI image_gen; see scripts/pigeon-assets/textures/PROVENANCE.md. No supplied reference image is used as a rendered scene.", files: [], sources: {} };
+  const manifest = { revision: 3, authored: "2026-10-25", provenance: "Original blended-surface pigeon anatomy, skinned soft filaments, layered flight feathers, eyelids and beak. Body albedo and feather relief are deterministic procedural canvas textures; the earlier generated albedo remains archived in scripts/pigeon-assets/textures/. No supplied reference image is used as a rendered scene.", files: [], sources: {} };
   for (const result of results) {
     const filename = `${result.kind}-v3.glb`, buffer = Buffer.from(result.data, "base64");
     await writeFile(new URL(filename, directory), buffer);

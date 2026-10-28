@@ -4,18 +4,38 @@ import { ANATOMY } from "./anatomy.mjs";
 
 export async function createMaterials(kind = "normal") {
   const random = seededRandom(251025);
-  const featherColor = await new THREE.TextureLoader().loadAsync(new URL('./textures/feather-albedo.png', import.meta.url).href);
-  featherColor.colorSpace = THREE.SRGBColorSpace;
-  featherColor.wrapS = featherColor.wrapT = THREE.RepeatWrapping;
-  featherColor.anisotropy = 4;
-  const featherNormal = makeTexture((ctx, w, h) => {
-    ctx.fillStyle = "rgb(128,128,255)"; ctx.fillRect(0, 0, w, h);
-    for (let i = 0; i < 20000; i++) {
-      const x = random() * w, y = random() * h;
-      ctx.strokeStyle = `rgba(${random() > .5 ? '152,118,250' : '110,138,251'},.45)`;
-      ctx.lineWidth = .7; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 1, y + 6); ctx.stroke();
+  // Neutral overlapping vanes keep pigment separate from feather relief.
+  const featherColor = makeTexture((ctx, w, h) => {
+    ctx.fillStyle = '#bfc1c4'; ctx.fillRect(0, 0, w, h);
+    const stepX = 64, stepY = 48;
+    for (let row = -1; row < h / stepY + 1; row++) for (let col = -1; col < w / stepX + 1; col++) {
+      const x = col * stepX + (row % 2) * stepX / 2;
+      const y = row * stepY;
+      const tone = 188 + Math.floor(random() * 15);
+      ctx.fillStyle = `rgb(${tone},${tone + 1},${tone + 3})`;
+      ctx.beginPath(); ctx.moveTo(x - 34, y); ctx.quadraticCurveTo(x - 32, y + 46, x, y + 57);
+      ctx.quadraticCurveTo(x + 32, y + 46, x + 34, y); ctx.fill();
+      ctx.strokeStyle = 'rgba(60,65,75,.13)'; ctx.lineWidth = 1.2; ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = .65;
+      for (let j = -24; j <= 24; j += 4) {
+        ctx.beginPath(); ctx.moveTo(x, y + 6); ctx.lineTo(x + j, y + 43 - Math.abs(j) * .25); ctx.stroke();
+      }
     }
   }, 512, 1024);
+  featherColor.wrapS = featherColor.wrapT = THREE.RepeatWrapping;
+  featherColor.repeat.set(.4, .4);
+  const featherNormal = makeTexture((ctx, w, h) => {
+    ctx.fillStyle = 'rgb(128,128,255)'; ctx.fillRect(0, 0, w, h);
+    for (let row = -1; row < h / 48 + 1; row++) for (let col = -1; col < w / 64 + 1; col++) {
+      const x = col * 64 + (row % 2) * 32, y = row * 48;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgb(128,151,251)';
+      ctx.beginPath(); ctx.moveTo(x - 31, y + 14); ctx.quadraticCurveTo(x - 25, y + 45, x, y + 56);
+      ctx.quadraticCurveTo(x + 25, y + 45, x + 31, y + 14); ctx.stroke();
+    }
+  }, 512, 1024);
+  featherNormal.wrapS = featherNormal.wrapT = THREE.RepeatWrapping;
+  featherNormal.repeat.set(.4, .4);
   featherNormal.colorSpace = THREE.NoColorSpace;
   const anatomy = ANATOMY[kind];
   const sheenMask = makeTexture((ctx, w, h) => {
@@ -59,7 +79,7 @@ export async function createMaterials(kind = "normal") {
     }
   }, 128);
   const materials = {
-    body: new THREE.MeshPhysicalMaterial({ color: '#e4e0da', map: featherColor, vertexColors: true, normalMap: featherNormal, normalScale: new THREE.Vector2(.12, .12), roughness: .9, roughnessMap, sheen: .28, sheenColor: '#c7c3be', sheenRoughness: .9, metalness: .015, iridescence: .62, iridescenceMap: sheenMask, iridescenceIOR: 1.3, iridescenceThicknessRange: [230, 430], side: THREE.DoubleSide }),
+    body: new THREE.MeshPhysicalMaterial({ color: '#ffffff', map: featherColor, vertexColors: true, normalMap: featherNormal, normalScale: new THREE.Vector2(.32, .32), roughness: .9, roughnessMap, sheen: .16, sheenColor: '#c7c3be', sheenRoughness: .9, metalness: 0, iridescence: .85, iridescenceMap: sheenMask, iridescenceIOR: 1.3, iridescenceThicknessRange: [230, 430], side: THREE.DoubleSide }),
     wing: new THREE.MeshPhysicalMaterial({ color: '#ffffff', vertexColors: true, roughness: .9, map: featherColor, sheen: .2, side: THREE.DoubleSide }),
     covert: new THREE.MeshPhysicalMaterial({ color: '#ffffff', vertexColors: true, roughness: .9, map: vane, sheen: .2, side: THREE.DoubleSide }),
     bar: new THREE.MeshPhysicalMaterial({ color: '#414b5c', roughness: .87, map: vane, sheen: .25, side: THREE.DoubleSide }),

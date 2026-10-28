@@ -15,7 +15,7 @@ function featherMatrix(side, position, length, width, openAngle = null) {
   } else {
     matrix.makeBasis(new THREE.Vector3(0, side * Math.cos(openAngle), side * Math.sin(openAngle)), new THREE.Vector3(0, -Math.sin(openAngle), Math.cos(openAngle)), new THREE.Vector3(side, 0, 0));
   }
-  matrix.scale(new THREE.Vector3(width, length, .45)); matrix.setPosition(...position); return matrix;
+  matrix.scale(new THREE.Vector3(width, length, .22)); matrix.setPosition(...position); return matrix;
 }
 function morphGeometry(closed, spread) {
   closed.morphAttributes.position = [spread.attributes.position.clone()];
@@ -29,7 +29,7 @@ function pigment(y, z) {
 
 export function createWings(body, materials, kind) {
   const a = ANATOMY[kind], chicken = kind === "chicken";
-  const feather = featherGeometry(1, .2, .018, 12, 6);
+  const feather = featherGeometry(1, .2, .007, 12, 6);
   for (const side of [-1, 1]) {
     const wing = new THREE.Group(); wing.name = side < 0 ? "Wing_L" : "Wing_R";
     wing.position.set(side * a.wingX, a.wingY, -.08); body.add(wing);
@@ -79,11 +79,11 @@ export function createWings(body, materials, kind) {
       const jitter = Math.sin((row + 1) * 12.989 + col * 7.233);
       const y = .075 - row * .061 + Math.sin(col * .8 + row) * .009 + jitter * .005;
       const z = .25 - col * (chicken ? .074 : .088) - row * .030 + (row % 2) * .028 + jitter * .008;
-      const length = (.155 + row * .018 + jitter * .009) * (chicken ? 1.04 : 1);
+      const length = (.205 + row * .018 + jitter * .018) * (chicken ? 1.04 : 1);
       const material = "covert";
-      const closedMatrix = featherMatrix(side, [0, y, z], length, .29);
-      const openMatrix = featherMatrix(side, [side * (.067 + row * .002), -.19 + row * .060, .16 - col * .094 - row * .028], length, .29, Math.PI / 2);
-      addFeather(material, closedMatrix, openMatrix, .024 + row * .0008 + col * .00015);
+      const closedMatrix = featherMatrix(side, [0, y, z], length, .39);
+      const openMatrix = featherMatrix(side, [side * (.067 + row * .002), -.19 + row * .060, .16 - col * .094 - row * .028], length, .39, Math.PI / 2);
+      addFeather(material, closedMatrix, openMatrix, .032 + row * .0012 + col * .00015);
     }
     // Secondary feathers form a rounded trailing edge, with separate longer primaries.
     for (let i = 0; i < 8; i++) {
