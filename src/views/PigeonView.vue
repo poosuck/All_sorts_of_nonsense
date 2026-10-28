@@ -98,6 +98,7 @@ onBeforeUnmount(() => { alive = false; loadController?.abort(); scene?.dispose()
         </div>
       </div>
 
+      <a v-if="metrics.modelSource === 'open'" class="pigeon-model-credit" href="https://sketchfab.com/3d-models/pigeon-ddd5ef4a94eb4159937a9de25c45697c" target="_blank" rel="noopener noreferrer">3D Pigeon by kenchoo · CC BY 4.0 · 원본 모델 사용</a>
       <div class="pigeon-scene-caption"><span class="pigeon-location-dot" />별짓 관찰실<span class="pigeon-caption-rule" />지금은 비둘기를 만드는 중.</div>
 
       <aside class="pigeon-observation" aria-labelledby="observation-title">
