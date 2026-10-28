@@ -246,6 +246,7 @@ export async function createPigeonScene(container, { onMetrics, onError, signal,
       if (object.isSkinnedMesh) object.skeleton.dispose();
       if (object.isLight && object.shadow) object.shadow.dispose();
     });
+    for (const bird of birds) bird.model.dispose?.();
     scene.clear(); pool.dispose(); assets.dispose();
     studioLighting?.dispose();
     renderer?.dispose();
