@@ -1,3 +1,5 @@
+> 최신 기본 모델의 구조 재구성 및 검수 결과는 [REFERENCE-V4-REVIEW.ko.md](REFERENCE-V4-REVIEW.ko.md)를 참고하세요. 아래는 v4 이전 구현 기록입니다.
+
 # Reference-style pigeon
 
 Based on `feat/pigeon-plump-silhouette-20261028` (`5376796`), preserving the kenchoo model, skeleton, animation, and roundness control. The old master-based render experiment is not included.

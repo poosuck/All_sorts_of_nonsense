@@ -71,7 +71,7 @@ onBeforeUnmount(() => { alive = false; loadController?.abort(); scene?.dispose()
       <RouterLink to="/" class="pigeon-home" aria-label="별짓 홈으로"><ArrowLeft :size="17" /><span>별짓<span class="pigeon-brand-star">✳</span></span></RouterLink>
       <span class="pigeon-top-divider" />
       <span class="pigeon-top-label">쓸모없는 관찰, 두 번째.</span>
-      <span class="pigeon-stage-tag"><i /> {{ metrics.modelSource === "open" ? "오픈 라이선스 모델 적용" : "기존 모델 v3" }}</span>
+      <span class="pigeon-stage-tag"><i /> {{ metrics.modelSource === "reference" ? "모델 디테일 연구 · v4" : metrics.modelSource === "open" ? "오픈 라이선스 모델 적용" : "기존 모델 v3" }}</span>
     </header>
 
     <section class="pigeon-world" aria-label="비둘기 모이주기 제작 미리보기">
@@ -89,7 +89,8 @@ onBeforeUnmount(() => { alive = false; loadController?.abort(); scene?.dispose()
         :data-beak-height="metrics.beakHeight.toFixed(3)"
         :data-foot-z="metrics.footZ.toFixed(3)"
         :data-view="view"
-        data-model-revision="3"
+        :data-model-revision="metrics.revision || 3"
+        :data-model-source="metrics.modelSource"
       />
 
       <div class="pigeon-title-block">

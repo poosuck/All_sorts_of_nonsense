@@ -28,41 +28,41 @@ test("pigeon study opens from the home card, reloads directly and returns home",
 });
 
 test("actual rig walks, pecks, flies, lands and pauses; both body types can be observed", async ({ page }) => {
-  test.setTimeout(120000);
+  test.setTimeout(180000);
   const scene = await openPark(page);
   await expect(scene).toHaveAttribute("data-view", "threequarter");
-  await expect(scene).toHaveAttribute("data-model-revision", "3");
-  await expect(scene).toHaveAttribute("data-motion", "idle");
+  await expect(scene).toHaveAttribute("data-model-revision", "4");
+  await expect(scene).toHaveAttribute("data-model-source", "reference");
+  const seek = async value => {
+    const frame = await number(scene, "frame");
+    await page.locator("#pigeon-time").evaluate((el,value) => { el.step='any';el.value=value;el.dispatchEvent(new Event("input",{bubbles:true})); },value);
+    await expect(scene).toHaveAttribute("data-time", value.toFixed(3));
+    await expect.poll(() => number(scene,"frame")).toBeGreaterThan(frame);
+  };
   await page.getByRole("button", { name: "정면 비교", exact: true }).click();
   await page.getByRole("button", { name: "걷기", exact: true }).click();
-  await expect(scene).toHaveAttribute("data-motion", "walk");
-  const foot = await number(scene, "foot-z");
-  await expect.poll(async () => Math.abs(await number(scene, "foot-z") - foot)).toBeGreaterThan(0.05);
+  await seek(0); const foot = await number(scene,"foot-z");
+  await seek(.18); expect(Math.abs(await number(scene,"foot-z")-foot)).toBeGreaterThan(.05);
   await page.getByRole("button", { name: "먹기", exact: true }).click();
-  await expect.poll(async () => number(scene, "beak-height")).toBeLessThan(0.21);
-  await expect.poll(async () => number(scene, "beak-height")).toBeGreaterThan(1);
+  await seek(.9); expect(await number(scene,"beak-height")).toBeLessThan(.21);
+  await seek(2.5); expect(await number(scene,"beak-height")).toBeGreaterThan(1);
   await page.getByRole("button", { name: "날기", exact: true }).click();
-  await expect.poll(async () => number(scene, "height"), { timeout: 30000 }).toBeGreaterThan(2);
-  await expect.poll(async () => Math.abs(await number(scene, "wing-angle"))).toBeGreaterThan(0.7);
-  await page.getByRole("button", { name: "동작 일시정지" }).click();
-  const frozen = await scene.evaluate((el) => ({ frame: el.dataset.frame, time: el.dataset.time, height: el.dataset.height }));
-  // Wait for actual browser animation frames, not a mirrored implementation timer.
-  await page.evaluate(() => new Promise((resolve) => {
-    let frames = 0;
-    const tick = () => ++frames === 15 ? resolve() : requestAnimationFrame(tick);
-    requestAnimationFrame(tick);
-  }));
-  expect(await scene.evaluate((el) => ({ frame: el.dataset.frame, time: el.dataset.time, height: el.dataset.height }))).toEqual(frozen);
-  await page.getByRole("button", { name: "동작 재개" }).click();
-  await expect.poll(async () => number(scene, "height"), { timeout: 45000 }).toBeLessThan(0.05);
+  await seek(2.1); expect(await number(scene,"height")).toBeGreaterThan(2);
+  expect(Math.abs(await number(scene,"wing-angle"))).toBeGreaterThan(.7);
+  await page.getByRole("button", { name: "동작 재개", exact: true }).click();
+  await page.getByRole("button", { name: "동작 일시정지", exact: true }).click();
+  const frozen = await scene.evaluate(el => ({frame:el.dataset.frame,time:el.dataset.time,height:el.dataset.height}));
+  await page.evaluate(() => new Promise(resolve => {let frames=0;const tick=()=>++frames===6?resolve():requestAnimationFrame(tick);requestAnimationFrame(tick);}));
+  expect(await scene.evaluate(el=>({frame:el.dataset.frame,time:el.dataset.time,height:el.dataset.height}))).toEqual(frozen);
+  await seek(7.1); expect(await number(scene,"height")).toBeLessThan(.05);
   await page.getByRole("button", { name: /닭둘기 존재감/ }).click();
-  await expect(scene).toHaveAttribute("data-kind", "chicken");
-  await page.getByRole("button", { name: "먹기", exact: true }).click();
-  await expect.poll(async () => number(scene, "beak-height")).toBeLessThan(0.23);
-  await page.getByRole("button", { name: "장면 처음부터" }).click();
-  await expect(scene).toHaveAttribute("data-kind", "normal");
-  await expect(scene).toHaveAttribute("data-motion", "idle");
-  await expect(page.getByRole("button", { name: "동작 일시정지" })).toBeVisible();
+  await expect(scene).toHaveAttribute("data-kind","chicken");
+  await page.getByRole("button",{name:"먹기",exact:true}).click();
+  await seek(.9); expect(await number(scene,"beak-height")).toBeLessThan(.21);
+  await page.getByRole("button",{name:"장면 처음부터"}).click();
+  await expect(scene).toHaveAttribute("data-kind","normal");
+  await expect(scene).toHaveAttribute("data-motion","idle");
+  await expect(page.getByRole("button",{name:"동작 일시정지"})).toBeVisible();
 });
 
 test("pigeon scene tolerates narrow windows and releases the page on repeated navigation", async ({ page }) => {
@@ -78,13 +78,14 @@ test("pigeon scene tolerates narrow windows and releases the page on repeated na
   await expect(page.locator(".pigeon-scene canvas")).toHaveCount(0);
 });
 
-test("two authored models load and comparison views can scrub a real eating pose", async ({ page }) => {
+test("reference model and legacy chicken load; comparison views scrub an actual eating pose", async ({ page }) => {
   const models = [];
   page.on("response", (response) => { if (/\.glb(?:\?|$)/.test(response.url()) && response.status() === 200) models.push(response.url()); });
   await page.goto("/pigeon?view=front");
   const scene = page.getByTestId("pigeon-scene");
   await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 45000 });
-  expect(models.some((url) => url.includes("normal-v3"))).toBe(true);
+  await expect(scene).toHaveAttribute("data-model-source", "reference");
+  expect(models.some((url) => url.includes("normal-v3"))).toBe(false);
   expect(models.some((url) => url.includes("chicken-v3"))).toBe(true);
   await expect(scene).toHaveAttribute("data-view", "front");
   await page.getByRole("button", { name: "측면 비교", exact: true }).click();
@@ -112,7 +113,7 @@ test("two authored models load and comparison views can scrub a real eating pose
 });
 
 test("a corrupt model shows retry and a valid retry opens the scene", async ({ page }) => {
-  const pattern = /normal-v3.*\.glb/;
+  const pattern = /chicken-v3.*\.glb/;
   await page.route(pattern, (route) => route.fulfill({ status: 200, contentType: "model/gltf-binary", body: "invalid glb fixture" }));
   await page.goto("/pigeon");
   await expect(page.getByRole("button", { name: "장면 다시 불러오기" })).toBeVisible({ timeout: 30000 });

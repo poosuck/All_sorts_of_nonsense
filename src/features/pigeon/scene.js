@@ -19,6 +19,7 @@ export async function createPigeonScene(container, { onMetrics, onError, signal,
   let disposed = false, frame = 0, time = 0, lastTime = 0, lastReport = -1;
   let paused = false, contextLost = false, selected = 0;
   let view = initialView, dirty = true;
+  const reviewCamera = new URLSearchParams(location.search).get("pigeon-camera");
   const camera = new THREE.PerspectiveCamera(39, 1, 0.1, 100);
   const clock = { frameId: 0 };
   const observer = new ResizeObserver(resize);
@@ -143,10 +144,10 @@ export async function createPigeonScene(container, { onMetrics, onError, signal,
     function report() {
       const active = birds[selected];
       onMetrics?.({
-        ready: true, frame, time, paused: paused || document.hidden, view, revision: 3,
+        ready: true, frame, time, paused: paused || document.hidden, view, revision: active.model.source === "reference" ? 4 : 3,
         kind: active.origin.chicken ? "chicken" : "normal", mode: active.mode,
-        modelSource: !active.origin.chicken && assets.externalSource ? "open" : "original-v3",
-        modelName: !active.origin.chicken && assets.externalSource ? assets.externalSource.name : active.origin.chicken ? "닭둘기 v3" : "일반 비둘기 v3",
+        modelSource: active.model.source || "original-v3",
+        modelName: active.model.name || (active.origin.chicken ? "닭둘기 v3" : "일반 비둘기 v3"),
         clipTime: Math.max(0, time - active.startTime),
         phase: active.phase, count: birds.length,
         ...active.model.inspect(),
@@ -236,6 +237,8 @@ export async function createPigeonScene(container, { onMetrics, onError, signal,
       const distance = flying ? (paired ? 11.5 : 9.8) : paired ? 7.4 : selected === 1 ? 5.0 : 4.5;
       camera.position.set(0, flying ? 3.4 : 1.45, distance + extra);
       camera.lookAt(0, flying ? 2.45 : .77, 0);
+      if(reviewCamera === "top") { camera.position.set(2.1,4.6,2.7);camera.lookAt(0,.65,0); }
+      if(reviewCamera === "back") { camera.position.set(0,1.65,-4.5);camera.lookAt(0,.75,0); }
       Object.assign(sun.shadow.camera, { left: -4, right: 4, top: 6, bottom: -4 });
       sun.shadow.camera.updateProjectionMatrix();
     } else {
