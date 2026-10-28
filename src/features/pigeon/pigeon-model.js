@@ -75,7 +75,7 @@ export async function loadPigeonAssets(signal) {
   return {
     externalSource: open?.metadata || null,
     create(chicken = false) {
-      if (!chicken && open) return createOpenPigeon(open.gltf);
+      if (!chicken && open) return createOpenPigeon(open.gltf, open.metadata);
       const root = clone(models[chicken ? "chicken" : "normal"].scene);
       root.traverse((object) => {
         if (object.isMesh) {
