@@ -1,0 +1,14 @@
+{
+  "blender": "4.0.2",
+  "upstream_commit": "122fb547d8294cb35de49bef54e2af023279a9b5",
+  "reference_image_file": "not present; chat reference only",
+  "wing": {
+    "status": "not executed: upstream targets Blender 5.2; adoption deferred",
+    "reason": "This read-only job executes only the project's own export probe."
+  },
+  "core": {
+    "mesh_skin_animation_export": true,
+    "reimport": true,
+    "status": "passed"
+  }
+}
