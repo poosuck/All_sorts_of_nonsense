@@ -403,9 +403,6 @@ main:focus {
 .pudding-card:hover .pudding-art {
   animation: card-wiggle 0.5s ease both;
 }
-.pigeon-card:hover .pigeon-art {
-  animation: pigeon-nod 0.5s ease both;
-}
 .card-art {
   height: 305px;
   position: relative;
@@ -416,6 +413,13 @@ main:focus {
 }
 .pigeon-card-art {
   background: #e9eeea;
+  display: grid;
+  place-items: center;
+}
+.pigeon-card-placeholder {
+  font-size: 22px;
+  letter-spacing: -0.04em;
+  color: #737e74;
 }
 .card-index {
   position: absolute;
@@ -511,25 +515,6 @@ main:focus {
 .pudding-card:hover .card-arrow {
   background: var(--lime);
   border-color: var(--lime);
-}
-.pigeon-art {
-  position: absolute;
-  width: 310px;
-  height: 230px;
-  left: calc(50% - 155px);
-  top: 50px;
-  transform-origin: 50% 90%;
-}
-.pigeon-thought {
-  position: absolute;
-  right: 38px;
-  top: 72px;
-  font-size: 11px;
-  border: 1px solid #cbd5c9;
-  padding: 12px 14px;
-  border-radius: 50%;
-  transform: rotate(7deg);
-  background: #f3f6ef;
 }
 .coming-icon {
   font-size: 25px;
@@ -637,18 +622,6 @@ main:focus {
     transform: rotate(-10deg) scale(0.97, 1.04);
   }
 }
-@keyframes pigeon-nod {
-  0%,
-  100% {
-    transform: rotate(0);
-  }
-  40% {
-    transform: rotate(5deg);
-  }
-  70% {
-    transform: rotate(-3deg);
-  }
-}
 
 @media (min-width: 1450px) {
   .home-hero {
@@ -682,12 +655,6 @@ main:focus {
   }
   .card-plate {
     top: 228px;
-  }
-  .pigeon-art {
-    top: 63px;
-    width: 330px;
-    height: 247px;
-    left: calc(50% - 165px);
   }
 }
 @media (max-width: 1050px) {
@@ -746,9 +713,6 @@ main:focus {
   .hero-asterisk {
     font-size: 32px;
     left: 5px;
-  }
-  .pigeon-thought {
-    right: 20px;
   }
   .site-footer {
     padding: 25px 32px;
@@ -899,18 +863,6 @@ main:focus {
     top: 166px;
     height: 56px;
   }
-  .pigeon-art {
-    width: 244px;
-    height: 193px;
-    left: calc(50% - 122px);
-    top: 42px;
-  }
-  .pigeon-thought {
-    font-size: 9px;
-    right: 18px;
-    top: 63px;
-    padding: 8px;
-  }
   .card-art-note {
     left: 17px;
     bottom: 16px;
@@ -1005,16 +957,6 @@ main:focus {
   }
   .card-info {
     min-height: 139px;
-  }
-  .pigeon-art {
-    width: 285px;
-    height: 215px;
-    left: calc(50% - 142px);
-    top: 47px;
-  }
-  .pigeon-thought {
-    right: 32px;
-    top: 70px;
   }
   .card-info h3 {
     font-size: 25px;

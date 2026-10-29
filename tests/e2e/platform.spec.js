@@ -46,7 +46,7 @@ test("home, content preview, independent route, reload and home return", async (
   await expect(
     page.getByRole("heading", { name: /할 일은 없고/ }),
   ).toBeVisible();
-  await expect(page.locator(".pigeon-card")).toContainText("제작 중 · 미리보기");
+  await expect(page.locator(".pigeon-card")).toContainText("새로 준비 중");
   await expect(page.locator(".pigeon-card")).toHaveAttribute("href", "/pigeon");
   await page.getByRole("link", { name: "말랑 푸딩 시작하기" }).click();
   await expect(page).toHaveURL("/pudding");
