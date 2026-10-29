@@ -1,5 +1,5 @@
 {
-  "revision": "clay-v4",
+  "revision": "clay-v5",
   "stage": "anatomy-blockout",
   "reference": "R01",
   "reference_file_available": false,
@@ -7,16 +7,16 @@
   "authoring": "art/pigeon/pigeon.blend",
   "blender": "4.3.2",
   "geometry_source": "original profile loft; no legacy pigeon model",
-  "glb_sha256": "3f35adabd9457b010c183551151abedff2fe91427fff4b9efa5132c8f8faa4c2",
-  "blend_sha256": "cd5b720defd528b915d71dbfdeb4c6d5e6bf3226add33962d130a12cd04bd694",
-  "profiles_sha256": "6f5f2542165683a2db44f39e69e4bb0d5ae70851bf4396ff30193302789a5959",
-  "glb_bytes": 924272,
-  "triangles": 51172,
+  "glb_sha256": "6b99dba5e162d1567c2f26aabb65355d0ec9d52f763c3bdda1da39012ba0fb44",
+  "blend_sha256": "5de06f7249015ad40321238f20eceb58fb87184e3495cd4a501602c647c93b9a",
+  "profiles_sha256": "844727056da1b9123926e8a6fad50d063456fe369c88a9d2350db6e3d449356c",
+  "glb_bytes": 985664,
+  "triangles": 54580,
   "mesh_count": 29,
   "bounds_blender": {
     "min": [
       -0.3499942719936371,
-      -0.4020000100135803,
+      -0.38760000467300415,
       0.0022540870122611523
     ],
     "max": [
@@ -26,7 +26,7 @@
     ],
     "height": 0.9977459129877388,
     "width_over_height": 0.7015699436855285,
-    "length_over_height": 1.1746477491754923
+    "length_over_height": 1.1602152116395021
   },
   "views": {
     "front": 0,

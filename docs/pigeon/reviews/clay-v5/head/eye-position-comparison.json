@@ -1,0 +1,30 @@
+{
+  "baseline_revision": "clay-v4",
+  "revision": "clay-v5",
+  "baseline": {
+    "Eye_globe_Left": [
+      0.12260954082012177,
+      0.8661577105522156,
+      0.27146169543266296
+    ],
+    "Eye_globe_Right": [
+      -0.12260954082012177,
+      0.8661577105522156,
+      0.27146169543266296
+    ]
+  },
+  "current": {
+    "Eye_globe_Left": [
+      0.07313314080238342,
+      0.8814951777458191,
+      0.26673394441604614
+    ],
+    "Eye_globe_Right": [
+      -0.07313314080238342,
+      0.8814951777458191,
+      0.26673394441604614
+    ]
+  },
+  "measurement_note": "exported model object positions in glTF coordinates; not measurements of R01",
+  "glb_sha256": "6b99dba5e162d1567c2f26aabb65355d0ec9d52f763c3bdda1da39012ba0fb44"
+}

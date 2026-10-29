@@ -1,4 +1,4 @@
-# R01 체형 제작 기준 · clay-v4
+# R01 체형 제작 기준 · clay-v5
 
 현재 구간은 명세서 1~3단계의 체형 초안입니다. 깃털 층·최종 색·7종 자세는 후속 구간입니다.
 
@@ -20,9 +20,11 @@ blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-s
 blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/build.py
 ```
 
-생성 결과: art/pigeon/pigeon.blend, src/assets/pigeon/pigeon.glb와 manifest.json, docs/pigeon/reviews/clay-v4의 8방향 캡처와 생성 기록입니다. 과거 clay-v1~v3 캡처는 비교를 위해 보존합니다.
+생성 결과: art/pigeon/pigeon.blend, src/assets/pigeon/pigeon.glb와 manifest.json, docs/pigeon/reviews/clay-v5의 8방향 캡처와 생성 기록입니다. 과거 clay-v1~v4 캡처는 비교를 위해 보존합니다.
 
 clay-v3에서 몸통의 가슴·배 곡률과 날개·꼬리 기본 부피를 수정했습니다. clay-v4에서는 두상에 집중해 별도 머리 단면과 국소적인 볼·턱·안와 변형을 추가했습니다. 눈은 수정한 머리 표면의 법선에 맞춰 묻고 얇은 눈꺼풀로 연결합니다. 위·아래 부리는 좁은 틈으로 맞물리게 조형하고, 납막은 두 낮은 융기가 이어지는 하나의 부피로 만듭니다. 조명과 카메라는 기존 설정을 유지합니다.
+
+clay-v5에서는 v4의 구형 두상이 목표의 좁은 이마·가까운 눈·아래로 넓어지는 목과 다르다는 대조 결과를 우선했습니다. 머리 단면과 얼굴 면을 바꿔 눈 간격을 좁히고, 목의 잘록함을 줄였습니다. 부리는 정면에서 가늘고 길게 읽히도록 조정하고 납막은 두 둥근 융기를 하나로 합쳐 구성했습니다. 정면과 함께 좌측45°·측면·후면45°·후면을 검토합니다.
 
 진행 기준은 **몸통 → 머리·목 → 날개 기본 부피 → 엉덩이·꼬리 → 다리·발**입니다. 정면·측면·후면을 먼저 대조하고 45° 시점에서 연결을 확인합니다. 기술 검사가 통과해도 체형 검토가 끝나기 전에는 깃털·색·광택·자세 제작으로 넘어가지 않습니다. 본체·날개·꼬리 단면과 두상 매개변수는 profiles.json, 국소 조형·안구·눈꺼풀과 발 구성은 build.py에서 수정합니다.
 

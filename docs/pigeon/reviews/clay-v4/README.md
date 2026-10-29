@@ -2,6 +2,8 @@
 
 2026-10-29 작성. [clay-v3 두상 대조](../clay-v3/head/README.md)를 바탕으로 눈·안와, 이마·뒤통수, 볼·턱, 부리·납막을 수정했습니다. 목표는 R01의 입체 외형이며 현재도 체형 검토 단계입니다.
 
+과거 v4 기록입니다. 이후 정면 대조에서 머리 폭·눈 간격·목 연결이 목표와 크게 다름을 확인했습니다. 이 핵심 비율을 재작업한 [clay-v5](../clay-v5/README.md)를 별도로 보관합니다. 아래 검사 통과는 해당 비율의 적합성을 검증한 결과가 아닙니다.
+
 ## 실제 두상 전후 비교
 
 ![위 v3 / 아래 v4 · 정면, 45°, 측면](head/head-before-after.png)
@@ -33,8 +35,8 @@
 
 ## 변경 범위와 산출물
 
-- [Blender 원본](../../../../art/pigeon/pigeon.blend) · [GLB](../../../../src/assets/pigeon/pigeon.glb) · [두상 매개변수](../../../../art/pigeon/profiles.json)
-- [모델 생성 기록](model-report.json) · [원본·프로필·배포 해시](../../../../src/assets/pigeon/manifest.json)
+- [당시 Blender 원본](https://github.com/poosuck/All_sorts_of_nonsense/blob/8da66f41c37ae1bf8b50b9273034608d9017a613/art/pigeon/pigeon.blend) · [GLB](https://github.com/poosuck/All_sorts_of_nonsense/blob/8da66f41c37ae1bf8b50b9273034608d9017a613/src/assets/pigeon/pigeon.glb) · [두상 매개변수](https://github.com/poosuck/All_sorts_of_nonsense/blob/8da66f41c37ae1bf8b50b9273034608d9017a613/art/pigeon/profiles.json)
+- [모델 생성 기록](model-report.json) · [당시 원본·프로필·배포 해시](https://github.com/poosuck/All_sorts_of_nonsense/blob/8da66f41c37ae1bf8b50b9273034608d9017a613/src/assets/pigeon/manifest.json)
 - GLB 924,272 bytes, 삼각형 51,172개, 메시 29개. Blender 4.3.2에서 생성했습니다.
 - [변경 범위 대조](head-scope-audit.json): v3 원본 커밋 `6ecb56aca770ed68574e4e61aefa7fb7398a548a`와 비교해 H≤0.70의 몸통 정점 5,840개, 날개·꼬리·다리·발 메시 19개의 위치가 동일합니다. 이 기록은 정점 위치 비교이며 모든 메시 속성의 바이트 일치를 뜻하지 않습니다.
 

@@ -130,8 +130,14 @@ def body_values(z):
     return [a*(1-blend)+b*blend for a,b in zip(original,revised)]
 def anatomy_point(theta,z):
     rx,front,back=body_values(z)
-    point=Vector((rx*math.sin(theta),(front+back)/2-(back-front)/2*math.cos(theta),z))
-    if z<=.74:return point
+    def ease(t):
+        t=max(0,min(1,t));return t*t*t*(10-15*t+6*t*t)
+    # Rounded facial planes let the eyes sit nearer the frontal centreline
+    # while retaining depth toward the side of the skull.
+    plane=head.get("facePlaneStrength",0)*ease((z-.70)/.17)
+    s,c=math.sin(theta),math.cos(theta)
+    point=Vector((rx*s*(1-plane*c*c),(front+back)/2-(back-front)/2*c*(1-plane*s*s),z))
+    if z<=.70:return point
     def bump(angle,height,aw,zw):
         delta=math.atan2(math.sin(theta-angle),math.cos(theta-angle))
         return math.exp(-.5*((delta/aw)**2+((z-height)/zw)**2))
@@ -142,7 +148,7 @@ def anatomy_point(theta,z):
         offset-=sculpt["socketDepth"]*bump(sign*eye_angle,head["eye"]["height"],.19,.022)
         offset+=.003*bump(sign*eye_angle,.896,.25,.015)
     offset+=sculpt["jawAmplitude"]*bump(0,.792,.55,.026)
-    return point+Vector((math.sin(theta),-math.cos(theta),0))*offset
+    return point+Vector((math.sin(theta),-math.cos(theta),0))*offset*ease((z-.70)/.075)
 verts,faces = [],[]
 rows,segments = 120,80
 for j in range(rows):
@@ -263,7 +269,7 @@ for side,label in [(1,"Left"),(-1,"Right")]:
     ellipsoid("Pupil_landmark_"+label,center+normal*.0115,(.011,.011,.0015),pupil_mat,normal)
     vv,ff=[],[]
     for j in range(5):
-        t=j/4;r=.024+.009*t
+        t=j/4;r=.024+.006*t
         for k in range(64):
             a=2*math.pi*k/64
             p=anatomy_point(angle+r*math.cos(a)/du.length,z+r*.95*math.sin(a))
@@ -291,20 +297,21 @@ for part in ["Upper","Lower"]:
             ff.append((a,b,b+sides_b,a+sides_b))
     ff.extend([tuple(reversed(range(sides_b))),tuple((rows_b-1)*sides_b+k for k in range(sides_b))])
     mesh_object("Beak_"+part,vv,ff,beak_mat)
-# One bridge with two low soft lobes integrated into the bill root.
-vv,ff=[],[]
-for j in range(32):
-    y,width,zc,height=smooth_values(head["cereSections"],j/31)
-    for k in range(40):
-        a=2*math.pi*k/40;s=math.sin(a);x=width*math.cos(a)
-        lobes=math.exp(-((x-.014)/.010)**2)+math.exp(-((x+.014)/.010)**2)-.3*math.exp(-(x/.009)**2)
-        vv.append((x,y,zc+height*s+.002*max(0,s)**2*lobes))
-for j in range(31):
-    for k in range(40):
-        a=j*40+k;b=j*40+(k+1)%40
-        ff.append((a,b,b+40,a+40))
-ff.extend([tuple(reversed(range(40))),tuple(31*40+k for k in range(40))])
-mesh_object("Cere_integrated_bridge",vv,ff,cere_mat)
+# Fuse two rounded cushions and their buried bridge into one continuous mound.
+lobes=[ellipsoid("Cere_source_"+str(i),p["center"],p["scale"],cere_mat) for i,p in enumerate(head["cereLobes"])]
+bpy.ops.object.select_all(action="DESELECT")
+for obj in lobes:obj.select_set(True)
+bpy.context.view_layer.objects.active=lobes[-1]
+bpy.ops.object.join()
+cere=bpy.context.object;cere.name="Cere_integrated_bridge"
+bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+modifier=cere.modifiers.new("Soft union of cere cushions","REMESH")
+modifier.mode="VOXEL";modifier.voxel_size=head["cereVoxelSize"]
+bpy.ops.object.modifier_apply(modifier=modifier.name)
+modifier=cere.modifiers.new("Rounded cere transition","SMOOTH")
+modifier.factor=.6;modifier.iterations=3
+bpy.ops.object.modifier_apply(modifier=modifier.name)
+for polygon in cere.data.polygons:polygon.use_smooth=True
 def tube(name,points,radii,mat=foot_mat):
     points=[Vector(p) for p in points]
     if len(points)==3:
@@ -399,7 +406,8 @@ def position_camera(degrees):
 bpy.context.preferences.filepaths.save_version=0
 position_camera(45)
 bpy.ops.wm.save_as_mainfile(filepath=str(ART/"pigeon.blend"),compress=True)
-for name,degrees in zip(views,CFG["camera"]["azimuths"]):
+model_only=os.environ.get("PIGEON_MODEL_ONLY")=="1"
+for name,degrees in ([] if model_only else zip(views,CFG["camera"]["azimuths"])):
     position_camera(degrees)
     scene.render.filepath=str(REVIEW/("blender-"+name+".png"))
     bpy.ops.render.render(write_still=True)
@@ -421,15 +429,15 @@ manifest={
 from PIL import Image, ImageDraw
 sheet=Image.new("RGB",(960,544),(239,238,234))
 draw=ImageDraw.Draw(sheet)
-for index,name in enumerate(views):
+for index,name in enumerate([] if model_only else views):
     thumb=Image.open(REVIEW/("blender-"+name+".png")).resize((240,240))
     x=(index%4)*240; y=(index//4)*272
     sheet.paste(thumb,(x,y))
     draw.text((x+12,y+246),name,fill=(50,50,48))
-sheet.save(REVIEW/"blender-eight-views.png")
+if not model_only:sheet.save(REVIEW/"blender-eight-views.png")
 # Read-only CI uploads artifacts. These bounded, generated file records also permit
 # retrieving the model without granting a workflow repository write permissions.
-if os.environ.get("PIGEON_EXPORT_BUNDLE") == "1":
+if os.environ.get("PIGEON_EXPORT_BUNDLE") == "1" and not model_only:
     bundle_paths=[ART/"pigeon.blend",ASSETS/"pigeon.glb",ASSETS/"manifest.json",REVIEW/"model-report.json",REVIEW/"blender-eight-views.png"]+list(REVIEW.glob("blender-*.png"))
     seen=set()
     budget=1_500_000

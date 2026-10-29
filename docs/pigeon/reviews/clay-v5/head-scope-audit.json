@@ -1,0 +1,30 @@
+{
+  "glb_sha256": "6b99dba5e162d1567c2f26aabb65355d0ec9d52f763c3bdda1da39012ba0fb44",
+  "baseline_commit": "8da66f41c37ae1bf8b50b9273034608d9017a613",
+  "revision": "clay-v5",
+  "torso_below_height": 0.7,
+  "torso_vertices_compared": 5840,
+  "torso_positions_identical": true,
+  "preserved_meshes": [
+    "Back_toe_Left",
+    "Back_toe_Right",
+    "Claw_Left_1",
+    "Claw_Left_2",
+    "Claw_Left_3",
+    "Claw_Right_1",
+    "Claw_Right_2",
+    "Claw_Right_3",
+    "Folded_wing_volume_Left",
+    "Folded_wing_volume_Right",
+    "Front_toe_Left_1",
+    "Front_toe_Left_2",
+    "Front_toe_Left_3",
+    "Front_toe_Right_1",
+    "Front_toe_Right_2",
+    "Front_toe_Right_3",
+    "Tail_anatomical_envelope",
+    "Tarsus_Left",
+    "Tarsus_Right"
+  ],
+  "preserved_mesh_count": 19
+}
