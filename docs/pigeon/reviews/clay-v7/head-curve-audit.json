@@ -1,0 +1,52 @@
+{
+  "revision": "clay-v7",
+  "global_face_plane_removed": true,
+  "finite_difference_step": 1e-06,
+  "joins": [
+    {
+      "height": 0.86,
+      "left_slope": [
+        -0.01537218261016271,
+        -0.009662589561809654,
+        -0.1620288405529413
+      ],
+      "right_slope": [
+        -0.015372039613437138,
+        -0.00966628005416581,
+        -0.16203238635548178
+      ],
+      "maximum_slope_jump": 3.690492356156483e-06
+    },
+    {
+      "height": 0.9,
+      "left_slope": [
+        -0.29934895551253504,
+        0.3280548973028097,
+        -0.27270655503230934
+      ],
+      "right_slope": [
+        -0.2993592443378823,
+        0.32805306737770934,
+        -0.2727147571102151
+      ],
+      "maximum_slope_jump": 1.0288825347259944e-05
+    },
+    {
+      "height": 0.94,
+      "left_slope": [
+        -0.6928928346083829,
+        0.61865431660868,
+        -0.61865431660868
+      ],
+      "right_slope": [
+        -0.6929061976551631,
+        0.6186662478979699,
+        -0.6186662479118477
+      ],
+      "maximum_slope_jump": 1.336304678023481e-05
+    }
+  ],
+  "note": "Numerical section continuity check; not a visual shape acceptance test",
+  "glb_sha256": "8901a9494e312fd6467f0c9992589e05436ac683045170f9e60dfc1cf1e6264f",
+  "profiles_sha256": "9cf6079d6e08c9e4b5d22c7d346fdcd20b43d6b2e630b41a9ec5f2e9b4579dfc"
+}

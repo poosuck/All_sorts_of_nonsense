@@ -1,8 +1,8 @@
 # 비둘기 새 모델 제작
 
-[제작·웹 렌더링 명세서 v1.0](MODEL-SPEC.ko.md)에 따라 무채색 체형을 제작 중입니다. 현재 clay-v6는 전신 대조 후 몸통의 앞뒤 부피와 어깨·접힌 날개·꼬리 연결을 재구성한 모델입니다. 체형 검토 전까지 깃털·최종 재질·7종 자세 제작은 보류합니다.
+[제작·웹 렌더링 명세서 v1.0](MODEL-SPEC.ko.md)에 따라 무채색 체형을 제작 중입니다. 현재 clay-v7는 각진 두상의 원인이던 전역 면 변형을 제거하고 정수리와 머리를 연속 곡면으로 연결한 모델입니다. 체형 검토 전까지 깃털·최종 재질·7종 자세 제작은 보류합니다.
 
-- [최신 전신 전후 비교·8방향 검증 기록](reviews/clay-v6/README.md)
+- [최신 두상 전후 비교·8방향 검증 기록](reviews/clay-v7/README.md)
 - [clay-v3 체형 기록](reviews/clay-v3/README.md)
 - [clay-v2 체형 기록](reviews/clay-v2/README.md)
 - [첫 체형 초안 기록](reviews/clay-v1/README.md)

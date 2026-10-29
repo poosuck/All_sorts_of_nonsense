@@ -122,21 +122,23 @@ def body_values(z):
     original=body_base_values(z)
     if z<=.70:return original
     cap=head["cap"]
-    if z>=cap["startZ"]:
+    revised=cubic_values(head["sections"],z)
+    if z>cap["blendStartZ"]:
         f=math.sqrt(max(.000001,1-((z-cap["centerZ"])/cap["radiusZ"])**2))
-        revised=[max(.0001,cap["radiusX"]*f),cap["centerY"]-cap["frontRadius"]*f,cap["centerY"]+cap["backRadius"]*f]
-    else:revised=cubic_values(head["sections"],z)
+        crown=[max(.0001,cap["radiusX"]*f),cap["centerY"]-cap["frontRadius"]*f,cap["centerY"]+cap["backRadius"]*f]
+        t=max(0,min(1,(z-cap["blendStartZ"])/(cap["blendEndZ"]-cap["blendStartZ"])))
+        blend=t*t*t*(10-15*t+6*t*t)
+        revised=[a*(1-blend)+b*blend for a,b in zip(revised,crown)]
     t=max(0,min(1,(z-.70)/.07));blend=t*t*t*(10-15*t+6*t*t)
     return [a*(1-blend)+b*blend for a,b in zip(original,revised)]
 def anatomy_point(theta,z):
     rx,front,back=body_values(z)
     def ease(t):
         t=max(0,min(1,t));return t*t*t*(10-15*t+6*t*t)
-    # Rounded facial planes let the eyes sit nearer the frontal centreline
-    # while retaining depth toward the side of the skull.
-    plane=head.get("facePlaneStrength",0)*ease((z-.70)/.17)
+    # Elliptical skull sections remain round; only the local eye/cheek/jaw
+    # sculpt below changes the surface. No global facial-plane deformation.
     s,c=math.sin(theta),math.cos(theta)
-    point=Vector((rx*s*(1-plane*c*c),(front+back)/2-(back-front)/2*c*(1-plane*s*s),z))
+    point=Vector((rx*s,(front+back)/2-(back-front)/2*c,z))
     if z<=.70:return point
     def bump(angle,height,aw,zw):
         delta=math.atan2(math.sin(theta-angle),math.cos(theta-angle))
@@ -146,7 +148,7 @@ def anatomy_point(theta,z):
     for sign in [-1,1]:
         offset+=sculpt["cheekAmplitude"]*bump(sign*(eye_angle+.15),.817,.34,.030)
         offset-=sculpt["socketDepth"]*bump(sign*eye_angle,head["eye"]["height"],.19,.022)
-        offset+=.003*bump(sign*eye_angle,.896,.25,.015)
+        offset+=.0015*bump(sign*eye_angle,.896,.25,.015)
     offset+=sculpt["jawAmplitude"]*bump(0,.792,.55,.026)
     return point+Vector((math.sin(theta),-math.cos(theta),0))*offset*ease((z-.70)/.075)
 verts,faces = [],[]

@@ -2,6 +2,8 @@
 
 2026-10-29. v5 전신 대조에서 드러난 둥근 몸통, 작은 판형 날개, 길게 노출된 꼬리와 후면의 V자 끝부분을 재작업했습니다. 기준은 사용자가 제공한 R01의 정면·45°·측면·후면45°·후면입니다.
 
+과거 v6 기록입니다. 두상의 각진 면을 제거한 [clay-v7 결과](../clay-v7/README.md)를 별도로 보관합니다.
+
 ## 같은 카메라의 전후
 
 ![위 v5 / 아래 v6 · 5방향](five-view-before-after.png)
@@ -37,8 +39,8 @@
 
 ## 원본과 검증
 
-- [Blender 원본](../../../../art/pigeon/pigeon.blend) · [GLB](../../../../src/assets/pigeon/pigeon.glb) · [제작 매개변수](../../../../art/pigeon/profiles.json)
-- [모델 생성·해시 기록](model-report.json) · [원본/프로필/GLB 버전](../../../../src/assets/pigeon/manifest.json)
+- [당시 Blender 원본](https://github.com/poosuck/All_sorts_of_nonsense/blob/3b0873a463a48196fc70c2e85bbacb7ad9772340/art/pigeon/pigeon.blend) · [GLB](https://github.com/poosuck/All_sorts_of_nonsense/blob/3b0873a463a48196fc70c2e85bbacb7ad9772340/src/assets/pigeon/pigeon.glb) · [제작 매개변수](https://github.com/poosuck/All_sorts_of_nonsense/blob/3b0873a463a48196fc70c2e85bbacb7ad9772340/art/pigeon/profiles.json)
+- [모델 생성·해시 기록](model-report.json) · [당시 원본/프로필/GLB 버전](https://github.com/poosuck/All_sorts_of_nonsense/blob/3b0873a463a48196fc70c2e85bbacb7ad9772340/src/assets/pigeon/manifest.json)
 - Blender 원본과 GLB를 같은 자체 소스에서 생성했습니다. 원본 몸통과 날개 형상을 웹에서 별도 메시로 대체하지 않습니다.
 - [웹 검증·실제 8방향 캡처 경로](web-report.json)
 - 프로덕션 빌드·단위 검사 13건·기존 푸딩 원본 일치 검사·비둘기 E2E 4건 통과. 웹 캡처는 동일 GLB 요청 1회, 페이지 예외 0건입니다.
