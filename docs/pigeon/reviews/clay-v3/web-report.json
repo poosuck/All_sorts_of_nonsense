@@ -1,0 +1,55 @@
+{
+  "run": null,
+  "commit": null,
+  "revision": "clay-v3",
+  "glb_sha256": "e3af61181c76412fe3df03dd6e2f58b7e4a07aeac5cad537477cd5205dabdc81",
+  "renderer": "Chromium / Three.js / same GLB",
+  "tests": 4,
+  "passed": true,
+  "requests": [
+    "http://127.0.0.1:4175/assets/pigeon-CdW_gxKP.glb"
+  ],
+  "captures": [
+    {
+      "view": "front",
+      "path": "docs/pigeon/reviews/clay-v3/web-front.png",
+      "bytes": 48124
+    },
+    {
+      "view": "left45",
+      "path": "docs/pigeon/reviews/clay-v3/web-left45.png",
+      "bytes": 50575
+    },
+    {
+      "view": "left",
+      "path": "docs/pigeon/reviews/clay-v3/web-left.png",
+      "bytes": 54666
+    },
+    {
+      "view": "back-left45",
+      "path": "docs/pigeon/reviews/clay-v3/web-back-left45.png",
+      "bytes": 56353
+    },
+    {
+      "view": "back",
+      "path": "docs/pigeon/reviews/clay-v3/web-back.png",
+      "bytes": 53331
+    },
+    {
+      "view": "back-right45",
+      "path": "docs/pigeon/reviews/clay-v3/web-back-right45.png",
+      "bytes": 53811
+    },
+    {
+      "view": "right",
+      "path": "docs/pigeon/reviews/clay-v3/web-right.png",
+      "bytes": 55804
+    },
+    {
+      "view": "right45",
+      "path": "docs/pigeon/reviews/clay-v3/web-right45.png",
+      "bytes": 54247
+    }
+  ],
+  "errors": []
+}

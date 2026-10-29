@@ -47,7 +47,7 @@ onBeforeUnmount(() => { alive = false; controller?.abort(); study?.dispose(); })
     <header class="study-header">
       <RouterLink to="/" class="study-home" aria-label="별짓 홈으로">← <b>별짓<span>✳</span></b></RouterLink>
       <span class="study-header-note">쓸모없는 관찰, 두 번째.</span>
-      <span class="study-stage">체형 초안</span>
+      <span class="study-stage">체형 검토<span v-if="ready"> · {{ state.revision }}</span></span>
     </header>
     <div class="study-layout">
       <section class="study-model" aria-labelledby="pigeon-heading">
@@ -73,7 +73,7 @@ onBeforeUnmount(() => { alive = false; controller?.abort(); study?.dispose(); })
         <div class="study-note"><b>지금은 체형을 만드는 중입니다.</b><p>무채색으로 몸통·목·머리의 연결과 날개 위치를 확인합니다. 깃털과 색, 동작은 다음 단계에서 추가합니다.</p></div>
       </aside>
     </div>
-    <footer class="study-footer"><span>서 있는 비둘기, 첫 번째 형태.</span><span>작은 차이를 관찰합니다.</span></footer>
+    <footer class="study-footer"><span>서 있는 비둘기, 체형 연구.</span><span>작은 차이를 관찰합니다.</span></footer>
   </div>
 </template>
 

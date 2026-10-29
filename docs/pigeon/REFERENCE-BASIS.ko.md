@@ -1,4 +1,4 @@
-# R01 체형 제작 기준 · clay-v2
+# R01 체형 제작 기준 · clay-v3
 
 현재 구간은 명세서 1~3단계의 체형 초안입니다. 깃털 층·최종 색·7종 자세는 후속 구간입니다.
 
@@ -20,9 +20,11 @@ blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-s
 blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/build.py
 ```
 
-생성 결과: art/pigeon/pigeon.blend, src/assets/pigeon/pigeon.glb와 manifest.json, docs/pigeon/reviews/clay-v2의 8방향 캡처와 생성 기록입니다. 과거 clay-v1 캡처는 비교를 위해 보존합니다.
+생성 결과: art/pigeon/pigeon.blend, src/assets/pigeon/pigeon.glb와 manifest.json, docs/pigeon/reviews/clay-v3의 8방향 캡처와 생성 기록입니다. 과거 clay-v1·v2 캡처는 비교를 위해 보존합니다.
 
-clay-v2에서는 가슴·어깨·목 뿌리의 부피를 늘리고 하복부를 줄였으며, 정수리를 둥글게 하고 얼굴 표식을 얇게 다듬었습니다. 날개 외피는 앞뒤 단면으로 다시 구성하고 후면 몸통·날개·꼬리의 연결을 조정했습니다. 발가락은 짧고 두껍게 바꿨습니다. 조명과 카메라는 기존 설정을 유지해 비교합니다.
+clay-v3는 체형이 우선입니다. 중간 폭이 일정한 몸통을 가슴에서 배로 좁아지는 곡면으로 바꾸고, 턱 아래와 목에서 가슴으로 이어지는 굴곡을 조정했습니다. 본체 단면은 곡률이 연속인 보간으로 연결하며 정수리는 둥근 타원체 면으로 마감합니다. 날개 뿌리는 본체에 더 묻고 꼬리는 개별 깃 대신 넓고 납작한 기본 부피로 검토합니다. 조명과 카메라는 기존 설정을 유지합니다.
+
+진행 기준은 **몸통 → 머리·목 → 날개 기본 부피 → 엉덩이·꼬리 → 다리·발**입니다. 정면·측면·후면을 먼저 대조하고 45° 시점에서 연결을 확인합니다. 기술 검사가 통과해도 체형 검토가 끝나기 전에는 깃털·색·광택·자세 제작으로 넘어가지 않습니다. 정수리 형상 계수와 발 위치는 build.py, 본체·날개·꼬리 단면은 profiles.json에서 수정합니다.
 
 웹 검증과 8방향 캡처는 빌드 후 실행합니다. 시스템 Chromium을 사용한다면 다음과 같이 경로를 지정합니다.
 

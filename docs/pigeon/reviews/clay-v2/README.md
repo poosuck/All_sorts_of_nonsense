@@ -2,6 +2,8 @@
 
 2026-10-29 작성. 이전 체형 자가점검을 반영한 **무채색 체형 수정본**입니다. 목표 시트와 최종 외형이 일치한다는 판정은 아닙니다.
 
+과거 clay-v2 기록입니다. 최신 모델은 [clay-v3](../clay-v3/README.md)입니다. 아래 해시는 당시 v2 자산에만 적용합니다.
+
 ## 전후 비교
 
 ![위 clay-v1 / 아래 clay-v2 · 정면, 측면, 후면](web-before-after.png)
@@ -25,12 +27,12 @@
 
 ## 원본과 배포 자산
 
-- [Blender 원본](../../../../art/pigeon/pigeon.blend)과 [GLB](../../../../src/assets/pigeon/pigeon.glb)는 같은 자체 제작 소스에서 생성했습니다.
+- 당시 [Blender 원본](https://github.com/poosuck/All_sorts_of_nonsense/blob/74dcfefe524112ac2e559c9ba9be327f06837940/art/pigeon/pigeon.blend)과 [GLB](https://github.com/poosuck/All_sorts_of_nonsense/blob/74dcfefe524112ac2e559c9ba9be327f06837940/src/assets/pigeon/pigeon.glb)는 같은 자체 제작 소스에서 생성했습니다.
 - Blender 4.3.2, GLB 632,844 bytes, 삼각형 34,052개, 메시 37개.
 - GLB SHA-256: `65150991e1117c8187267e147c5f939a5f838d5cb5247c6a721a9a55816387b8`
 - Blender SHA-256: `ef51f8782583b6bd04ec71f13a9924246c41825650fc22869fa5eecb011bf96b`
 - 모델 실제 폭/H 0.693, 길이/H 1.063. **참고 이미지의 실측값이 아닙니다.**
-- [모델 생성 기록](model-report.json) · [원본·프로필·배포 해시](../../../../src/assets/pigeon/manifest.json)
+- [모델 생성 기록](model-report.json) · [당시 원본·프로필·배포 해시](https://github.com/poosuck/All_sorts_of_nonsense/blob/74dcfefe524112ac2e559c9ba9be327f06837940/src/assets/pigeon/manifest.json)
 - [이전 clay-v1 기록](../clay-v1/README.md)은 별도로 보존했습니다.
 
 ## 검증 결과

@@ -9,6 +9,7 @@ import os
 from mathutils import Vector
 from pathlib import Path
 import struct
+from functools import lru_cache
 
 ROOT = Path(__file__).resolve().parents[2]
 CFG = json.loads((ROOT / "art/pigeon/profiles.json").read_text())
@@ -87,11 +88,38 @@ def smooth_values(points, at):
         out.append((2*t**3-3*t**2+1)*a+(t**3-2*t**2+t)*h*tangent(i)+(-2*t**3+3*t**2)*b+(t**3-t**2)*h*tangent(i+1))
     return out
 sections = CFG["bodySections"]
+@lru_cache(maxsize=None)
+def body_second_derivatives():
+    # Natural cubic sections provide continuous curvature. PCHIP's second
+    # derivative jumps were visible as horizontal bands across the torso.
+    import numpy as np
+    points=np.array(sections,dtype=float)
+    h=np.diff(points[:,0]); count=len(points)
+    system=np.eye(count); rhs=np.zeros((count,3))
+    for i in range(1,count-1):
+        system[i,i-1]=h[i-1]
+        system[i,i]=2*(h[i-1]+h[i])
+        system[i,i+1]=h[i]
+        rhs[i]=6*((points[i+1,1:]-points[i,1:])/h[i]-(points[i,1:]-points[i-1,1:])/h[i-1])
+    return np.linalg.solve(system,rhs)
+def body_values(z):
+    z=max(sections[0][0],min(z,sections[-1][0]))
+    if z>=0.900:
+        # An ellipsoidal crown closes with the right curvature at the pole;
+        # a finite-slope radius interpolant leaves a flat/stepped-looking cap.
+        cap=math.sqrt(max(0.000001,1-((z-0.86)/0.14)**2))
+        return max(0.0001,0.16*cap),-0.18-0.155*cap,-0.18+0.155*cap
+    i=next((i for i in range(len(sections)-1) if sections[i][0]<=z<=sections[i+1][0]),len(sections)-2)
+    h=sections[i+1][0]-sections[i][0]
+    a=(sections[i+1][0]-z)/h; b=(z-sections[i][0])/h
+    second=body_second_derivatives()
+    return [a*sections[i][c+1]+b*sections[i+1][c+1]+((a*a*a-a)*second[i,c]+(b*b*b-b)*second[i+1,c])*h*h/6 for c in range(3)]
 verts,faces = [],[]
-rows,segments = 90,64
+rows,segments = 120,80
 for j in range(rows):
-    z = sections[0][0]+(sections[-1][0]-sections[0][0])*j/(rows-1)
-    rx,front,back = smooth_values(sections,z)
+    u=(1-math.cos(math.pi*j/(rows-1)))/2
+    z = sections[0][0]+(sections[-1][0]-sections[0][0])*u
+    rx,front,back = body_values(z)
     for i in range(segments):
         theta = 2*math.pi*i/segments
         verts.append((rx*math.sin(theta),(front+back)/2-(back-front)/2*math.cos(theta),z))
@@ -101,19 +129,12 @@ for j in range(rows-1):
         faces.append((j*segments+i,j*segments+ni,(j+1)*segments+ni,(j+1)*segments+i))
 faces.extend([tuple(reversed(range(segments))),tuple((rows-1)*segments+i for i in range(segments))])
 body = mesh_object("Body_neck_head_continuous",verts,faces)
-body["construction"] = "height sections + shape-preserving loft; editable parameters in profiles.json"
+body["construction"] = "C2 continuous anatomical section loft; editable parameters in profiles.json"
 def body_side(y,z):
-    rx,front,back = smooth_values(sections,max(sections[0][0],min(z,1)))
+    rx,front,back = body_values(z)
     ry = (back-front)/2
     d = (y-(front+back)/2)/max(0.001,ry)
-    return rx*math.sqrt(max(0.018,1-d*d))
-def closed_spline(points, t):
-    count = len(points)
-    u = (t%1)*count
-    i = int(u)
-    f = u-i
-    a,b,c,d = [Vector(points[k%count]) for k in [i-1,i,i+1,i+2]]
-    return 0.5*((2*b)+(-a+c)*f+(2*a-5*b+4*c-d)*f*f+(-a+3*b-3*c+d)*f*f*f)
+    return rx*math.sqrt(max(0,1-d*d))
 # Longitudinal closed wing volumes: no radial disk or clamped rear fin.
 for side,label in [(1,"Left"),(-1,"Right")]:
     vv,ff=[],[]
@@ -122,7 +143,7 @@ for side,label in [(1,"Left"),(-1,"Right")]:
     for j in range(rows_w):
         y=wing[0][0]+(wing[-1][0]-wing[0][0])*j/(rows_w-1)
         xc,zc,hz,thickness=smooth_values(wing,y)
-        t=max(0,min(1,(y-0.10)/0.34))
+        t=max(0,min(1,(y-0.14)/0.32))
         blend=t*t*(3-2*t)
         rear_t=max(0,min(1,(y-0.30)/0.16))
         rear_fold=rear_t*rear_t*(3-2*rear_t)
@@ -130,10 +151,21 @@ for side,label in [(1,"Left"),(-1,"Right")]:
             a=2*math.pi*i/sides_w
             z=zc+hz*math.cos(a)
             base=body_side(y,z)*(1-blend)+xc*blend
-            # Rear flight envelope slopes inward at its upper edge, rather
-            # than standing as a vertical fin or disappearing inside the rump.
-            x=base-xc*0.8*rear_fold*math.cos(a)+0.0015+thickness*math.sin(a)
-            vv.append((side*x,y,z))
+            # The folded flight envelope runs from the high/lateral shoulder
+            # toward the low/medial tips. The reverse slope made a clamshell.
+            root_embed=0.012*(1-blend)
+            x=base+xc*0.65*rear_fold*math.cos(a)-root_embed+thickness*math.sin(a)
+            # The high edge anchors to the torso's rear surface, while the
+            # lower edge continues aft as the folded flight envelope. Keeping
+            # both at the same Y produced a free-standing collar around rump.
+            attach_t=max(0,min(1,(y-0.20)/0.16))
+            free_t=max(0,min(1,(y-0.45)/0.19))
+            anchor=attach_t*attach_t*(3-2*attach_t)*(1-free_t*free_t*(3-2*free_t))
+            rx,y_front,y_back=body_values(z)
+            rear_surface=(y_front+y_back)/2+(y_back-y_front)/2*math.sqrt(max(0,1-(x/max(rx,0.001))**2))
+            pull=max(0,y-rear_surface+0.006)*anchor*(1+math.cos(a))/2
+            # A small fixed overlap prevents two coplanar tips meeting as a lid.
+            vv.append((side*x,y-pull+side*0.004*blend,z))
     for j in range(rows_w-1):
         for i in range(sides_w):
             a=j*sides_w+i;b=j*sides_w+(i+1)%sides_w
@@ -162,9 +194,23 @@ def blade(name,start,end,width,mat=clay):
             ff.append((a,b,b+sides,a+sides))
     ff.extend([tuple(reversed(range(sides))),tuple(steps*sides+i for i in range(sides))])
     return mesh_object(name,vv,ff,mat)
-for i in range(10):
-    t=(i-4.5)/4.5
-    blade("Tail_block_"+str(i+1),(0.022*t,0.265,0.290),(0.095*t,0.66-0.050*abs(t),0.205+0.006*abs(t)),0.022)
+# First establish the tail's broad, flat volume along the rump axis. Individual
+# feather ends would hide silhouette errors at this stage, so they are deferred.
+vv,ff=[],[]
+tail=CFG["tailSections"]
+rows_t,sides_t=64,40
+for j in range(rows_t):
+    y=tail[0][0]+(tail[-1][0]-tail[0][0])*j/(rows_t-1)
+    width,zc,thick=smooth_values(tail,y)
+    for k in range(sides_t):
+        a=2*math.pi*k/sides_t
+        vv.append((width*math.cos(a),y,zc+thick*math.sin(a)))
+for j in range(rows_t-1):
+    for k in range(sides_t):
+        a=j*sides_t+k;b=j*sides_t+(k+1)%sides_t
+        ff.append((a,b,b+sides_t,a+sides_t))
+ff.extend([tuple(reversed(range(sides_t))),tuple((rows_t-1)*sides_t+k for k in range(sides_t))])
+mesh_object("Tail_anatomical_envelope",vv,ff)
 def ellipsoid(name,center,scale,mat=clay,normal=None):
     bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=16, location=center)
     obj=move_to_bird(bpy.context.object)
@@ -177,7 +223,7 @@ def ellipsoid(name,center,scale,mat=clay,normal=None):
     return obj
 # Small facial landmarks allow judging head/beak proportions in the clay study.
 for side,label in [(1,"Left"),(-1,"Right")]:
-    center=Vector((side*0.104,-0.292,0.862))
+    center=Vector((side*0.110,-0.301,0.868))
     normal=Vector((side*0.78,-0.62,0.045)).normalized()
     ellipsoid("Eye_landmark_"+label,center,(0.023,0.023,0.007),eye_mat,normal)
     ellipsoid("Pupil_landmark_"+label,center+normal*0.006,(0.010,0.010,0.002),pupil_mat,normal)
@@ -219,12 +265,12 @@ def tube(name,points,radii,mat=foot_mat):
     ff.extend([tuple(reversed(range(sides))),tuple((len(points)-1)*sides+i for i in range(sides))])
     return mesh_object(name,vv,ff,mat)
 for side,label in [(1,"Left"),(-1,"Right")]:
-    x=side*0.125
-    tube("Tarsus_"+label,[(x,0.005,0.160),(x,-0.025,0.085),(x,-0.060,0.034)],[0.027,0.024,0.021])
-    for j,(dx,ey) in enumerate([(-0.047,-0.162),(0,-0.190),(0.047,-0.163)]):
-        tube("Front_toe_"+label+"_"+str(j+1),[(x,-0.060,0.034),(x+dx*0.45,-0.115,0.023),(x+dx,ey,0.013)],[0.017,0.014,0.008])
-        tube("Claw_"+label+"_"+str(j+1),[(x+dx,ey,0.013),(x+dx*1.04,ey-0.017,0.007),(x+dx*1.06,ey-0.024,0.002)],[0.006,0.004,0.001],beak_mat)
-    tube("Back_toe_"+label,[(x,-0.060,0.034),(x-0.016*side,-0.008,0.023),(x-0.028*side,0.025,0.012)],[0.013,0.01,0.004])
+    x=side*0.130
+    tube("Tarsus_"+label,[(x,0.060,0.195),(x,0.035,0.095),(x,0.015,0.040)],[0.028,0.025,0.023])
+    for j,(dx,ey) in enumerate([(-0.060,-0.140),(0,-0.170),(0.060,-0.142)]):
+        tube("Front_toe_"+label+"_"+str(j+1),[(x,-0.005,0.034),(x+dx*0.55,-0.070,0.026),(x+dx,ey,0.014)],[0.019,0.016,0.009])
+        tube("Claw_"+label+"_"+str(j+1),[(x+dx,ey,0.014),(x+dx*1.04,ey-0.012,0.008),(x+dx*1.06,ey-0.018,0.003)],[0.006,0.004,0.001],beak_mat)
+    tube("Back_toe_"+label,[(x,0.015,0.034),(x-0.018*side,0.065,0.027),(x-0.035*side,0.105,0.014)],[0.016,0.013,0.006])
 # Metrics from the actual authoring geometry.
 bpy.context.view_layer.update()
 mesh_objects=[o for o in bird.objects if o.type=="MESH"]
