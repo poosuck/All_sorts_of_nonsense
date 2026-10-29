@@ -1,0 +1,34 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+const root = new URL("../../", import.meta.url);
+const read = path => readFile(new URL(path, root));
+test("the shipped GLB is the recorded Blender anatomy model", async () => {
+  const [bytes, text] = await Promise.all([read("src/assets/pigeon/pigeon.glb"), read("src/assets/pigeon/manifest.json")]);
+  const manifest = JSON.parse(text);
+  assert.equal(bytes.readUInt32LE(0), 0x46546c67);
+  assert.equal(bytes.readUInt32LE(4), 2);
+  assert.equal(bytes.readUInt32LE(8), bytes.length);
+  assert.equal(createHash("sha256").update(bytes).digest("hex"), manifest.glb_sha256);
+  const size = bytes.readUInt32LE(12);
+  const gltf = JSON.parse(bytes.subarray(20, 20+size).toString());
+  const model = gltf.nodes.find(node => node.name === "Pigeon_R01_Clay_v1");
+  assert.ok(model);
+  assert.equal(model.extras.revision, "clay-v1");
+  assert.equal(manifest.stage, "anatomy-blockout");
+  assert.deepEqual(manifest.poses, ["stand"]);
+  assert.equal(Object.keys(manifest.views).length, 8);
+  assert.ok(manifest.triangles > 1000 && manifest.triangles < 150000);
+  assert.ok(manifest.bounds_blender.width_over_height > 0.6 && manifest.bounds_blender.width_over_height < 0.85);
+  assert.ok(manifest.bounds_blender.length_over_height > 0.9 && manifest.bounds_blender.length_over_height < 1.4);
+  assert.ok(!gltf.nodes.some(node => /chicken|kenchoo|normal-v[23]/i.test(node.name || "")));
+});
+test("the editable original and profile measurements match the asset manifest", async () => {
+  const manifest = JSON.parse(await read("src/assets/pigeon/manifest.json"));
+  const [blend, profiles] = await Promise.all([read("art/pigeon/pigeon.blend"), read("art/pigeon/profiles.json")]);
+  assert.equal(createHash("sha256").update(blend).digest("hex"), manifest.blend_sha256);
+  assert.equal(createHash("sha256").update(profiles).digest("hex"), manifest.profiles_sha256);
+  assert.equal(manifest.reference_file_available, false);
+  assert.match(manifest.reference_measurements, /estimates/);
+});

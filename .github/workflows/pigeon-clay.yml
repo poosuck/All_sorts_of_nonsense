@@ -29,7 +29,21 @@ jobs:
       - name: Probe model tools
         run: blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/probe_tools.py
       - name: Build new clay anatomy and eight views
+        env:
+          PIGEON_EXPORT_BUNDLE: "1"
         run: blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/build.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Validate application
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          npm test
+          npm run source:check
+          npx playwright install --with-deps chromium
+          node scripts/pigeon-stage1/verify.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: pigeon-clay-model

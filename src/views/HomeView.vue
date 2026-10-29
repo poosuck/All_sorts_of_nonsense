@@ -76,15 +76,15 @@ import PuddingArt from "../components/PuddingArt.vue";
         >
           <div class="card-art pigeon-card-art">
             <span class="card-index">NO. 002</span
-            ><span class="card-badge soon-badge">새로 준비 중</span>
-            <span class="pigeon-card-placeholder">새로 준비 중</span>
-            <span class="card-art-note">비둘기부터, 다시 차근차근.</span>
+            ><span class="card-badge soon-badge">체형 연구</span>
+            <span class="pigeon-card-placeholder">체형 연구</span>
+            <span class="card-art-note">여덟 방향에서 관찰하는 첫 번째 형태.</span>
           </div>
           <div class="card-info">
             <div>
               <span class="card-category">도심 힐링 · 조류 교감</span>
               <h3 id="pigeon-title">비둘기 모이주기</h3>
-              <p>비둘기를 처음부터 다시 만들고 있어요.</p>
+              <p>체형 초안을 여러 방향에서 살펴보세요.</p>
             </div>
             <span class="card-arrow">↗</span>
           </div>

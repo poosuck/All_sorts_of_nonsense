@@ -5,6 +5,7 @@ import bmesh
 import hashlib
 import json
 import math
+import os
 from mathutils import Vector
 from pathlib import Path
 import struct
@@ -41,7 +42,7 @@ def material(name, color, roughness=0.78):
     shader.inputs["Base Color"].default_value = (*color, 1)
     shader.inputs["Roughness"].default_value = roughness
     return mat
-clay = material("Clay plumage - anatomy only", (0.62,0.60,0.57))
+clay = material("Clay plumage - anatomy only", (0.46,0.47,0.48))
 foot_mat = material("Clay feet", (0.46,0.44,0.42))
 beak_mat = material("Clay beak", (0.32,0.31,0.30))
 cere_mat = material("Clay cere", (0.76,0.74,0.71))
@@ -174,15 +175,15 @@ def ellipsoid(name,center,scale,mat=clay,normal=None):
     return obj
 # Small facial landmarks allow judging head/beak proportions in the clay study.
 for side,label in [(1,"Left"),(-1,"Right")]:
-    center=Vector((side*0.111,-0.289,0.862))
+    center=Vector((side*0.122,-0.301,0.862))
     normal=Vector((side*0.78,-0.62,0.045)).normalized()
     ellipsoid("Eye_landmark_"+label,center,(0.026,0.026,0.014),eye_mat,normal)
     ellipsoid("Pupil_landmark_"+label,center+normal*0.012,(0.011,0.011,0.003),pupil_mat,normal)
-    ellipsoid("Cere_landmark_"+label,(side*0.016,-0.338,0.817),(0.020,0.026,0.013),cere_mat)
+    ellipsoid("Cere_landmark_"+label,(side*0.016,-0.349,0.817),(0.020,0.026,0.013),cere_mat)
 # Variable-section bill. Its upper and lower halves remain separate for later articulation.
 for part,offset,scale_z in [("Upper",0.003,1.0),("Lower",-0.012,0.48)]:
     vv,ff=[],[]
-    bill=[(-0.315,0.805,0.037,0.022),(-0.346,0.800,0.032,0.022),(-0.383,0.784,0.018,0.014),(-0.419,0.761,0.0015,0.002)]
+    bill=[(-0.327,0.805,0.037,0.022),(-0.346,0.800,0.032,0.022),(-0.383,0.784,0.018,0.014),(-0.419,0.761,0.0015,0.002)]
     for y,z,rx,rz in bill:
         for k in range(16):
             a=2*math.pi*k/16
@@ -213,9 +214,9 @@ def tube(name,points,radii,mat=foot_mat):
     return mesh_object(name,vv,ff,mat)
 for side,label in [(1,"Left"),(-1,"Right")]:
     x=side*0.135
-    tube("Tarsus_"+label,[(x,0.005,0.205),(x,-0.052,0.119),(x,-0.102,0.047)],[0.025,0.021,0.019])
-    for j,(dx,ey) in enumerate([(-0.057,-0.222),(0,-0.266),(0.058,-0.223)]):
-        tube("Front_toe_"+label+"_"+str(j+1),[(x,-0.102,0.046),(x+dx*0.45,-0.165,0.025),(x+dx,ey,0.013)],[0.014,0.012,0.006])
+    tube("Tarsus_"+label,[(x,0.005,0.185),(x,-0.040,0.103),(x,-0.075,0.038)],[0.025,0.021,0.019])
+    for j,(dx,ey) in enumerate([(-0.052,-0.178),(0,-0.208),(0.052,-0.179)]):
+        tube("Front_toe_"+label+"_"+str(j+1),[(x,-0.075,0.038),(x+dx*0.45,-0.130,0.025),(x+dx,ey,0.013)],[0.014,0.012,0.006])
         tube("Claw_"+label+"_"+str(j+1),[(x+dx,ey,0.013),(x+dx*1.04,ey-0.017,0.007),(x+dx*1.06,ey-0.024,0.002)],[0.006,0.004,0.001],beak_mat)
     tube("Back_toe_"+label,[(x,-0.082,0.043),(x-0.019*side,-0.017,0.023),(x-0.034*side,0.045,0.012)],[0.013,0.01,0.004])
 # Metrics from the actual authoring geometry.
@@ -239,7 +240,7 @@ triangles=sum(accessors[p["indices"]]["count"]//3 for m in gltf["meshes"] for p 
 # Simple fixed studio for a reproducible Blender comparison.
 scene.render.engine="CYCLES"
 scene.cycles.device="CPU"
-scene.cycles.samples=24
+scene.cycles.samples=48
 scene.cycles.use_denoising=False
 scene.cycles.max_bounces=4
 scene.render.resolution_x=480
@@ -248,10 +249,10 @@ scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 scene.render.image_settings.color_mode="RGB"
 scene.render.film_transparent=False
-scene.view_settings.view_transform="AgX"
+scene.view_settings.view_transform="Standard"
 scene.world.use_nodes=True
 scene.world.node_tree.nodes.get("Background").inputs[0].default_value=(0.82,0.82,0.82,1)
-scene.world.node_tree.nodes.get("Background").inputs[1].default_value=0.65
+scene.world.node_tree.nodes.get("Background").inputs[1].default_value=0.8
 floor_mat=material("Studio floor",(0.87,0.86,0.84),0.90)
 bpy.ops.mesh.primitive_plane_add(size=200,location=(0,0,-0.004))
 floor=bpy.context.object
@@ -266,7 +267,7 @@ def area(name,location,power,size):
     scene.collection.objects.link(obj)
     obj.location=location
     obj.rotation_euler=(Vector((0,0,0.5))-obj.location).to_track_quat("-Z","Y").to_euler()
-area("Studio key",(-3,-4,5),350,4)
+area("Studio key",(-3,-4,5),600,4)
 area("Studio fill",(4,2,3),200,3)
 camera_data=bpy.data.cameras.new("Eight_views_fixed_camera")
 camera_data.type="ORTHO"
@@ -312,20 +313,21 @@ for index,name in enumerate(views):
 sheet.save(REVIEW/"blender-eight-views.png")
 # Read-only CI uploads artifacts. These bounded, generated file records also permit
 # retrieving the model without granting a workflow repository write permissions.
-bundle_paths=[ART/"pigeon.blend",ASSETS/"pigeon.glb",ASSETS/"manifest.json",REVIEW/"model-report.json",REVIEW/"blender-eight-views.png"]+list(REVIEW.glob("blender-*.png"))
-seen=set()
-budget=2_000_000
-for path in bundle_paths:
-    if path in seen: continue
-    seen.add(path)
-    content=path.read_bytes()
-    if len(content)>budget:
-        print("PIGEON_ARTIFACT_ONLY "+str(path.relative_to(ROOT)),flush=True)
-        continue
-    budget-=len(content)
-    encoded=base64.b64encode(content).decode()
-    pieces=[encoded[i:i+16000] for i in range(0,len(encoded),16000)]
-    print("PIGEON_FILE_HEADER "+json.dumps({"path":str(path.relative_to(ROOT)),"sha256":hashlib.sha256(content).hexdigest(),"parts":len(pieces),"bytes":len(content)}),flush=True)
-    for i,piece in enumerate(pieces):
-        print("PIGEON_FILE_CHUNK "+json.dumps({"path":str(path.relative_to(ROOT)),"index":i,"data":piece}),flush=True)
+if os.environ.get("PIGEON_EXPORT_BUNDLE") == "1":
+    bundle_paths=[ART/"pigeon.blend",ASSETS/"pigeon.glb",ASSETS/"manifest.json",REVIEW/"model-report.json",REVIEW/"blender-eight-views.png"]+list(REVIEW.glob("blender-*.png"))
+    seen=set()
+    budget=1_500_000
+    for path in bundle_paths:
+        if path in seen: continue
+        seen.add(path)
+        content=path.read_bytes()
+        if len(content)>budget:
+            print("PIGEON_ARTIFACT_ONLY "+str(path.relative_to(ROOT)),flush=True)
+            continue
+        budget-=len(content)
+        encoded=base64.b64encode(content).decode()
+        pieces=[encoded[i:i+16000] for i in range(0,len(encoded),16000)]
+        print("PIGEON_FILE_HEADER "+json.dumps({"path":str(path.relative_to(ROOT)),"sha256":hashlib.sha256(content).hexdigest(),"parts":len(pieces),"bytes":len(content)}),flush=True)
+        for i,piece in enumerate(pieces):
+            print("PIGEON_FILE_CHUNK "+json.dumps({"path":str(path.relative_to(ROOT)),"index":i,"data":piece}),flush=True)
 print("PIGEON_MODEL_REPORT "+json.dumps(manifest,ensure_ascii=False),flush=True)

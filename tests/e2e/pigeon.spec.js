@@ -1,33 +1,67 @@
 import { test, expect } from "@playwright/test";
-
-test("pigeon restarts without loading a renderer or model assets", async ({ page }) => {
-  const errors = [];
-  const renderingRequests = [];
-  page.on("pageerror", (error) => errors.push(error.message));
-  page.on("request", (request) => {
-    if (/\.(glb|gltf|bin)(?:\?|$)|\/features\/pigeon\/|\/models\/kenchoo\//.test(request.url())) {
-      renderingRequests.push(request.url());
-    }
-  });
-  await page.goto("/");
-  await page.getByRole("link", { name: "비둘기 모이주기", exact: true }).click();
-  await expect(page).toHaveURL("/pigeon");
-  await expect(page.getByRole("heading", { name: "비둘기 모이주기" })).toBeVisible();
-  await expect(page.getByText("처음부터 다시 준비합니다.")).toBeVisible();
-  await expect(page.locator("canvas")).toHaveCount(0);
-  // Old bookmarked views must also open the reset page.
-  await page.goto("/pigeon?view=pair&pigeon-review=flow");
-  await page.reload();
-  await expect(page.getByText("처음부터 다시 준비합니다.")).toBeVisible();
-  await expect(page.locator("canvas")).toHaveCount(0);
-  await page.getByRole("link", { name: "별짓 홈으로" }).click();
+const views = [
+  ["정면", "front"], ["좌측 45°", "left45"], ["좌측면", "left"], ["후면 좌측 45°", "back-left45"],
+  ["후면", "back"], ["후면 우측 45°", "back-right45"], ["우측면", "right"], ["우측 45°", "right45"],
+];
+test("one Blender GLB renders from all eight cameras and returns home", async ({ page }) => {
+  const errors = [], requests = [];
+  page.on("pageerror", error => errors.push(error.message));
+  page.on("request", request => { if (/\.glb(?:\?|$)/.test(request.url())) requests.push(request.url()); });
+  await page.goto("/pigeon?view=front");
+  const scene = page.getByTestId("pigeon-scene");
+  await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 45000 });
+  await expect(scene).toHaveAttribute("data-revision", "clay-v1");
+  await expect(scene).toHaveAttribute("data-source", "blender-glb");
+  const canvas = page.locator(".pigeon-viewport canvas");
+  await expect(canvas).toHaveCount(1);
+  await canvas.evaluate(el => { el.dataset.originalCanvas = "true"; });
+  const screenshots = new Set();
+  for (const [label, id] of views) {
+    await page.getByRole("button", { name: label, exact: true }).click();
+    await expect(scene).toHaveAttribute("data-view", id);
+    await expect(canvas).toHaveAttribute("data-original-canvas", "true");
+    screenshots.add((await canvas.screenshot()).toString("base64"));
+  }
+  expect(screenshots.size).toBeGreaterThan(5);
+  expect(requests).toHaveLength(1);
+  expect(requests[0]).not.toMatch(/normal-v|chicken|kenchoo/);
+  await page.getByRole("button", { name: "↺ 기본 시점으로", exact: true }).click();
+  await expect(scene).toHaveAttribute("data-view", "left45");
+  await page.getByRole("link", { name: "별짓 홈으로", exact: true }).click();
   await expect(page).toHaveURL("/");
-  expect(renderingRequests).toEqual([]);
+  await expect(page.locator("canvas")).toHaveCount(0);
   expect(errors).toEqual([]);
 });
-
-test("the previous model lab route is removed", async ({ page }) => {
+test("bad model data offers a valid retry", async ({ page }) => {
+  const pattern = /pigeon[^/]*\.glb(?:\?|$)/;
+  await page.route(pattern, route => route.fulfill({ status: 200, contentType: "model/gltf-binary", body: "invalid model" }));
+  await page.goto("/pigeon");
+  await expect(page.getByRole("button", { name: "다시 불러오기", exact: true })).toBeVisible();
+  await expect(page.locator("canvas")).toHaveCount(0);
+  await page.unroute(pattern);
+  await page.getByRole("button", { name: "다시 불러오기", exact: true }).click();
+  await expect(page.getByTestId("pigeon-scene")).toHaveAttribute("data-ready", "true", { timeout: 45000 });
+  await expect(page.locator("canvas")).toHaveCount(1);
+});
+test("leaving during download cannot insert a late canvas", async ({ page }) => {
+  let release, started;
+  const gate = new Promise(resolve => { release = resolve; });
+  const request = new Promise(resolve => { started = resolve; });
+  await page.route(/pigeon[^/]*\.glb(?:\?|$)/, async route => { started(); await gate; await route.continue().catch(() => {}); });
+  await page.goto("/pigeon");
+  await request;
+  await page.getByRole("link", { name: "별짓 홈으로", exact: true }).click();
+  release();
+  await expect(page).toHaveURL("/");
+  await expect(page.locator("canvas")).toHaveCount(0);
+});
+test("old model lab stays removed; narrow study remains usable", async ({ page }) => {
   await page.goto("/pigeon/model-lab");
   await expect(page.getByText("404 — 딴 길로 왔네요")).toBeVisible();
-  await expect(page.locator("canvas")).toHaveCount(0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/pigeon");
+  await expect(page.getByTestId("pigeon-scene")).toHaveAttribute("data-ready", "true", { timeout: 45000 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole("button", { name: "정면", exact: true }).click();
+  await expect(page.getByTestId("pigeon-scene")).toHaveAttribute("data-view", "front");
 });
