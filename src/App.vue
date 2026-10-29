@@ -5,7 +5,7 @@ import BrandLogo from "./components/BrandLogo.vue";
 const route = useRoute();
 const main = ref(null);
 const isPudding = computed(() => route.name === "pudding");
-const isContent = computed(() => ["pudding", "pigeon", "pigeon-model-lab"].includes(route.name));
+const isContent = computed(() => ["pudding", "pigeon"].includes(route.name));
 watch(
   isPudding,
   (value) => document.body.classList.toggle("pudding-route", value),

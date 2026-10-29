@@ -20,13 +20,7 @@ const router = createRouter({
       path: "/pigeon",
       name: "pigeon",
       component: () => import("./views/PigeonView.vue"),
-      meta: { title: "비둘기 모이주기 · 제작 미리보기 — 별짓" },
-    },
-    {
-      path: "/pigeon/model-lab",
-      name: "pigeon-model-lab",
-      component: () => import("./views/PigeonModelLab.vue"),
-      meta: { title: "비둘기 외형 검증실 — 별짓" },
+      meta: { title: "비둘기 모이주기 · 새로 준비 중 — 별짓" },
     },
     {
       path: "/:pathMatch(.*)*",
