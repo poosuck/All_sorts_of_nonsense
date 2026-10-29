@@ -24,12 +24,17 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy python3-pil
           blender --version
       - name: Probe model tools
         run: blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/probe_tools.py
+      - name: Build new clay anatomy and eight views
+        run: blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/build.py
       - uses: actions/upload-artifact@v4
         with:
-          name: pigeon-clay-tools
-          path: docs/pigeon/reviews/clay-v1/tools.json
+          name: pigeon-clay-model
+          path: |
+            art/pigeon/pigeon.blend
+            src/assets/pigeon/
+            docs/pigeon/reviews/clay-v1/
           retention-days: 7

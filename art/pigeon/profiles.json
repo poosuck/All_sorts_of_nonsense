@@ -1,0 +1,176 @@
+{
+  "revision": "clay-v1",
+  "stage": "anatomy blockout; feather layers, final surface materials and pose rig are later stages",
+  "reference": {
+    "id": "R01",
+    "source": "user's 8-direction and pose sheet in conversation",
+    "imageFile": null,
+    "measurementStatus": "initial visual estimates; not pixel measurements"
+  },
+  "coordinates": {
+    "up": "+Z",
+    "forward": "-Y",
+    "left": "+X",
+    "origin": "ground between feet",
+    "normalizedHeight": 1
+  },
+  "bodySections": [
+    [
+      0.115,
+      0.018,
+      -0.045,
+      0.175
+    ],
+    [
+      0.14,
+      0.14,
+      -0.17,
+      0.25
+    ],
+    [
+      0.19,
+      0.24,
+      -0.25,
+      0.32
+    ],
+    [
+      0.28,
+      0.31,
+      -0.31,
+      0.37
+    ],
+    [
+      0.39,
+      0.335,
+      -0.33,
+      0.38
+    ],
+    [
+      0.5,
+      0.3,
+      -0.33,
+      0.34
+    ],
+    [
+      0.6,
+      0.235,
+      -0.32,
+      0.22
+    ],
+    [
+      0.67,
+      0.177,
+      -0.31,
+      0.12
+    ],
+    [
+      0.74,
+      0.123,
+      -0.305,
+      0.006
+    ],
+    [
+      0.82,
+      0.139,
+      -0.327,
+      -0.045
+    ],
+    [
+      0.89,
+      0.137,
+      -0.34,
+      -0.047
+    ],
+    [
+      0.95,
+      0.107,
+      -0.308,
+      -0.071
+    ],
+    [
+      0.985,
+      0.059,
+      -0.262,
+      -0.12
+    ],
+    [
+      1,
+      0.001,
+      -0.197,
+      -0.195
+    ]
+  ],
+  "wingOutline": [
+    [
+      -0.08,
+      0.64
+    ],
+    [
+      -0.13,
+      0.55
+    ],
+    [
+      -0.07,
+      0.39
+    ],
+    [
+      0.07,
+      0.29
+    ],
+    [
+      0.31,
+      0.255
+    ],
+    [
+      0.54,
+      0.25
+    ],
+    [
+      0.47,
+      0.37
+    ],
+    [
+      0.33,
+      0.49
+    ],
+    [
+      0.16,
+      0.61
+    ],
+    [
+      0.02,
+      0.665
+    ]
+  ],
+  "camera": {
+    "orthographicScale": 1.42,
+    "height": 0.82,
+    "targetHeight": 0.49,
+    "distance": 3.4,
+    "azimuths": [
+      0,
+      45,
+      90,
+      135,
+      180,
+      225,
+      270,
+      315
+    ]
+  },
+  "initialTargets": {
+    "frontBodyWidthOverHeight": [
+      0.65,
+      0.75
+    ],
+    "headWidthOverHeight": [
+      0.25,
+      0.3
+    ],
+    "lengthOverHeight": [
+      1.05,
+      1.2
+    ],
+    "note": "design ranges for blockout, not reference measurements"
+  }
+}
