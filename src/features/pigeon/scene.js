@@ -108,19 +108,21 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     if (!Number.isFinite(height) || height < 0.01) throw new Error("Invalid model bounds");
     loaded.scale.setScalar(1 / height);
     loaded.position.y = -box.min.y / height;
-    loaded.traverse((node) => { if (node.isMesh) { node.castShadow = true; node.receiveShadow = true; } });
+    loaded.traverse((node) => { if (node.isMesh) { node.castShadow = true; node.receiveShadow = false; } });
     world.add(loaded);
-    world.add(new THREE.HemisphereLight(0xffffff, 0x9f9b93, 1.6));
-    const key = new THREE.DirectionalLight(0xffffff, 2.8);
+    world.add(new THREE.HemisphereLight(0xffffff, 0xaaa69e, 2.4));
+    const key = new THREE.DirectionalLight(0xffffff, 2.0);
     key.position.set(-3, 5, 4);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
     Object.assign(key.shadow.camera, { left: -1.4, right: 1.4, top: 1.4, bottom: -1.4, near: 0.1, far: 15 });
     key.shadow.normalBias = 0.015;
     key.shadow.bias = -0.0001;
+    key.shadow.radius = 4;
+    key.shadow.blurSamples = 8;
     key.target.position.set(0, 0.4, 0);
     world.add(key, key.target);
-    const fill = new THREE.DirectionalLight(0xffffff, 0.85);
+    const fill = new THREE.DirectionalLight(0xffffff, 1.0);
     fill.position.set(3, 2, -3);
     world.add(fill);
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200),
@@ -132,9 +134,9 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.AgXToneMapping;
+    renderer.toneMapping = THREE.NoToneMapping;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.VSMShadowMap;
     renderer.domElement.setAttribute("aria-label", "비둘기 체형 초안 3D 모델");
     renderer.domElement.addEventListener("webglcontextlost", contextLost);
     host.appendChild(renderer.domElement);

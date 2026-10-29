@@ -175,7 +175,7 @@ def ellipsoid(name,center,scale,mat=clay,normal=None):
     return obj
 # Small facial landmarks allow judging head/beak proportions in the clay study.
 for side,label in [(1,"Left"),(-1,"Right")]:
-    center=Vector((side*0.122,-0.301,0.862))
+    center=Vector((side*0.108,-0.294,0.862))
     normal=Vector((side*0.78,-0.62,0.045)).normalized()
     ellipsoid("Eye_landmark_"+label,center,(0.026,0.026,0.014),eye_mat,normal)
     ellipsoid("Pupil_landmark_"+label,center+normal*0.012,(0.011,0.011,0.003),pupil_mat,normal)
