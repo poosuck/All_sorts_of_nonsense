@@ -1,4 +1,4 @@
-# R01 체형 제작 기준 · clay-v1
+# R01 체형 제작 기준 · clay-v2
 
 현재 구간은 명세서 1~3단계의 체형 초안입니다. 깃털 층·최종 색·7종 자세는 후속 구간입니다.
 
@@ -20,7 +20,18 @@ blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-s
 blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/build.py
 ```
 
-생성 결과: art/pigeon/pigeon.blend, src/assets/pigeon/pigeon.glb와 manifest.json, docs/pigeon/reviews/clay-v1의 8방향 캡처와 생성 기록입니다.
+생성 결과: art/pigeon/pigeon.blend, src/assets/pigeon/pigeon.glb와 manifest.json, docs/pigeon/reviews/clay-v2의 8방향 캡처와 생성 기록입니다. 과거 clay-v1 캡처는 비교를 위해 보존합니다.
+
+clay-v2에서는 가슴·어깨·목 뿌리의 부피를 늘리고 하복부를 줄였으며, 정수리를 둥글게 하고 얼굴 표식을 얇게 다듬었습니다. 날개 외피는 앞뒤 단면으로 다시 구성하고 후면 몸통·날개·꼬리의 연결을 조정했습니다. 발가락은 짧고 두껍게 바꿨습니다. 조명과 카메라는 기존 설정을 유지해 비교합니다.
+
+웹 검증과 8방향 캡처는 빌드 후 실행합니다. 시스템 Chromium을 사용한다면 다음과 같이 경로를 지정합니다.
+
+```sh
+npm run build
+npm test
+npm run source:check
+PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium node scripts/pigeon-stage1/verify.mjs
+```
 
 ## 도구 상태
 

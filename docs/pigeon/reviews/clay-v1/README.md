@@ -2,6 +2,8 @@
 
 2026-10-29 작성. 이 기록은 **첫 체형 초안과 Blender → GLB → 웹 경로**의 검증 결과다. 깃털·재질·7종 자세까지 완성했다는 뜻은 아니다.
 
+과거 clay-v1 기록입니다. 현재 작업 모델과 최신 비교는 [clay-v2](../clay-v2/README.md)를 확인하세요. 아래 해시는 v1 산출물의 해시이며 최신 모델에는 적용하지 않습니다.
+
 ## 실제 결과
 
 ![실제 웹 렌더 · 좌측 45도](web-left45.png)
@@ -11,7 +13,7 @@
 ## 생성과 검증
 
 - [실행 기록](https://github.com/poosuck/All_sorts_of_nonsense/actions/runs/40804445768) · 생성 소스 커밋 `96fb96cda8cfea86e64441c9392b6690182e3ffb`
-- Blender 4.0.2, 원본 [pigeon.blend](../../../../art/pigeon/pigeon.blend), 배포 [pigeon.glb](../../../../src/assets/pigeon/pigeon.glb)
+- Blender 4.0.2, 당시 원본 [pigeon.blend](https://github.com/poosuck/All_sorts_of_nonsense/blob/3979b77325ebad27ca186fbd3fc3518b01f00fcc/art/pigeon/pigeon.blend), 배포 [pigeon.glb](https://github.com/poosuck/All_sorts_of_nonsense/blob/3979b77325ebad27ca186fbd3fc3518b01f00fcc/src/assets/pigeon/pigeon.glb)
 - GLB 509,672 bytes, 삼각형 26,308개, 메시 37개
 - GLB SHA-256: `dfedea75d1aab93255121c3c5e13f1844d7708cbf6f330840fed7cb1160c8377`
 - Blender 원본 SHA-256: `41139bdbfcba6310bcb56938f86941cdedf6c80ff75200510f992a1bb10eca3e`

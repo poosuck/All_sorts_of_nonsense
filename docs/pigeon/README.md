@@ -1,8 +1,9 @@
 # 비둘기 새 모델 제작
 
-[제작·웹 렌더링 명세서 v1.0](MODEL-SPEC.ko.md)에 따라 첫 체형 초안을 만들었습니다. 현재 단계는 무채색 체형·날개 위치 확인이며 깃털과 최종 재질·7종 자세는 후속입니다.
+[제작·웹 렌더링 명세서 v1.0](MODEL-SPEC.ko.md)에 따라 무채색 체형을 제작 중입니다. 현재 clay-v2는 체형 자가점검을 반영한 수정본이며 깃털과 최종 재질·7종 자세는 후속입니다.
 
-- [실제 웹 캡처·검증 기록](reviews/clay-v1/README.md)
+- [최신 실제 웹 캡처·전후 비교·검증 기록](reviews/clay-v2/README.md)
+- [첫 체형 초안 기록](reviews/clay-v1/README.md)
 - [기준 시트와 초기 비율값](REFERENCE-BASIS.ko.md)
 - [Blender 원본](../../art/pigeon/pigeon.blend)
 - [원본·GLB 버전 기록](../../src/assets/pigeon/manifest.json)

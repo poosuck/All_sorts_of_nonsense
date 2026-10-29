@@ -100,7 +100,7 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     const gltf = await new GLTFLoader().parseAsync(buffer, "");
     loaded = gltf.scene;
     if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
-    const root = loaded.getObjectByName("Pigeon_R01_Clay_v1");
+    const root = loaded.getObjectByName("Pigeon_R01");
     if (!root || root.userData.revision !== manifest.revision) throw new Error("Model revision mismatch");
     world.background = new THREE.Color("#efeeea");
     const box = new THREE.Box3().setFromObject(loaded);

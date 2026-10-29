@@ -13,9 +13,9 @@ test("the shipped GLB is the recorded Blender anatomy model", async () => {
   assert.equal(createHash("sha256").update(bytes).digest("hex"), manifest.glb_sha256);
   const size = bytes.readUInt32LE(12);
   const gltf = JSON.parse(bytes.subarray(20, 20+size).toString());
-  const model = gltf.nodes.find(node => node.name === "Pigeon_R01_Clay_v1");
+  const model = gltf.nodes.find(node => node.name === "Pigeon_R01");
   assert.ok(model);
-  assert.equal(model.extras.revision, "clay-v1");
+  assert.equal(model.extras.revision, "clay-v2");
   assert.equal(manifest.stage, "anatomy-blockout");
   assert.deepEqual(manifest.poses, ["stand"]);
   assert.equal(Object.keys(manifest.views).length, 8);

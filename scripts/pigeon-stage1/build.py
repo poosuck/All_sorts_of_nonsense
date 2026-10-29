@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CFG = json.loads((ROOT / "art/pigeon/profiles.json").read_text())
 ART = ROOT / "art/pigeon"
 ASSETS = ROOT / "src/assets/pigeon"
-REVIEW = ROOT / "docs/pigeon/reviews/clay-v1"
+REVIEW = ROOT / "docs/pigeon/reviews" / CFG["revision"]
 for path in [ART, ASSETS, REVIEW]:
     path.mkdir(parents=True, exist_ok=True)
 bpy.ops.object.select_all(action="SELECT")
@@ -23,7 +23,7 @@ scene = bpy.context.scene
 scene.name = "R01 anatomy study"
 bird = bpy.data.collections.new("Pigeon_Anatomy")
 scene.collection.children.link(bird)
-model = bpy.data.objects.new("Pigeon_R01_Clay_v1", None)
+model = bpy.data.objects.new("Pigeon_R01", None)
 bird.objects.link(model)
 model["revision"] = CFG["revision"]
 model["stage"] = "anatomy blockout"
@@ -114,31 +114,33 @@ def closed_spline(points, t):
     f = u-i
     a,b,c,d = [Vector(points[k%count]) for k in [i-1,i,i+1,i+2]]
     return 0.5*((2*b)+(-a+c)*f+(2*a-5*b+4*c-d)*f*f+(-a+3*b-3*c+d)*f*f*f)
+# Longitudinal closed wing volumes: no radial disk or clamped rear fin.
 for side,label in [(1,"Left"),(-1,"Right")]:
-    vv,ff = [],[]
-    center = Vector((0.155,0.46))
-    rings,n = 12,64
-    for layer in [0,1]:
-        for j in range(rings+1):
-            r = max(0.001,j/rings)
-            for i in range(n):
-                yz = center.lerp(closed_spline(CFG["wingOutline"],i/n),r)
-                y,z = yz
-                offset = 0.004+0.041*(1-r*r)**0.72 if layer==0 else -0.012
-                vv.append((side*(body_side(y,z)+offset),y,z))
-    layer_size = (rings+1)*n
-    for layer in [0,1]:
-        for j in range(rings):
-            for i in range(n):
-                a=layer*layer_size+j*n+i
-                b=layer*layer_size+j*n+(i+1)%n
-                ff.append((a,b,b+n,a+n))
-        ff.append(tuple(layer*layer_size+i for i in range(n)))
-    for i in range(n):
-        a=rings*n+i; b=rings*n+(i+1)%n
-        ff.append((a,b,b+layer_size,a+layer_size))
+    vv,ff=[],[]
+    wing=CFG["wingSections"]
+    rows_w,sides_w=70,40
+    for j in range(rows_w):
+        y=wing[0][0]+(wing[-1][0]-wing[0][0])*j/(rows_w-1)
+        xc,zc,hz,thickness=smooth_values(wing,y)
+        t=max(0,min(1,(y-0.10)/0.34))
+        blend=t*t*(3-2*t)
+        rear_t=max(0,min(1,(y-0.30)/0.16))
+        rear_fold=rear_t*rear_t*(3-2*rear_t)
+        for i in range(sides_w):
+            a=2*math.pi*i/sides_w
+            z=zc+hz*math.cos(a)
+            base=body_side(y,z)*(1-blend)+xc*blend
+            # Rear flight envelope slopes inward at its upper edge, rather
+            # than standing as a vertical fin or disappearing inside the rump.
+            x=base-xc*0.8*rear_fold*math.cos(a)+0.0015+thickness*math.sin(a)
+            vv.append((side*x,y,z))
+    for j in range(rows_w-1):
+        for i in range(sides_w):
+            a=j*sides_w+i;b=j*sides_w+(i+1)%sides_w
+            ff.append((a,b,b+sides_w,a+sides_w))
+    ff.extend([tuple(reversed(range(sides_w))),tuple((rows_w-1)*sides_w+i for i in range(sides_w))])
     obj=mesh_object("Folded_wing_volume_"+label,vv,ff)
-    obj["stage"]="placement and volume only; covert layers not yet built"
+    obj["stage"]="longitudinal shoulder-to-flight envelope; feather layers pending"
 def blade(name,start,end,width,mat=clay):
     start,end=Vector(start),Vector(end)
     axis=(end-start).normalized()
@@ -162,7 +164,7 @@ def blade(name,start,end,width,mat=clay):
     return mesh_object(name,vv,ff,mat)
 for i in range(10):
     t=(i-4.5)/4.5
-    blade("Tail_block_"+str(i+1),(0.035*t,0.255,0.31),(0.125*t,0.68-0.018*abs(t),0.175+0.012*abs(t)),0.027)
+    blade("Tail_block_"+str(i+1),(0.022*t,0.265,0.290),(0.095*t,0.66-0.050*abs(t),0.205+0.006*abs(t)),0.022)
 def ellipsoid(name,center,scale,mat=clay,normal=None):
     bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=16, location=center)
     obj=move_to_bird(bpy.context.object)
@@ -175,15 +177,15 @@ def ellipsoid(name,center,scale,mat=clay,normal=None):
     return obj
 # Small facial landmarks allow judging head/beak proportions in the clay study.
 for side,label in [(1,"Left"),(-1,"Right")]:
-    center=Vector((side*0.108,-0.294,0.862))
+    center=Vector((side*0.104,-0.292,0.862))
     normal=Vector((side*0.78,-0.62,0.045)).normalized()
-    ellipsoid("Eye_landmark_"+label,center,(0.026,0.026,0.014),eye_mat,normal)
-    ellipsoid("Pupil_landmark_"+label,center+normal*0.012,(0.011,0.011,0.003),pupil_mat,normal)
-    ellipsoid("Cere_landmark_"+label,(side*0.016,-0.349,0.817),(0.020,0.026,0.013),cere_mat)
+    ellipsoid("Eye_landmark_"+label,center,(0.023,0.023,0.007),eye_mat,normal)
+    ellipsoid("Pupil_landmark_"+label,center+normal*0.006,(0.010,0.010,0.002),pupil_mat,normal)
+    ellipsoid("Cere_landmark_"+label,(side*0.011,-0.340,0.819),(0.017,0.023,0.009),cere_mat)
 # Variable-section bill. Its upper and lower halves remain separate for later articulation.
-for part,offset,scale_z in [("Upper",0.003,1.0),("Lower",-0.012,0.48)]:
+for part,offset,scale_z in [("Upper",0.002,1.0),("Lower",-0.008,0.48)]:
     vv,ff=[],[]
-    bill=[(-0.327,0.805,0.037,0.022),(-0.346,0.800,0.032,0.022),(-0.383,0.784,0.018,0.014),(-0.419,0.761,0.0015,0.002)]
+    bill=[(-0.325,0.813,0.031,0.021),(-0.350,0.809,0.030,0.021),(-0.380,0.795,0.020,0.015),(-0.407,0.781,0.003,0.003)]
     for y,z,rx,rz in bill:
         for k in range(16):
             a=2*math.pi*k/16
@@ -196,6 +198,10 @@ for part,offset,scale_z in [("Upper",0.003,1.0),("Lower",-0.012,0.48)]:
     mesh_object("Beak_"+part,vv,ff,beak_mat)
 def tube(name,points,radii,mat=foot_mat):
     points=[Vector(p) for p in points]
+    if len(points)==3:
+        a,b,c=points; ra,rb,rc=radii
+        points=[(1-t)**2*a+2*(1-t)*t*b+t*t*c for t in [i/12 for i in range(13)]]
+        radii=[(1-t)**2*ra+2*(1-t)*t*rb+t*t*rc for t in [i/12 for i in range(13)]]
     vv,ff=[],[]
     sides=10
     for j,p in enumerate(points):
@@ -213,12 +219,12 @@ def tube(name,points,radii,mat=foot_mat):
     ff.extend([tuple(reversed(range(sides))),tuple((len(points)-1)*sides+i for i in range(sides))])
     return mesh_object(name,vv,ff,mat)
 for side,label in [(1,"Left"),(-1,"Right")]:
-    x=side*0.135
-    tube("Tarsus_"+label,[(x,0.005,0.185),(x,-0.040,0.103),(x,-0.075,0.038)],[0.025,0.021,0.019])
-    for j,(dx,ey) in enumerate([(-0.052,-0.178),(0,-0.208),(0.052,-0.179)]):
-        tube("Front_toe_"+label+"_"+str(j+1),[(x,-0.075,0.038),(x+dx*0.45,-0.130,0.025),(x+dx,ey,0.013)],[0.014,0.012,0.006])
+    x=side*0.125
+    tube("Tarsus_"+label,[(x,0.005,0.160),(x,-0.025,0.085),(x,-0.060,0.034)],[0.027,0.024,0.021])
+    for j,(dx,ey) in enumerate([(-0.047,-0.162),(0,-0.190),(0.047,-0.163)]):
+        tube("Front_toe_"+label+"_"+str(j+1),[(x,-0.060,0.034),(x+dx*0.45,-0.115,0.023),(x+dx,ey,0.013)],[0.017,0.014,0.008])
         tube("Claw_"+label+"_"+str(j+1),[(x+dx,ey,0.013),(x+dx*1.04,ey-0.017,0.007),(x+dx*1.06,ey-0.024,0.002)],[0.006,0.004,0.001],beak_mat)
-    tube("Back_toe_"+label,[(x,-0.082,0.043),(x-0.019*side,-0.017,0.023),(x-0.034*side,0.045,0.012)],[0.013,0.01,0.004])
+    tube("Back_toe_"+label,[(x,-0.060,0.034),(x-0.016*side,-0.008,0.023),(x-0.028*side,0.025,0.012)],[0.013,0.01,0.004])
 # Metrics from the actual authoring geometry.
 bpy.context.view_layer.update()
 mesh_objects=[o for o in bird.objects if o.type=="MESH"]
@@ -281,6 +287,7 @@ def position_camera(degrees):
     camera.location=(CFG["camera"]["distance"]*math.sin(a),-CFG["camera"]["distance"]*math.cos(a),CFG["camera"]["height"])
     target=Vector((0,0.08,CFG["camera"]["targetHeight"]))
     camera.rotation_euler=(target-camera.location).to_track_quat("-Z","Y").to_euler()
+bpy.context.preferences.filepaths.save_version=0
 position_camera(45)
 bpy.ops.wm.save_as_mainfile(filepath=str(ART/"pigeon.blend"),compress=True)
 for name,degrees in zip(views,CFG["camera"]["azimuths"]):

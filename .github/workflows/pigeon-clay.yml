@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: codex/pigeon-clay-v1
+          ref: ${{ github.sha }}
       - name: Install Blender
         run: |
           sudo apt-get update -qq
@@ -50,5 +50,5 @@ jobs:
           path: |
             art/pigeon/pigeon.blend
             src/assets/pigeon/
-            docs/pigeon/reviews/clay-v1/
+            docs/pigeon/reviews/
           retention-days: 7

@@ -1,9 +1,10 @@
 import { chromium } from "@playwright/test";
 import { spawn, spawnSync } from "node:child_process";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
-const output = "docs/pigeon/reviews/clay-v1";
+const revision=JSON.parse(await readFile("src/assets/pigeon/manifest.json","utf8")).revision;
+const output = "docs/pigeon/reviews/"+revision;
 await mkdir(output, { recursive: true });
-const env = { ...process.env, TEST_PRODUCTION: "1", PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: chromium.executablePath() };
+const env = { ...process.env, TEST_PRODUCTION: "1", PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || chromium.executablePath() };
 const check = spawnSync(process.execPath, ["node_modules/@playwright/test/cli.js", "test", "tests/e2e/pigeon.spec.js", "--timeout", "120000"], { env, stdio: "inherit" });
 if (check.status !== 0) process.exit(check.status || 1);
 const server = spawn(process.execPath, ["node_modules/vite/bin/vite.js", "preview", "--host", "127.0.0.1", "--port", "4175", "--strictPort"], { stdio: "ignore" });
@@ -16,7 +17,7 @@ try {
     await new Promise(resolve => setTimeout(resolve, 250));
   }
   if (!connected) throw new Error("Preview server did not start");
-  browser = await chromium.launch({ args: ["--no-sandbox", "--enable-unsafe-swiftshader"] });
+  browser = await chromium.launch({ executablePath:env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH, args: ["--no-sandbox", "--enable-unsafe-swiftshader"] });
   const page = await browser.newPage({ viewport: { width: 640, height: 640 }, deviceScaleFactor: 1 });
   const errors = [], requests = [];
   page.on("pageerror", e => errors.push(e.message));
@@ -32,7 +33,7 @@ try {
     const path = output + "/web-" + views[i] + ".png";
     const bytes = await page.locator("canvas").screenshot({ path });
     captures.push({ view: views[i], path, bytes: bytes.length });
-    if (bytes.length <= budget) {
+    if (process.env.PIGEON_EXPORT_BUNDLE === "1" && bytes.length <= budget) {
       budget -= bytes.length;
       const encoded = bytes.toString("base64"), parts = Math.ceil(encoded.length / 16000);
       console.log("PIGEON_FILE_HEADER " + JSON.stringify({ path, parts, bytes: bytes.length }));
