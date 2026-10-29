@@ -15,9 +15,13 @@ test("the shipped GLB is the recorded Blender anatomy model", async () => {
   const gltf = JSON.parse(bytes.subarray(20, 20+size).toString());
   const model = gltf.nodes.find(node => node.name === "Pigeon_R01");
   assert.ok(model);
-  assert.equal(model.extras.revision, "clay-v7");
-  assert.equal(manifest.stage, "anatomy-blockout");
+  assert.equal(model.extras.revision, "clay-v8");
+  assert.equal(manifest.stage, "anatomy-and-plumage-study");
   assert.deepEqual(manifest.poses, ["stand"]);
+  assert.ok(manifest.plumage.feathers > 1000);
+  assert.ok(manifest.plumage.added_triangles <= 75000);
+  assert.ok(gltf.meshes.some(mesh => mesh.name.startsWith("Plumage_")));
+  assert.ok(gltf.meshes.find(mesh => mesh.name === "Body_neck_head_continuous").primitives[0].attributes.COLOR_0 !== undefined);
   assert.equal(Object.keys(manifest.views).length, 8);
   assert.ok(manifest.triangles > 1000 && manifest.triangles < 150000);
   assert.ok(manifest.bounds_blender.width_over_height > 0.6 && manifest.bounds_blender.width_over_height < 0.85);

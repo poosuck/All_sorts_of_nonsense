@@ -1,32 +1,32 @@
 {
-  "revision": "clay-v7",
-  "stage": "anatomy-blockout",
+  "revision": "clay-v8",
+  "stage": "anatomy-and-plumage-study",
   "reference": "R01",
   "reference_file_available": false,
   "reference_measurements": "initial visual estimates only",
   "authoring": "art/pigeon/pigeon.blend",
   "blender": "4.3.2",
   "geometry_source": "original profile loft; no legacy pigeon model",
-  "glb_sha256": "8901a9494e312fd6467f0c9992589e05436ac683045170f9e60dfc1cf1e6264f",
-  "blend_sha256": "3d892140f0584368afa9bde476d794cb5b96e102a37c00448029a70e4b8d54ed",
-  "profiles_sha256": "9cf6079d6e08c9e4b5d22c7d346fdcd20b43d6b2e630b41a9ec5f2e9b4579dfc",
-  "glb_bytes": 1154132,
-  "triangles": 67964,
-  "mesh_count": 31,
+  "glb_sha256": "b298e8cf6a640d02fc77d05f7df5a429036a84ba43672ff4e07f5314a96c9b63",
+  "blend_sha256": "6acbd4741060543bc8a2ea384bc833e8f1fc3b8e668e485985140348ac07d0f3",
+  "profiles_sha256": "a6a5a4d0d4887a338f29af97e90c7f01eaf0464b3a586fd684e7735350aa50e5",
+  "glb_bytes": 3760772,
+  "triangles": 132654,
+  "mesh_count": 48,
   "bounds_blender": {
     "min": [
-      -0.3572726845741272,
-      -0.38760000467300415,
+      -0.3608276844024658,
+      -0.3800399899482727,
       0.0022540870122611523
     ],
     "max": [
-      0.3572726845741272,
-      0.6700000166893005,
+      0.3607560694217682,
+      0.6299999952316284,
       1.0
     ],
     "height": 0.9977459129877388,
-    "width_over_height": 0.7161596553260302,
-    "length_over_height": 1.0599893295431633
+    "width_over_height": 0.7232139409756735,
+    "length_over_height": 1.0123218467067912
   },
   "views": {
     "front": 0,
@@ -38,12 +38,58 @@
     "right": 270,
     "right45": 315
   },
+  "plumage": {
+    "feathers": 7263,
+    "region_feathers": {
+      "wing_coverts": 412,
+      "folded_flights": 18,
+      "head": 2350,
+      "neck": 2310,
+      "breast": 2163,
+      "tail": 10
+    },
+    "added_triangles": 64690,
+    "mesh_batches": 17,
+    "objects": [
+      "Plumage_covert_1",
+      "Plumage_covert_2",
+      "Plumage_bar_1",
+      "Plumage_bar_0",
+      "Plumage_covert_0",
+      "Plumage_flight_0",
+      "Plumage_flight_1",
+      "Plumage_flight_2",
+      "Plumage_head_1",
+      "Plumage_head_2",
+      "Plumage_head_0",
+      "Plumage_neck_gradient",
+      "Plumage_breast_0",
+      "Plumage_breast_1",
+      "Plumage_breast_2",
+      "Plumage_tail_0",
+      "Plumage_tail_1"
+    ],
+    "base_material_updates": [
+      "Wing_shoulder_wrapped_Left",
+      "Wing_folded_flight_bundle_Left",
+      "Wing_shoulder_wrapped_Right",
+      "Wing_folded_flight_bundle_Right",
+      "Tail_anatomical_envelope"
+    ],
+    "limitations": [
+      "static standing feather layout; not rigged for wing spreading",
+      "thin double-sided feather laminae; no microscopic barb fibers",
+      "muted teal/purple colors; no final optical iridescence shader"
+    ]
+  },
   "poses": [
     "stand"
   ],
   "limitations": [
-    "covert/neck feather layers not built",
-    "final colors and iridescence not built",
+    "static standing feather layout; not rigged for wing spreading",
+    "thin double-sided feather laminae; no microscopic barb fibers",
+    "muted teal/purple colors; no final optical iridescence shader",
+    "final PBR microdetail and colors require further reference matching",
     "pose rig and seven poses not built",
     "reference proportions not pixel measured"
   ]

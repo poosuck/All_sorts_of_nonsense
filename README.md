@@ -1,6 +1,6 @@
 # 별짓 · byeoljit v0.1
 
-아주 쓸데있는 딴짓. 별짓 콘텐츠 진열장, **기존 말랑 푸딩 v24를 이식한 독립 페이지**, 비둘기 모이주기 **새 모델 체형 연구 화면**입니다.
+아주 쓸데있는 딴짓. 별짓 콘텐츠 진열장, **기존 말랑 푸딩 v24를 이식한 독립 페이지**, 비둘기 모이주기 **새 모델 체형·깃털 연구 화면**입니다.
 
 Vue 3 · Vite · JavaScript · CSS · Vue Router · Three.js. 서버·DB·API 키 없이 정적 파일로 운영합니다. 기존 ChatGPT Sites 사이트에는 쓰기 작업을 하지 않았습니다.
 
@@ -45,7 +45,7 @@ npm run source:check  # 원본 체크섬과 생성 결과 검사
 | --- | --- |
 | `/` | 별짓 홈, 카드 진열장, 짧은 Hover 애니메이션, 콘텐츠별 진입 |
 | `/pudding` | 기존 v24 푸딩 UI·동작, 홈 복귀, 볼륨 조절 |
-| `/pigeon` | 새 Blender 체형 초안: 8방향 관찰·회전·확대 |
+| `/pigeon` | 새 Blender 모델: 8방향·얼굴 확대·기본색/무채색 관찰 |
 | 그 외 | 404 안내와 홈 복귀 |
 
 - 원본의 **커스터드 / 딸기 / 말차 / 초코 / 우유** 5종과 맛 선택 저장을 유지합니다.
@@ -56,13 +56,15 @@ npm run source:check  # 원본 체크섬과 생성 결과 검사
 - 원본처럼 터치는 누르기·당기기를 지원하며, PC 휘두르기 도구 선택은 터치 환경에서 숨깁니다.
 - 키보드는 푸딩 영역에 초점을 맞춘 뒤 Enter/Space로 타격할 수 있습니다. 슬라이더는 방향키로 조절합니다.
 
-## 비둘기 모이주기 · 새 체형 연구
+## 비둘기 모이주기 · R01 모델 연구
 
-이전 비둘기 렌더링을 제거한 뒤 새 Blender 원본과 GLB로 체형 초안을 제작했습니다. 홈의 비둘기 카드 또는 `/pigeon`에서 같은 모델을 8방향으로 보고 회전·확대할 수 있습니다. 현재는 서 있는 무채색 체형이며 날개 덮깃·목 깃털·최종 색과 광택·7종 자세는 후속 작업입니다.
+사용자가 제공한 회색 비둘기 시트(R01)를 같은 3D 모델로 제작합니다. 현재 **clay-v8**은 둥근 두상·아랫배와 부리 위치를 조정하고, 날개 겹깃·검은 두 줄·머리의 가는 깃결·목과 가슴의 얇은 깃털 형상과 기본색을 추가한 버전입니다. `/pigeon`에서 8방향, 전신/얼굴, 기본색/무채색을 전환해 같은 GLB를 확인합니다.
 
-기준은 사용자가 제공한 8방향·얼굴 확대·다양한 자세의 회색 비둘기 시트(R01)입니다. 원본 이미지 파일이 저장소에 없어 비율은 화면 판독에 따른 초기 추정값으로 기록했습니다. 현재 clay-v7는 두상의 전역 면 변형을 제거하고 정수리 연결을 부드럽게 조정한 체형입니다. 체형 검토를 우선하며 깃털·색·자세 제작은 보류합니다. [제작 명세](docs/pigeon/MODEL-SPEC.ko.md) · [체형 제작 기준](docs/pigeon/REFERENCE-BASIS.ko.md) · [최신 두상 전후 비교·검증 기록](docs/pigeon/reviews/clay-v7/README.md)
+체형을 먼저 대조하며, 무채색 보기에도 실제 깃털 형상이 유지됩니다. 최종 목 광택·미세 깃가지·리그와 7종 자세는 남아 있으며 R01과 완전히 일치한 완성 모델로 표시하지 않습니다. 원본 시트 파일은 저장소에 없어 비율은 시각 추정값입니다. [제작 명세](docs/pigeon/MODEL-SPEC.ko.md) · [제작 기준](docs/pigeon/REFERENCE-BASIS.ko.md) · [최신 실제 렌더·검증 기록](docs/pigeon/reviews/clay-v8/README.md)
 
-일반 실행에는 Blender가 필요 없습니다. `npm ci`, `npm run dev`로 포함된 GLB를 확인합니다. 모델을 재생성할 때만 Blender와 NumPy·Pillow를 준비한 뒤 `npm run pigeon:probe`, `npm run pigeon:build`를 실행합니다. 원본은 `art/pigeon/pigeon.blend`, 런타임 모델은 `src/assets/pigeon/pigeon.glb`이며 해시를 함께 기록합니다.
+GitHub 작업 브랜치는 [`codex/pigeon-clay-v1`](https://github.com/poosuck/All_sorts_of_nonsense/tree/codex/pigeon-clay-v1)입니다. [브랜치 ZIP](https://github.com/poosuck/All_sorts_of_nonsense/archive/refs/heads/codex/pigeon-clay-v1.zip)을 내려받아 압축을 풀고 `npm ci`, `npm run dev`를 실행한 뒤 http://localhost:5173/pigeon 에서 상단 **clay-v8**을 확인합니다. 일반 실행에는 Blender가 필요 없습니다.
+
+모델 재생성에만 Blender 4.x·NumPy·Pillow가 필요합니다. `npm run pigeon:probe`, `npm run pigeon:build`로 원본 `art/pigeon/pigeon.blend`와 런타임 `src/assets/pigeon/pigeon.glb`를 같은 제작 소스에서 생성하고 해시를 기록합니다.
 
 ## 푸딩 효과음
 

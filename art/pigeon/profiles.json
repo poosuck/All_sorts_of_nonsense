@@ -1,6 +1,6 @@
 {
-  "revision": "clay-v7",
-  "stage": "anatomy blockout; feather layers, final surface materials and pose rig are later stages",
+  "revision": "clay-v8",
+  "stage": "anatomy and static feather geometry with basic regional PBR colors; final microdetail/iridescence and pose rig remain",
   "reference": {
     "id": "R01",
     "source": "user's 8-direction and pose sheet in conversation",
@@ -175,25 +175,25 @@
       0.016
     ],
     [
-      0.59,
+      0.5688235294117647,
       0.1,
       0.205,
       0.012
     ],
     [
-      0.645,
+      0.6108823529411764,
       0.08,
       0.17,
       0.008
     ],
     [
-      0.665,
+      0.6261764705882353,
       0.035,
       0.16,
       0.004
     ],
     [
-      0.67,
+      0.63,
       0.001,
       0.16,
       0.001
@@ -202,7 +202,10 @@
   "constructionNotes": [
     "posteriorly extended oblique torso",
     "body-surface-wrapped shoulder coverts + tucked diagonal flight bundles",
-    "tail tip mostly covered by folded flights"
+    "tail tip mostly covered by folded flights",
+    "rounded ellipsoidal underbelly buries upper tarsi",
+    "raised short bill/cere and embedded amber eyes",
+    "surface-following overlapping plumage; basic regional PBR colors"
   ],
   "head": {
     "sections": [
@@ -215,121 +218,124 @@
       [
         0.755,
         0.142,
-        -0.31,
-        0.0
+        -0.307,
+        -0.015
       ],
       [
         0.805,
-        0.142,
-        -0.33,
-        -0.055
-      ],
-      [
-        0.85,
-        0.14,
-        -0.323,
-        -0.065
-      ],
-      [
-        0.88,
-        0.139,
-        -0.322,
+        0.138,
+        -0.313,
         -0.07
       ],
       [
+        0.85,
+        0.13,
+        -0.324,
+        -0.09
+      ],
+      [
+        0.88,
+        0.127,
+        -0.325,
+        -0.095
+      ],
+      [
         0.9,
-        0.1352130869227216,
-        -0.3157259704667157,
-        -0.0742740295332843
+        0.11976016270298198,
+        -0.3187259704667157,
+        -0.09659018480795882
       ],
       [
         0.94,
-        0.11640711869963377,
-        -0.2989349274103873,
-        -0.09106507258961272
+        0.10310344799110419,
+        -0.3019349274103873,
+        -0.1106946609752747
       ],
       [
         0.975,
-        0.08116098584999241,
-        -0.26746516593749325,
-        -0.12253483406250679
+        0.07188544460999327,
+        -0.27046516593749326,
+        -0.13712926061250572
       ],
       [
         1,
-        0.00014000000000000001,
-        -0.195125,
-        -0.19487500000000002
+        0.000124,
+        -0.198125,
+        -0.19789500000000002
       ]
     ],
     "cap": {
       "centerZ": 0.865,
       "radiusZ": 0.135,
-      "radiusX": 0.14,
+      "radiusX": 0.124,
       "frontRadius": 0.125,
-      "backRadius": 0.125,
-      "centerY": -0.195,
+      "backRadius": 0.105,
+      "centerY": -0.198,
       "blendStartZ": 0.86,
       "blendEndZ": 0.94
     },
     "eye": {
-      "angleDegrees": 39,
-      "height": 0.887,
-      "radius": 0.026,
-      "depth": 0.012
+      "angleDegrees": 50,
+      "height": 0.905,
+      "radius": 0.025,
+      "depth": 0.0085
     },
     "sculpt": {
-      "cheekAmplitude": 0.012,
-      "jawAmplitude": 0.01,
-      "socketDepth": 0.0045
+      "cheekAmplitude": 0.006,
+      "jawAmplitude": 0.003,
+      "socketDepth": 0.0045,
+      "cheekHeight": 0.835,
+      "jawHeight": 0.805,
+      "browHeightOffset": 0.016
     },
     "billSections": [
       [
         0,
         -0.312,
         0.020999999999999998,
-        0.845,
-        0.822,
-        0.809
+        0.869,
+        0.846,
+        0.8330000000000001
       ],
       [
         0.2,
-        -0.33132,
+        -0.329388,
         0.0231,
-        0.8473999999999999,
-        0.8203999999999999,
-        0.8054
+        0.875,
+        0.848,
+        0.8330000000000001
       ],
       [
         0.46,
-        -0.35231999999999997,
+        -0.348288,
         0.0203,
-        0.83532,
-        0.81132,
-        0.79732
+        0.8675999999999999,
+        0.8436,
+        0.8296
       ],
       [
         0.7,
-        -0.37164,
+        -0.365676,
         0.0147,
-        0.8163999999999999,
-        0.7974,
-        0.7874
+        0.8529999999999999,
+        0.834,
+        0.824
       ],
       [
         0.9,
-        -0.38424,
+        -0.377016,
         0.006999999999999999,
-        0.7958000000000001,
-        0.7838,
-        0.7788
+        0.8360000000000001,
+        0.8240000000000001,
+        0.8190000000000001
       ],
       [
         1,
-        -0.3876,
+        -0.38004,
         0.0007,
-        0.78,
-        0.779,
-        0.777
+        0.8220000000000001,
+        0.8210000000000001,
+        0.8190000000000001
       ]
     ],
     "cereLobes": [
@@ -337,7 +343,7 @@
         "center": [
           -0.012,
           -0.338,
-          0.847
+          0.871
         ],
         "scale": [
           0.017,
@@ -349,7 +355,7 @@
         "center": [
           0.012,
           -0.338,
-          0.847
+          0.871
         ],
         "scale": [
           0.017,
@@ -361,7 +367,7 @@
         "center": [
           0,
           -0.334,
-          0.844
+          0.868
         ],
         "scale": [
           0.016,
@@ -445,16 +451,16 @@
         0.29
       ],
       [
-        0.09,
-        0.21
+        0.1,
+        0.23
       ],
       [
-        0.025,
-        0.175
+        0.035,
+        0.195
       ],
       [
-        -0.015,
-        0.19
+        -0.025,
+        0.212
       ],
       [
         0.01,
@@ -477,7 +483,17 @@
     "axisTopZ": 0.53,
     "axisTopY": 0.22,
     "axisBottomZ": 0.175,
-    "axisBottomY": 0.645,
+    "axisBottomY": 0.61,
     "rootAttachStartZ": 0.43
+  },
+  "bellyCap": {
+    "centerZ": 0.405,
+    "radiusZ": 0.32,
+    "radiusX": 0.33,
+    "centerY": 0.075,
+    "frontRadius": 0.435,
+    "backRadius": 0.38,
+    "blendStartZ": 0.28,
+    "blendEndZ": 0.47
   }
 }

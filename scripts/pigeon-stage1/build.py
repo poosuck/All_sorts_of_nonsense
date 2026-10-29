@@ -1,4 +1,4 @@
-"""New R01 clay anatomy. Run with Blender; no previous pigeon renderer/assets are used."""
+"""Original R01 anatomy and static plumage. Run with Blender; no legacy assets."""
 import base64
 import bpy
 import bmesh
@@ -6,6 +6,8 @@ import hashlib
 import json
 import math
 import os
+import sys
+sys.dont_write_bytecode=True
 from mathutils import Vector
 from pathlib import Path
 import struct
@@ -27,7 +29,7 @@ scene.collection.children.link(bird)
 model = bpy.data.objects.new("Pigeon_R01", None)
 bird.objects.link(model)
 model["revision"] = CFG["revision"]
-model["stage"] = "anatomy blockout"
+model["stage"] = "anatomy and static plumage study"
 model["source"] = "original continuous profile loft authored for R01"
 def move_to_bird(obj):
     for collection in list(obj.users_collection):
@@ -43,12 +45,13 @@ def material(name, color, roughness=0.78):
     shader.inputs["Base Color"].default_value = (*color, 1)
     shader.inputs["Roughness"].default_value = roughness
     return mat
-clay = material("Clay plumage - anatomy only", (0.46,0.47,0.48))
-foot_mat = material("Clay feet", (0.46,0.44,0.42))
-beak_mat = material("Clay beak", (0.32,0.31,0.30))
-cere_mat = material("Clay cere", (0.76,0.74,0.71))
-eye_mat = material("Clay eye landmark", (0.25,0.24,0.22),0.40)
-pupil_mat = material("Pupil landmark", (0.018,0.018,0.018),0.30)
+clay = material("Warm gray contour underlayer", (0.43,0.405,0.39))
+foot_mat = material("Coral pink feet", (0.48,0.105,0.085))
+beak_mat = material("Slate bill and claws", (0.105,0.115,0.135),0.52)
+cere_mat = material("Warm ivory cere", (0.73,0.68,0.63))
+eye_mat = material("Amber orange iris", (0.80,0.245,0.012),0.32)
+pupil_mat = material("Black pupil", (0.006,0.005,0.004),0.24)
+lid_mat = material("Slate eyelid", (0.14,0.15,0.18))
 def mesh_object(name, vertices, faces, mat=clay):
     data = bpy.data.meshes.new(name)
     data.from_pydata(vertices, [], faces)
@@ -115,7 +118,15 @@ def body_base_values(z):
         # a finite-slope radius interpolant leaves a flat/stepped-looking cap.
         cap=math.sqrt(max(0.000001,1-((z-0.86)/0.14)**2))
         return max(0.0001,0.16*cap),-0.18-0.155*cap,-0.18+0.155*cap
-    return cubic_values(sections,z)
+    original=cubic_values(sections,z)
+    cap=CFG.get("bellyCap")
+    if cap and z<cap["blendEndZ"]:
+        f=math.sqrt(max(.000001,1-((z-cap["centerZ"])/cap["radiusZ"])**2))
+        rounded=[cap["radiusX"]*f,cap["centerY"]-cap["frontRadius"]*f,cap["centerY"]+cap["backRadius"]*f]
+        t=max(0,min(1,(z-cap["blendStartZ"])/(cap["blendEndZ"]-cap["blendStartZ"])))
+        blend=t*t*t*(10-15*t+6*t*t)
+        return [a*(1-blend)+b*blend for a,b in zip(rounded,original)]
+    return original
 head=CFG["head"]
 eye_angle=math.radians(head["eye"]["angleDegrees"])
 def body_values(z):
@@ -146,10 +157,10 @@ def anatomy_point(theta,z):
     sculpt=head["sculpt"]
     offset=0.0
     for sign in [-1,1]:
-        offset+=sculpt["cheekAmplitude"]*bump(sign*(eye_angle+.15),.817,.34,.030)
+        offset+=sculpt["cheekAmplitude"]*bump(sign*(eye_angle+.15),sculpt["cheekHeight"],.34,.030)
         offset-=sculpt["socketDepth"]*bump(sign*eye_angle,head["eye"]["height"],.19,.022)
-        offset+=.0015*bump(sign*eye_angle,.896,.25,.015)
-    offset+=sculpt["jawAmplitude"]*bump(0,.792,.55,.026)
+        offset+=.0015*bump(sign*eye_angle,head["eye"]["height"]+sculpt["browHeightOffset"],.25,.015)
+    offset+=sculpt["jawAmplitude"]*bump(0,sculpt["jawHeight"],.55,.026)
     return point+Vector((math.sin(theta),-math.cos(theta),0))*offset*ease((z-.70)/.075)
 verts,faces = [],[]
 rows,segments = 120,80
@@ -167,6 +178,26 @@ for j in range(rows-1):
 faces.extend([tuple(reversed(range(segments))),tuple((rows-1)*segments+i for i in range(segments))])
 body = mesh_object("Body_neck_head_continuous",verts,faces)
 body["construction"] = "continuous torso + local cranial/cheek/jaw/socket sculpt; profiles.json"
+# A glTF COLOR_0 attribute carries the broad regional undercolors. Feather
+# relief above this surface is real geometry, not painted silhouette detail.
+body_mat = material("Regional plumage undercolors", (1,1,1))
+body.data.materials.clear(); body.data.materials.append(body_mat)
+color_node = body_mat.node_tree.nodes.new("ShaderNodeVertexColor")
+color_node.layer_name = "PlumageColor"
+body_mat.node_tree.links.new(color_node.outputs["Color"], body_mat.node_tree.nodes.get("Principled BSDF").inputs["Base Color"])
+colors = body.data.color_attributes.new(name="PlumageColor",type="FLOAT_COLOR",domain="POINT")
+def undercolor(z):
+    stops=[(.085,(.39,.37,.36)),(.48,(.43,.405,.39)),(.55,(.39,.34,.35)),
+           (.62,(.25,.12,.23)),(.67,(.18,.115,.22)),(.71,(.07,.19,.15)),
+           (.77,(.09,.20,.17)),(.82,(.14,.16,.18)),(1,(.14,.15,.18))]
+    if z<=stops[0][0]:return stops[0][1]
+    for (za,a),(zb,b) in zip(stops,stops[1:]):
+        if z<=zb:
+            t=(z-za)/(zb-za);t=t*t*(3-2*t)
+            return tuple(x+(y-x)*t for x,y in zip(a,b))
+    return stops[-1][1]
+for vertex,color in zip(body.data.vertices,colors.data):
+    color.color=(*undercolor(vertex.co.z),1)
 def body_side(y,z):
     rx,front,back = body_values(z)
     ry = (back-front)/2
@@ -205,7 +236,7 @@ for side,label in [(1,"Left"),(-1,"Right")]:
             for k in range(segments_w):ff.append((idx(layer,ring,k),idx(layer,ring,k+1),idx(layer,ring+1,k+1),idx(layer,ring+1,k)))
     for k in range(segments_w):ff.append((idx(0,rings,k),idx(0,rings,k+1),idx(1,rings,k+1),idx(1,rings,k)))
     obj=mesh_object("Wing_shoulder_wrapped_"+label,vv,ff)
-    obj["stage"]="continuous body-wrapped shoulder volume; feather layers pending"
+    obj["stage"]="continuous body-wrapped shoulder under overlapping feather laminae"
     # A longitudinal leaf covers the rear from shoulder to medial tailward tip.
     # Its root follows the rump; the distal part extends gradually behind it.
     # This replaces a constant-Y cross section that exposed only a V-shaped lip.
@@ -260,8 +291,8 @@ def blade(name,start,end,width,mat=clay):
             ff.append((a,b,b+sides,a+sides))
     ff.extend([tuple(reversed(range(sides))),tuple(steps*sides+i for i in range(sides))])
     return mesh_object(name,vv,ff,mat)
-# First establish the tail's broad, flat volume along the rump axis. Individual
-# feather ends would hide silhouette errors at this stage, so they are deferred.
+# The rump-aligned tail envelope supports the separate feather blades added
+# below; it keeps gaps between their roots from opening into the body.
 vv,ff=[],[]
 tail=CFG["tailSections"]
 rows_t,sides_t=64,40
@@ -297,7 +328,7 @@ for side,label in [(1,"Left"),(-1,"Right")]:
     radius=head["eye"]["radius"]
     center=surface-normal*.004
     ellipsoid("Eye_globe_"+label,center,(radius,radius*.96,head["eye"]["depth"]),eye_mat,normal)
-    ellipsoid("Pupil_landmark_"+label,center+normal*.0115,(.011,.011,.0015),pupil_mat,normal)
+    ellipsoid("Pupil_landmark_"+label,center+normal*.008,(.013,.013,.0015),pupil_mat,normal)
     vv,ff=[],[]
     for j in range(5):
         t=j/4;r=.024+.006*t
@@ -310,7 +341,7 @@ for side,label in [(1,"Left"),(-1,"Right")]:
         for k in range(64):
             a=j*64+k;b=j*64+(k+1)%64
             ff.append((a,b,b+64,a+64))
-    mesh_object("Eyelid_surface_"+label,vv,ff)
+    mesh_object("Eyelid_surface_"+label,vv,ff,lid_mat)
 # Smooth upper/lower bill profiles share a controlled seam, rather than two plates.
 for part in ["Upper","Lower"]:
     vv,ff=[],[]
@@ -366,12 +397,16 @@ def tube(name,points,radii,mat=foot_mat):
     ff.extend([tuple(reversed(range(sides))),tuple((len(points)-1)*sides+i for i in range(sides))])
     return mesh_object(name,vv,ff,mat)
 for side,label in [(1,"Left"),(-1,"Right")]:
-    x=side*0.130
-    tube("Tarsus_"+label,[(x,0.060,0.195),(x,0.035,0.095),(x,0.015,0.040)],[0.028,0.025,0.023])
+    x=side*0.115
+    tube("Tarsus_"+label,[(x,0.060,0.195),(x,0.035,0.095),(x,0.015,0.040)],[0.022,0.020,0.019])
     for j,(dx,ey) in enumerate([(-0.060,-0.140),(0,-0.170),(0.060,-0.142)]):
         tube("Front_toe_"+label+"_"+str(j+1),[(x,-0.005,0.034),(x+dx*0.55,-0.070,0.026),(x+dx,ey,0.014)],[0.019,0.016,0.009])
         tube("Claw_"+label+"_"+str(j+1),[(x+dx,ey,0.014),(x+dx*1.04,ey-0.012,0.008),(x+dx*1.06,ey-0.018,0.003)],[0.006,0.004,0.001],beak_mat)
     tube("Back_toe_"+label,[(x,0.015,0.034),(x-0.018*side,0.065,0.027),(x-0.035*side,0.105,0.014)],[0.016,0.013,0.006])
+# Add merged, surface-following feather laminae before recording/exporting.
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from plumage import add_plumage
+plumage=add_plumage(bird,model,CFG,anatomy_point,torso_surface,closed_spline,mesh_object)
 # Metrics from the actual authoring geometry.
 bpy.context.view_layer.update()
 mesh_objects=[o for o in bird.objects if o.type=="MESH"]
@@ -443,7 +478,7 @@ for name,degrees in ([] if model_only else zip(views,CFG["camera"]["azimuths"]))
     scene.render.filepath=str(REVIEW/("blender-"+name+".png"))
     bpy.ops.render.render(write_still=True)
 manifest={
- "revision":CFG["revision"],"stage":"anatomy-blockout","reference":"R01",
+ "revision":CFG["revision"],"stage":"anatomy-and-plumage-study","reference":"R01",
  "reference_file_available":False,"reference_measurements":"initial visual estimates only",
  "authoring":"art/pigeon/pigeon.blend","blender":bpy.app.version_string,
  "geometry_source":"original profile loft; no legacy pigeon model",
@@ -452,7 +487,8 @@ manifest={
  "profiles_sha256":hashlib.sha256((ART/"profiles.json").read_bytes()).hexdigest(),
  "glb_bytes":len(raw),"triangles":triangles,"mesh_count":len(gltf["meshes"]),
  "bounds_blender":bounds,"views":dict(zip(views,CFG["camera"]["azimuths"])),
- "poses":["stand"],"limitations":["covert/neck feather layers not built","final colors and iridescence not built","pose rig and seven poses not built","reference proportions not pixel measured"]
+ "plumage":plumage,
+ "poses":["stand"],"limitations":plumage["limitations"]+["final PBR microdetail and colors require further reference matching","pose rig and seven poses not built","reference proportions not pixel measured"]
 }
 (ASSETS/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
 (REVIEW/"model-report.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")

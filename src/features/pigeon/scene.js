@@ -28,9 +28,12 @@ function releaseTree(root) {
   materials.forEach((value) => value.dispose());
   geometries.forEach((value) => value.dispose());
 }
-export async function createPigeonStudy(host, { signal, initialView = "left45", onState, onError } = {}) {
+export async function createPigeonStudy(host, { signal, initialView = "left45", initialFraming = "body", initialSurface = "color", onState, onError } = {}) {
   let renderer, controls, observer, frame = 0, disposed = false, count = 0;
   let currentView = VIEWS.some((v) => v.id === initialView) ? initialView : "left45";
+  let currentFraming = initialFraming === "head" ? "head" : "body";
+  let currentSurface = initialSurface === "clay" ? "clay" : "color";
+  const originalMaterials = new Map(), clayMaterials = new Map();
   let loaded;
   const world = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.05, 30);
@@ -50,8 +53,12 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
       renderer.domElement.remove();
     }
     world.traverse((node) => node.shadow?.map?.dispose());
+    originalMaterials.forEach((material, node) => { node.material = material; });
     releaseTree(world);
     if (loaded && !loaded.parent) releaseTree(loaded);
+    clayMaterials.forEach((material) => material.dispose());
+    originalMaterials.clear();
+    clayMaterials.clear();
   }
   function draw() {
     frame = 0;
@@ -59,7 +66,7 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     try {
       renderer.render(world, camera);
       count += 1;
-      onState?.({ ready: true, revision: manifest.revision, view: currentView, frame: count,
+      onState?.({ ready: true, revision: manifest.revision, view: currentView, framing: currentFraming, surface: currentSurface, frame: count,
         meshes: manifest.mesh_count, triangles: manifest.triangles, source: "blender-glb" });
     } catch (error) {
       onError?.("3D 화면을 표시하지 못했습니다. 다시 불러와 주세요.");
@@ -73,17 +80,45 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     if (!preset || disposed || !controls) return;
     currentView = preset.id;
     const a = THREE.MathUtils.degToRad(preset.angle);
-    camera.position.set(3.4 * Math.sin(a), 0.82, 3.4 * Math.cos(a));
+    if (currentFraming === "head") {
+      target.set(0, 0.855, 0.18);
+      camera.position.set(3.4 * Math.sin(a), target.y, target.z + 3.4 * Math.cos(a));
+    } else {
+      target.set(0, 0.49, -0.08);
+      camera.position.set(3.4 * Math.sin(a), 0.82, 3.4 * Math.cos(a));
+    }
     camera.zoom = 1;
     camera.updateProjectionMatrix();
     controls.target.copy(target);
     controls.update();
     requestDraw();
   }
+  function setFraming(value) {
+    if (!["body", "head"].includes(value) || disposed || !controls) return;
+    currentFraming = value;
+    setView(currentView);
+    resize();
+  }
+  function setSurface(value) {
+    if (!["color", "clay"].includes(value) || disposed || !loaded) return;
+    currentSurface = value;
+    originalMaterials.forEach((material, node) => {
+      if (value === "color") {
+        node.material = material;
+        return;
+      }
+      const color = node.name.startsWith("Pupil_") ? 0x161616 : node.name.startsWith("Eye_globe_") ? 0x575757 : 0x858585;
+      if (!clayMaterials.has(color)) clayMaterials.set(color, new THREE.MeshStandardMaterial({
+        color, roughness: 0.8, metalness: 0, side: THREE.DoubleSide,
+      }));
+      node.material = clayMaterials.get(color);
+    });
+    requestDraw();
+  }
   function resize() {
     if (disposed || !renderer) return;
     const width = Math.max(1, host.clientWidth), height = Math.max(1, host.clientHeight);
-    const half = 0.71, aspect = width / height;
+    const half = currentFraming === "head" ? 0.245 : 0.71, aspect = width / height;
     camera.left = -half * Math.max(aspect, 1);
     camera.right = half * Math.max(aspect, 1);
     camera.top = half * Math.max(1 / aspect, 1);
@@ -108,7 +143,10 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     if (!Number.isFinite(height) || height < 0.01) throw new Error("Invalid model bounds");
     loaded.scale.setScalar(1 / height);
     loaded.position.y = -box.min.y / height;
-    loaded.traverse((node) => { if (node.isMesh) { node.castShadow = true; node.receiveShadow = false; } });
+    loaded.traverse((node) => { if (node.isMesh) {
+      node.castShadow = true; node.receiveShadow = false;
+      originalMaterials.set(node, node.material);
+    } });
     world.add(loaded);
     world.add(new THREE.HemisphereLight(0xffffff, 0xaaa69e, 2.4));
     const key = new THREE.DirectionalLight(0xffffff, 2.0);
@@ -137,7 +175,7 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.VSMShadowMap;
-    renderer.domElement.setAttribute("aria-label", "비둘기 체형 초안 3D 모델");
+    renderer.domElement.setAttribute("aria-label", "비둘기 3D 모델");
     renderer.domElement.addEventListener("webglcontextlost", contextLost);
     host.appendChild(renderer.domElement);
     controls = new OrbitControls(camera, renderer.domElement);
@@ -150,9 +188,10 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     controls.addEventListener("change", requestDraw);
     observer = new ResizeObserver(resize);
     observer.observe(host);
+    setSurface(currentSurface);
     setView(currentView);
     resize();
-    return { dispose, setView, reset: () => setView("left45") };
+    return { dispose, setView, setFraming, setSurface, reset: () => { currentFraming = "body"; setView("left45"); resize(); } };
   } catch (error) {
     dispose();
     throw error;

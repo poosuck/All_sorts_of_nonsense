@@ -10,7 +10,9 @@ test("one Blender GLB renders from all eight cameras and returns home", async ({
   await page.goto("/pigeon?view=front");
   const scene = page.getByTestId("pigeon-scene");
   await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 45000 });
-  await expect(scene).toHaveAttribute("data-revision", "clay-v7");
+  await expect(scene).toHaveAttribute("data-revision", "clay-v8");
+  await expect(scene).toHaveAttribute("data-framing", "body");
+  await expect(scene).toHaveAttribute("data-surface", "color");
   await expect(scene).toHaveAttribute("data-source", "blender-glb");
   const canvas = page.locator(".pigeon-viewport canvas");
   await expect(canvas).toHaveCount(1);
@@ -23,10 +25,23 @@ test("one Blender GLB renders from all eight cameras and returns home", async ({
     screenshots.add((await canvas.screenshot()).toString("base64"));
   }
   expect(screenshots.size).toBeGreaterThan(5);
+  await page.getByRole("button", { name: "얼굴", exact: true }).click();
+  await expect(scene).toHaveAttribute("data-framing", "head");
+  await page.getByRole("button", { name: "정면", exact: true }).click();
+  await expect(scene).toHaveAttribute("data-view", "front");
+  await expect(canvas).toHaveAttribute("data-original-canvas", "true");
+  expect(screenshots.has((await canvas.screenshot()).toString("base64"))).toBe(false);
+  const coloredHead = (await canvas.screenshot()).toString("base64");
+  await page.getByRole("button", { name: "무채색", exact: true }).click();
+  await expect(scene).toHaveAttribute("data-surface", "clay");
+  expect((await canvas.screenshot()).toString("base64")).not.toBe(coloredHead);
+  await page.getByRole("button", { name: "기본색", exact: true }).click();
+  await expect(scene).toHaveAttribute("data-surface", "color");
   expect(requests).toHaveLength(1);
   expect(requests[0]).not.toMatch(/normal-v|chicken|kenchoo/);
   await page.getByRole("button", { name: "↺ 기본 시점으로", exact: true }).click();
   await expect(scene).toHaveAttribute("data-view", "left45");
+  await expect(scene).toHaveAttribute("data-framing", "body");
   await page.getByRole("link", { name: "별짓 홈으로", exact: true }).click();
   await expect(page).toHaveURL("/");
   await expect(page.locator("canvas")).toHaveCount(0);

@@ -25,10 +25,10 @@
 
 ## 원본과 실행 검증
 
-- [Blender 원본](../../../../art/pigeon/pigeon.blend) · [GLB](../../../../src/assets/pigeon/pigeon.glb) · [머리 매개변수](../../../../art/pigeon/profiles.json)
-- [원본·GLB·프로필 해시](../../../../src/assets/pigeon/manifest.json) · [모델 생성 기록](model-report.json)
+- [Blender 원본](https://github.com/poosuck/All_sorts_of_nonsense/blob/cff506f4a2bfc3d780cb3adb19ba763f0febbd8e/art/pigeon/pigeon.blend) · [GLB](https://github.com/poosuck/All_sorts_of_nonsense/blob/cff506f4a2bfc3d780cb3adb19ba763f0febbd8e/src/assets/pigeon/pigeon.glb) · [머리 매개변수](https://github.com/poosuck/All_sorts_of_nonsense/blob/cff506f4a2bfc3d780cb3adb19ba763f0febbd8e/art/pigeon/profiles.json)
+- [원본·GLB·프로필 해시](https://github.com/poosuck/All_sorts_of_nonsense/blob/cff506f4a2bfc3d780cb3adb19ba763f0febbd8e/src/assets/pigeon/manifest.json) · [모델 생성 기록](model-report.json)
 - Blender 두상 확대는 [정면](head/head-front.png) · [45°](head/head-left45.png) · [측면](head/head-left.png) 3방향을 새로 촬영했습니다. 이번 리비전의 Blender 전신 8방향 모음은 별도 생성하지 않았습니다.
 - [웹 검증 기록](web-report.json)에 새 GLB의 전체 8방향 캡처 경로가 있습니다.
 - 프로덕션 빌드, 단위 검사 13건, 푸딩 원본 일치 검사, 비둘기 프로덕션 E2E 4건 통과. 웹 캡처 중 동일 GLB 요청 1회, 페이지 예외 0건입니다.
 
-일반 화면은 http://localhost:5173/pigeon 입니다. 기존 작업 브랜치 `codex/pigeon-clay-v1`을 갱신하면 상단에 **clay-v7**이 표시됩니다.
+일반 화면은 http://localhost:5173/pigeon 입니다. 이 문서의 원본 링크는 clay-v7 커밋에 고정했습니다. 작업 브랜치의 최신 모델은 [최신 기록](../clay-v8/README.md)에서 확인합니다.

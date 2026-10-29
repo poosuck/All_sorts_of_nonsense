@@ -26,13 +26,23 @@ try {
   await page.waitForFunction(() => document.querySelector("[data-testid=pigeon-scene]")?.dataset.ready === "true");
   const views = ["front","left45","left","back-left45","back","back-right45","right","right45"];
   const captures = [];
+  const imageData = new Map();
   let budget=500000;
-  for (let i=0;i<views.length;i++) {
-    await page.locator(".study-views button").nth(i).evaluate(button => button.click());
-    await page.waitForFunction(view => document.querySelector("[data-testid=pigeon-scene]").dataset.view === view, views[i]);
-    const path = output + "/web-" + views[i] + ".png";
+  async function selectView(view) {
+    const before = Number(await page.getByTestId("pigeon-scene").getAttribute("data-frame"));
+    await page.locator(".study-views button").nth(views.indexOf(view)).evaluate(button => button.click());
+    await page.waitForFunction(({view, before}) => {
+      const scene = document.querySelector("[data-testid=pigeon-scene]");
+      return scene.dataset.view === view && Number(scene.dataset.frame) > before;
+    }, {view, before});
+  }
+  async function capture(view, framing, surface = "color") {
+    await selectView(view);
+    const stem = "web-" + (surface === "clay" ? "clay-" : "") + (framing === "head" ? "head-" : "") + view;
+    const path = output + "/" + stem + ".png";
     const bytes = await page.locator("canvas").screenshot({ path });
-    captures.push({ view: views[i], path, bytes: bytes.length });
+    imageData.set(stem, "data:image/png;base64," + bytes.toString("base64"));
+    captures.push({ view, framing, surface, path, bytes: bytes.length });
     if (process.env.PIGEON_EXPORT_BUNDLE === "1" && bytes.length <= budget) {
       budget -= bytes.length;
       const encoded = bytes.toString("base64"), parts = Math.ceil(encoded.length / 16000);
@@ -40,6 +50,45 @@ try {
       for (let p=0;p<parts;p++) console.log("PIGEON_FILE_CHUNK " + JSON.stringify({ path, index:p, data:encoded.slice(p*16000,(p+1)*16000) }));
     }
   }
+  for (const view of views) await capture(view, "body");
+  await page.locator(".study-framing button").nth(1).evaluate(button => button.click());
+  await page.waitForFunction(() => document.querySelector("[data-testid=pigeon-scene]").dataset.framing === "head");
+  for (const view of ["front", "left45", "left"]) await capture(view, "head");
+  async function contactSheet(stems, labels, tile, filename) {
+    const data = await page.evaluate(async ({sources, labels, tile}) => {
+      const sheet = document.createElement("canvas");
+      sheet.width = tile * sources.length;
+      sheet.height = tile + 32;
+      const context = sheet.getContext("2d");
+      context.fillStyle = "#efeeea";
+      context.fillRect(0, 0, sheet.width, sheet.height);
+      const images = await Promise.all(sources.map(src => new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error("Capture sheet image did not load"));
+        image.src = src;
+      })));
+      context.fillStyle = "#323230";
+      context.font = "12px sans-serif";
+      images.forEach((image, i) => {
+        context.drawImage(image, i*tile, 0, tile, tile);
+        context.fillText(labels[i], i*tile + 12, tile + 21);
+      });
+      return sheet.toDataURL("image/png").split(",")[1];
+    }, {sources: stems.map(stem => imageData.get(stem)), labels, tile});
+    await writeFile(output + "/" + filename, Buffer.from(data, "base64"));
+  }
+  const fiveViews = ["front", "left45", "left", "back-left45", "back"];
+  await contactSheet(fiveViews.map(view => "web-" + view), fiveViews, 320, "web-five-views.png");
+  await contactSheet(["front", "left45", "left"].map(view => "web-head-" + view), ["front", "left45", "left"], 400, "web-head-three-views.png");
+  await page.locator(".study-surface button").nth(1).evaluate(button => button.click());
+  await page.waitForFunction(() => document.querySelector("[data-testid=pigeon-scene]").dataset.surface === "clay");
+  for (const view of ["front", "left45", "left"]) await capture(view, "head", "clay");
+  await page.locator(".study-framing button").nth(0).evaluate(button => button.click());
+  await page.waitForFunction(() => document.querySelector("[data-testid=pigeon-scene]").dataset.framing === "body");
+  for (const view of fiveViews) await capture(view, "body", "clay");
+  await contactSheet(fiveViews.map(view => "web-clay-" + view), fiveViews, 320, "web-clay-five-views.png");
+  await contactSheet(["front", "left45", "left"].map(view => "web-clay-head-" + view), ["front", "left45", "left"], 400, "web-clay-head-three-views.png");
   if (errors.length) throw new Error(errors.join("\n"));
   if (requests.length !== 1) throw new Error("Unexpected model requests: " + requests.length);
   const manifest=JSON.parse(await readFile("src/assets/pigeon/manifest.json","utf8"));
