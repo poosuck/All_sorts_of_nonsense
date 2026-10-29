@@ -9,6 +9,7 @@ out=root/'docs/pigeon/reviews'/manifest['revision']/'head'
 out.mkdir(parents=True,exist_ok=True)
 assert hashlib.sha256((root/'art/pigeon/pigeon.blend').read_bytes()).hexdigest()==manifest['blend_sha256']
 source_commit=subprocess.run(['git','log','-1','--format=%H','--','art/pigeon/pigeon.blend'],cwd=root,check=True,capture_output=True,text=True).stdout.strip()
+if subprocess.run(['git','status','--porcelain','--','art/pigeon/pigeon.blend'],cwd=root,check=True,capture_output=True,text=True).stdout.strip():source_commit=None
 bpy.ops.wm.open_mainfile(filepath=str(root/'art/pigeon/pigeon.blend'))
 scene=bpy.context.scene
 camera=scene.camera
@@ -32,6 +33,6 @@ from PIL import Image,ImageDraw
 sheet=Image.new('RGB',(1200,432),'#efeeea');draw=ImageDraw.Draw(sheet)
 for i,(name,_) in enumerate([('front',0),('left45',45),('left',90)]):
  pic=Image.open(out/('head-'+name+'.png')).resize((400,400))
- sheet.paste(pic,(400*i,0));draw.text((400*i+12,410),'clay-v3 | '+name,fill='#252525')
+ sheet.paste(pic,(400*i,0));draw.text((400*i+12,410),manifest['revision']+' | '+name,fill='#252525')
 sheet.save(out/'head-three-views.png')
 assert hashlib.sha256((root/'art/pigeon/pigeon.blend').read_bytes()).hexdigest()==manifest['blend_sha256']

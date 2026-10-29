@@ -1,0 +1,58 @@
+{
+  "source_model_commit": null,
+  "revision": "clay-v4",
+  "glb_sha256": "3f35adabd9457b010c183551151abedff2fe91427fff4b9efa5132c8f8faa4c2",
+  "blend_sha256": "cd5b720defd528b915d71dbfdeb4c6d5e6bf3226add33962d130a12cd04bd694",
+  "source": "unchanged art/pigeon/pigeon.blend; camera-only closeups; no model/material/light changes",
+  "reference": "conversation R01 top-right face closeups, visual comparison only",
+  "views": [
+    {
+      "view": "front",
+      "azimuth": 0,
+      "position": [
+        0.0,
+        -3.580000162124634,
+        0.8550000190734863
+      ],
+      "target": [
+        0.0,
+        -0.18000000715255737,
+        0.8550000190734863
+      ],
+      "orthographic_scale": 0.49,
+      "file": "head-front.png"
+    },
+    {
+      "view": "left45",
+      "azimuth": 45,
+      "position": [
+        2.404163122177124,
+        -2.584163188934326,
+        0.8550000190734863
+      ],
+      "target": [
+        0.0,
+        -0.18000000715255737,
+        0.8550000190734863
+      ],
+      "orthographic_scale": 0.49,
+      "file": "head-left45.png"
+    },
+    {
+      "view": "left",
+      "azimuth": 90,
+      "position": [
+        3.4000000953674316,
+        -0.18000000715255737,
+        0.8550000190734863
+      ],
+      "target": [
+        0.0,
+        -0.18000000715255737,
+        0.8550000190734863
+      ],
+      "orthographic_scale": 0.49,
+      "file": "head-left.png"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "revision": "clay-v4",
+  "stage": "anatomy-blockout",
+  "reference": "R01",
+  "reference_file_available": false,
+  "reference_measurements": "initial visual estimates only",
+  "authoring": "art/pigeon/pigeon.blend",
+  "blender": "4.3.2",
+  "geometry_source": "original profile loft; no legacy pigeon model",
+  "glb_sha256": "3f35adabd9457b010c183551151abedff2fe91427fff4b9efa5132c8f8faa4c2",
+  "blend_sha256": "cd5b720defd528b915d71dbfdeb4c6d5e6bf3226add33962d130a12cd04bd694",
+  "profiles_sha256": "6f5f2542165683a2db44f39e69e4bb0d5ae70851bf4396ff30193302789a5959",
+  "glb_bytes": 924272,
+  "triangles": 51172,
+  "mesh_count": 29,
+  "bounds_blender": {
+    "min": [
+      -0.3499942719936371,
+      -0.4020000100135803,
+      0.0022540870122611523
+    ],
+    "max": [
+      0.3499942719936371,
+      0.7699999809265137,
+      1.0
+    ],
+    "height": 0.9977459129877388,
+    "width_over_height": 0.7015699436855285,
+    "length_over_height": 1.1746477491754923
+  },
+  "views": {
+    "front": 0,
+    "left45": 45,
+    "left": 90,
+    "back-left45": 135,
+    "back": 180,
+    "back-right45": 225,
+    "right": 270,
+    "right45": 315
+  },
+  "poses": [
+    "stand"
+  ],
+  "limitations": [
+    "covert/neck feather layers not built",
+    "final colors and iridescence not built",
+    "pose rig and seven poses not built",
+    "reference proportions not pixel measured"
+  ]
+}

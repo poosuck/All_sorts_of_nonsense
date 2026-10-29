@@ -1,0 +1,12 @@
+{
+  "baseline_revision": "clay-v3",
+  "baseline_glb_sha256": "e3af61181c76412fe3df03dd6e2f58b7e4a07aeac5cad537477cd5205dabdc81",
+  "revision": "clay-v4",
+  "glb_sha256": "3f35adabd9457b010c183551151abedff2fe91427fff4b9efa5132c8f8faa4c2",
+  "same_cameras": true,
+  "views": [
+    "front",
+    "left45",
+    "left"
+  ]
+}

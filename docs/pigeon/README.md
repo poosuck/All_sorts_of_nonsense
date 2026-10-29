@@ -1,8 +1,9 @@
 # 비둘기 새 모델 제작
 
-[제작·웹 렌더링 명세서 v1.0](MODEL-SPEC.ko.md)에 따라 무채색 체형을 제작 중입니다. 현재 clay-v3는 체형 우선 요청에 따라 가슴·배의 곡률과 머리·목 구분을 수정한 모델입니다. 체형 검토 전까지 깃털·최종 재질·7종 자세 제작은 보류합니다.
+[제작·웹 렌더링 명세서 v1.0](MODEL-SPEC.ko.md)에 따라 무채색 체형을 제작 중입니다. 현재 clay-v4는 두상 대조 후 눈·안와 위치, 볼·턱·뒤통수와 부리·납막을 수정한 모델입니다. 체형 검토 전까지 깃털·최종 재질·7종 자세 제작은 보류합니다.
 
-- [최신 실제 웹 캡처·전후 비교·검증 기록](reviews/clay-v3/README.md)
+- [최신 두상 전후 비교·8방향 검증 기록](reviews/clay-v4/README.md)
+- [clay-v3 체형 기록](reviews/clay-v3/README.md)
 - [clay-v2 체형 기록](reviews/clay-v2/README.md)
 - [첫 체형 초안 기록](reviews/clay-v1/README.md)
 - [기준 시트와 초기 비율값](REFERENCE-BASIS.ko.md)

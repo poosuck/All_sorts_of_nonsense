@@ -89,11 +89,11 @@ def smooth_values(points, at):
     return out
 sections = CFG["bodySections"]
 @lru_cache(maxsize=None)
-def body_second_derivatives():
+def section_second_derivatives(curve):
     # Natural cubic sections provide continuous curvature. PCHIP's second
     # derivative jumps were visible as horizontal bands across the torso.
     import numpy as np
-    points=np.array(sections,dtype=float)
+    points=np.array(curve,dtype=float)
     h=np.diff(points[:,0]); count=len(points)
     system=np.eye(count); rhs=np.zeros((count,3))
     for i in range(1,count-1):
@@ -102,18 +102,47 @@ def body_second_derivatives():
         system[i,i+1]=h[i]
         rhs[i]=6*((points[i+1,1:]-points[i,1:])/h[i]-(points[i,1:]-points[i-1,1:])/h[i-1])
     return np.linalg.solve(system,rhs)
-def body_values(z):
-    z=max(sections[0][0],min(z,sections[-1][0]))
+def cubic_values(curve,z):
+    z=max(curve[0][0],min(z,curve[-1][0]))
+    i=next((i for i in range(len(curve)-1) if curve[i][0]<=z<=curve[i+1][0]),len(curve)-2)
+    h=curve[i+1][0]-curve[i][0]
+    a=(curve[i+1][0]-z)/h; b=(z-curve[i][0])/h
+    second=section_second_derivatives(tuple(map(tuple,curve)))
+    return [a*curve[i][c+1]+b*curve[i+1][c+1]+((a*a*a-a)*second[i,c]+(b*b*b-b)*second[i+1,c])*h*h/6 for c in range(3)]
+def body_base_values(z):
     if z>=0.900:
         # An ellipsoidal crown closes with the right curvature at the pole;
         # a finite-slope radius interpolant leaves a flat/stepped-looking cap.
         cap=math.sqrt(max(0.000001,1-((z-0.86)/0.14)**2))
         return max(0.0001,0.16*cap),-0.18-0.155*cap,-0.18+0.155*cap
-    i=next((i for i in range(len(sections)-1) if sections[i][0]<=z<=sections[i+1][0]),len(sections)-2)
-    h=sections[i+1][0]-sections[i][0]
-    a=(sections[i+1][0]-z)/h; b=(z-sections[i][0])/h
-    second=body_second_derivatives()
-    return [a*sections[i][c+1]+b*sections[i+1][c+1]+((a*a*a-a)*second[i,c]+(b*b*b-b)*second[i+1,c])*h*h/6 for c in range(3)]
+    return cubic_values(sections,z)
+head=CFG["head"]
+eye_angle=math.radians(head["eye"]["angleDegrees"])
+def body_values(z):
+    original=body_base_values(z)
+    if z<=.70:return original
+    cap=head["cap"]
+    if z>=cap["startZ"]:
+        f=math.sqrt(max(.000001,1-((z-cap["centerZ"])/cap["radiusZ"])**2))
+        revised=[max(.0001,cap["radiusX"]*f),cap["centerY"]-cap["frontRadius"]*f,cap["centerY"]+cap["backRadius"]*f]
+    else:revised=cubic_values(head["sections"],z)
+    t=max(0,min(1,(z-.70)/.07));blend=t*t*t*(10-15*t+6*t*t)
+    return [a*(1-blend)+b*blend for a,b in zip(original,revised)]
+def anatomy_point(theta,z):
+    rx,front,back=body_values(z)
+    point=Vector((rx*math.sin(theta),(front+back)/2-(back-front)/2*math.cos(theta),z))
+    if z<=.74:return point
+    def bump(angle,height,aw,zw):
+        delta=math.atan2(math.sin(theta-angle),math.cos(theta-angle))
+        return math.exp(-.5*((delta/aw)**2+((z-height)/zw)**2))
+    sculpt=head["sculpt"]
+    offset=0.0
+    for sign in [-1,1]:
+        offset+=sculpt["cheekAmplitude"]*bump(sign*(eye_angle+.15),.817,.34,.030)
+        offset-=sculpt["socketDepth"]*bump(sign*eye_angle,head["eye"]["height"],.19,.022)
+        offset+=.003*bump(sign*eye_angle,.896,.25,.015)
+    offset+=sculpt["jawAmplitude"]*bump(0,.792,.55,.026)
+    return point+Vector((math.sin(theta),-math.cos(theta),0))*offset
 verts,faces = [],[]
 rows,segments = 120,80
 for j in range(rows):
@@ -122,14 +151,14 @@ for j in range(rows):
     rx,front,back = body_values(z)
     for i in range(segments):
         theta = 2*math.pi*i/segments
-        verts.append((rx*math.sin(theta),(front+back)/2-(back-front)/2*math.cos(theta),z))
+        verts.append(anatomy_point(theta,z))
 for j in range(rows-1):
     for i in range(segments):
         ni = (i+1)%segments
         faces.append((j*segments+i,j*segments+ni,(j+1)*segments+ni,(j+1)*segments+i))
 faces.extend([tuple(reversed(range(segments))),tuple((rows-1)*segments+i for i in range(segments))])
 body = mesh_object("Body_neck_head_continuous",verts,faces)
-body["construction"] = "C2 continuous anatomical section loft; editable parameters in profiles.json"
+body["construction"] = "continuous torso + local cranial/cheek/jaw/socket sculpt; profiles.json"
 def body_side(y,z):
     rx,front,back = body_values(z)
     ry = (back-front)/2
@@ -221,27 +250,61 @@ def ellipsoid(name,center,scale,mat=clay,normal=None):
     obj.data.materials.append(mat)
     for p in obj.data.polygons: p.use_smooth=True
     return obj
-# Small facial landmarks allow judging head/beak proportions in the clay study.
+# Surface-oriented embedded globes and flush eyelid strips.
 for side,label in [(1,"Left"),(-1,"Right")]:
-    center=Vector((side*0.110,-0.301,0.868))
-    normal=Vector((side*0.78,-0.62,0.045)).normalized()
-    ellipsoid("Eye_landmark_"+label,center,(0.023,0.023,0.007),eye_mat,normal)
-    ellipsoid("Pupil_landmark_"+label,center+normal*0.006,(0.010,0.010,0.002),pupil_mat,normal)
-    ellipsoid("Cere_landmark_"+label,(side*0.011,-0.340,0.819),(0.017,0.023,0.009),cere_mat)
-# Variable-section bill. Its upper and lower halves remain separate for later articulation.
-for part,offset,scale_z in [("Upper",0.002,1.0),("Lower",-0.008,0.48)]:
+    angle=side*eye_angle;z=head["eye"]["height"]
+    surface=anatomy_point(angle,z)
+    du=(anatomy_point(angle+.001,z)-anatomy_point(angle-.001,z))/.002
+    dz=(anatomy_point(angle,z+.001)-anatomy_point(angle,z-.001))/.002
+    normal=du.cross(dz).normalized()
+    radius=head["eye"]["radius"]
+    center=surface-normal*.004
+    ellipsoid("Eye_globe_"+label,center,(radius,radius*.96,head["eye"]["depth"]),eye_mat,normal)
+    ellipsoid("Pupil_landmark_"+label,center+normal*.0115,(.011,.011,.0015),pupil_mat,normal)
     vv,ff=[],[]
-    bill=[(-0.325,0.813,0.031,0.021),(-0.350,0.809,0.030,0.021),(-0.380,0.795,0.020,0.015),(-0.407,0.781,0.003,0.003)]
-    for y,z,rx,rz in bill:
-        for k in range(16):
-            a=2*math.pi*k/16
-            vv.append((rx*math.cos(a),y,z+offset+rz*scale_z*math.sin(a)))
-    for j in range(3):
-        for k in range(16):
-            a=j*16+k;b=j*16+(k+1)%16
-            ff.append((a,b,b+16,a+16))
-    ff.extend([tuple(reversed(range(16))),tuple(48+k for k in range(16))])
+    for j in range(5):
+        t=j/4;r=.024+.009*t
+        for k in range(64):
+            a=2*math.pi*k/64
+            p=anatomy_point(angle+r*math.cos(a)/du.length,z+r*.95*math.sin(a))
+            p+=normal*(.003*(1-t)**2)
+            vv.append(p)
+    for j in range(4):
+        for k in range(64):
+            a=j*64+k;b=j*64+(k+1)%64
+            ff.append((a,b,b+64,a+64))
+    mesh_object("Eyelid_surface_"+label,vv,ff)
+# Smooth upper/lower bill profiles share a controlled seam, rather than two plates.
+for part in ["Upper","Lower"]:
+    vv,ff=[],[]
+    rows_b,sides_b=40,32
+    for j in range(rows_b):
+        y,width,top,seam,bottom=smooth_values(head["billSections"],j/(rows_b-1))
+        for k in range(sides_b):
+            a=2*math.pi*k/sides_b;s=math.sin(a)
+            if part=="Upper":z=seam+(top-seam)*max(0,s)-.001*max(0,-s)
+            else:z=seam-.001-(seam-.001-bottom)*max(0,-s)+.0005*max(0,s)
+            vv.append((width*(1 if part=="Upper" else .88)*math.cos(a),y,z))
+    for j in range(rows_b-1):
+        for k in range(sides_b):
+            a=j*sides_b+k;b=j*sides_b+(k+1)%sides_b
+            ff.append((a,b,b+sides_b,a+sides_b))
+    ff.extend([tuple(reversed(range(sides_b))),tuple((rows_b-1)*sides_b+k for k in range(sides_b))])
     mesh_object("Beak_"+part,vv,ff,beak_mat)
+# One bridge with two low soft lobes integrated into the bill root.
+vv,ff=[],[]
+for j in range(32):
+    y,width,zc,height=smooth_values(head["cereSections"],j/31)
+    for k in range(40):
+        a=2*math.pi*k/40;s=math.sin(a);x=width*math.cos(a)
+        lobes=math.exp(-((x-.014)/.010)**2)+math.exp(-((x+.014)/.010)**2)-.3*math.exp(-(x/.009)**2)
+        vv.append((x,y,zc+height*s+.002*max(0,s)**2*lobes))
+for j in range(31):
+    for k in range(40):
+        a=j*40+k;b=j*40+(k+1)%40
+        ff.append((a,b,b+40,a+40))
+ff.extend([tuple(reversed(range(40))),tuple(31*40+k for k in range(40))])
+mesh_object("Cere_integrated_bridge",vv,ff,cere_mat)
 def tube(name,points,radii,mat=foot_mat):
     points=[Vector(p) for p in points]
     if len(points)==3:

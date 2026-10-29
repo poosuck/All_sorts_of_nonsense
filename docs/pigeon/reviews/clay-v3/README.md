@@ -2,6 +2,8 @@
 
 2026-10-29 작성. 목표는 R01 시트 속 비둘기를 하나의 3D 모델로 구현하는 것입니다. 이번 수정은 **기본 체형**에 집중했습니다. 체형 검토가 끝나기 전에는 깃털·색·광택·자세 제작으로 넘어가지 않습니다.
 
+과거 clay-v3 기록입니다. 최신 두상 수정은 [clay-v4](../clay-v4/README.md)를 확인합니다. 아래 검증 해시는 당시 v3 자산에만 적용합니다.
+
 ## 전후 비교
 
 ![위 clay-v2 / 아래 clay-v3 · 정면, 측면, 후면](web-before-after.png)
@@ -37,10 +39,10 @@
 
 ## 산출물과 재현
 
-- [Blender 원본](../../../../art/pigeon/pigeon.blend)
-- [배포 GLB](../../../../src/assets/pigeon/pigeon.glb)
-- [단면 매개변수](../../../../art/pigeon/profiles.json) · [제작 코드](../../../../scripts/pigeon-stage1/build.py)
-- [원본·GLB·프로필 해시와 버전](../../../../src/assets/pigeon/manifest.json) · [모델 생성 기록](model-report.json)
+- [당시 Blender 원본](https://github.com/poosuck/All_sorts_of_nonsense/blob/6ecb56aca770ed68574e4e61aefa7fb7398a548a/art/pigeon/pigeon.blend)
+- [당시 배포 GLB](https://github.com/poosuck/All_sorts_of_nonsense/blob/6ecb56aca770ed68574e4e61aefa7fb7398a548a/src/assets/pigeon/pigeon.glb)
+- [당시 단면 매개변수](https://github.com/poosuck/All_sorts_of_nonsense/blob/6ecb56aca770ed68574e4e61aefa7fb7398a548a/art/pigeon/profiles.json) · [제작 코드](https://github.com/poosuck/All_sorts_of_nonsense/blob/6ecb56aca770ed68574e4e61aefa7fb7398a548a/scripts/pigeon-stage1/build.py)
+- [당시 원본·GLB·프로필 해시와 버전](https://github.com/poosuck/All_sorts_of_nonsense/blob/6ecb56aca770ed68574e4e61aefa7fb7398a548a/src/assets/pigeon/manifest.json) · [모델 생성 기록](model-report.json)
 - [이전 clay-v2 기록](../clay-v2/README.md)
 
 Blender 4.3.2에서 자체 제작 소스로 원본과 GLB를 함께 생성했습니다. 이전 삭제 모델이나 외부 생성 코드를 불러오지 않습니다. 개별 꼬리깃 대신 꼬리 기본 부피 하나를 사용하므로 메시 개수는 이전 버전과 다릅니다.
