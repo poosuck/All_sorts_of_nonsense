@@ -10,6 +10,8 @@
 
 ![현재 Blender 8방향](blender-eight-views.png)
 
+[두상 확대 3방향과 목표 대비 상세 대조](head/README.md)
+
 ## 체형 수정
 
 | 부위 | v2 문제 | v3 변경 |
