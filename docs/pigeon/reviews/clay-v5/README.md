@@ -2,6 +2,8 @@
 
 2026-10-29. v4는 머리가 넓은 구형이고 눈 간격이 크며 목이 잘록했습니다. 참고 사진의 좁은 이마, 가까운 눈, 아래로 넓어지는 볼·목과 다른 핵심 비율을 놓쳤습니다. 이 기록은 그 비율을 재작업한 결과이며 목표 재현 완료 판정은 아닙니다.
 
+과거 v5 기록입니다. 전신의 몸통·날개·꼬리 구조를 재작업한 [clay-v6](../clay-v6/README.md)를 별도로 보관합니다.
+
 ## 두상 전후
 
 ![위 v4 / 아래 v5 · 동일 정면·45°·측면 카메라](head/head-before-after.png)
@@ -27,7 +29,7 @@
 
 ## 원본과 검증
 
-- [Blender 원본](../../../../art/pigeon/pigeon.blend) · [GLB](../../../../src/assets/pigeon/pigeon.glb) · [두상 설정](../../../../art/pigeon/profiles.json)
+- [당시 Blender 원본](https://github.com/poosuck/All_sorts_of_nonsense/blob/0de64c9f92da06c2fb711761c909b8052bf7184a/art/pigeon/pigeon.blend) · [GLB](https://github.com/poosuck/All_sorts_of_nonsense/blob/0de64c9f92da06c2fb711761c909b8052bf7184a/src/assets/pigeon/pigeon.glb) · [두상 설정](https://github.com/poosuck/All_sorts_of_nonsense/blob/0de64c9f92da06c2fb711761c909b8052bf7184a/art/pigeon/profiles.json)
 - [모델 기록·해시](model-report.json) · [두상 확대 촬영 기록](head/capture-record.json)
 - [변경 범위 대조](head-scope-audit.json): v4 대비 H≤0.70의 몸통 정점 5,840개, 날개·꼬리·다리·발 메시 19개의 위치가 동일합니다.
 - Blender 4.3.2, GLB 985,664 bytes, 삼각형 54,580개, 메시 29개.

@@ -1,0 +1,15 @@
+{
+  "baseline_revision": "clay-v5",
+  "revision": "clay-v6",
+  "glb_sha256": "6e4d4a07196cca9fb7a37eebb45469696ff76cbb1f5bd9a0b2489b7acaf8acf4",
+  "same_camera_config": true,
+  "same_model_height": true,
+  "views": [
+    "front",
+    "left45",
+    "left",
+    "back-left45",
+    "back"
+  ],
+  "capture_note": "same original Blender studio and fixed cameras; same resize for every panel"
+}

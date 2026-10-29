@@ -170,44 +170,73 @@ def body_side(y,z):
     ry = (back-front)/2
     d = (y-(front+back)/2)/max(0.001,ry)
     return rx*math.sqrt(max(0,1-d*d))
-# Longitudinal closed wing volumes: no radial disk or clamped rear fin.
+def closed_spline(points,t):
+    u=(t%1)*len(points);i=int(u);f=u-i
+    a,b,c,d=[Vector(points[k%len(points)]) for k in [i-1,i,i+1,i+2]]
+    return .5*((2*b)+(-a+c)*f+(2*a-5*b+4*c-d)*f*f+(-a+3*b-3*c+d)*f*f*f)
+def torso_surface(theta,z):
+    p=anatomy_point(theta,z)
+    du=(anatomy_point(theta+.001,z)-anatomy_point(theta-.001,z))/.002
+    dz=(anatomy_point(theta,z+.001)-anatomy_point(theta,z-.001))/.002
+    return p,du.cross(dz).normalized()
+# A broad shoulder envelope wraps the actual side AND dorsal surface. The
+# buried perimeter avoids the old floating side panel and its open rear collar.
+covert=CFG["wingCoverts"]
+outline=[(math.radians(a),z) for a,z in covert["outlineDegreesHeight"]]
+centre=Vector((math.radians(covert["centerDegreesHeight"][0]),covert["centerDegreesHeight"][1]))
 for side,label in [(1,"Left"),(-1,"Right")]:
     vv,ff=[],[]
-    wing=CFG["wingSections"]
-    rows_w,sides_w=70,40
-    for j in range(rows_w):
-        y=wing[0][0]+(wing[-1][0]-wing[0][0])*j/(rows_w-1)
-        xc,zc,hz,thickness=smooth_values(wing,y)
-        t=max(0,min(1,(y-0.14)/0.32))
-        blend=t*t*(3-2*t)
-        rear_t=max(0,min(1,(y-0.30)/0.16))
-        rear_fold=rear_t*rear_t*(3-2*rear_t)
-        for i in range(sides_w):
-            a=2*math.pi*i/sides_w
-            z=zc+hz*math.cos(a)
-            base=body_side(y,z)*(1-blend)+xc*blend
-            # The folded flight envelope runs from the high/lateral shoulder
-            # toward the low/medial tips. The reverse slope made a clamshell.
-            root_embed=0.012*(1-blend)
-            x=base+xc*0.65*rear_fold*math.cos(a)-root_embed+thickness*math.sin(a)
-            # The high edge anchors to the torso's rear surface, while the
-            # lower edge continues aft as the folded flight envelope. Keeping
-            # both at the same Y produced a free-standing collar around rump.
-            attach_t=max(0,min(1,(y-0.20)/0.16))
-            free_t=max(0,min(1,(y-0.45)/0.19))
-            anchor=attach_t*attach_t*(3-2*attach_t)*(1-free_t*free_t*(3-2*free_t))
-            rx,y_front,y_back=body_values(z)
-            rear_surface=(y_front+y_back)/2+(y_back-y_front)/2*math.sqrt(max(0,1-(x/max(rx,0.001))**2))
-            pull=max(0,y-rear_surface+0.006)*anchor*(1+math.cos(a))/2
-            # A small fixed overlap prevents two coplanar tips meeting as a lid.
-            vv.append((side*x,y-pull+side*0.004*blend,z))
-    for j in range(rows_w-1):
-        for i in range(sides_w):
-            a=j*sides_w+i;b=j*sides_w+(i+1)%sides_w
-            ff.append((a,b,b+sides_w,a+sides_w))
-    ff.extend([tuple(reversed(range(sides_w))),tuple((rows_w-1)*sides_w+i for i in range(sides_w))])
-    obj=mesh_object("Folded_wing_volume_"+label,vv,ff)
-    obj["stage"]="longitudinal shoulder-to-flight envelope; feather layers pending"
+    rings,segments_w=24,64
+    for layer in [0,1]:
+        for ring in range(rings+1):
+            r=ring/rings
+            for k in range(1 if ring==0 else segments_w):
+                uv=centre.lerp(closed_spline(outline,k/segments_w),r)
+                p,n=torso_surface(side*uv.x,uv.y)
+                offset=covert["thickness"]*(1-r*r)**.8-covert["rootEmbed"]*r**8 if layer==0 else -.016
+                vv.append(p+n*offset)
+    count=1+rings*segments_w
+    def idx(layer,ring,k):return layer*count+1+(ring-1)*segments_w+k%segments_w
+    for layer in [0,1]:
+        for k in range(segments_w):ff.append((layer*count,idx(layer,1,k),idx(layer,1,k+1)))
+        for ring in range(1,rings):
+            for k in range(segments_w):ff.append((idx(layer,ring,k),idx(layer,ring,k+1),idx(layer,ring+1,k+1),idx(layer,ring+1,k)))
+    for k in range(segments_w):ff.append((idx(0,rings,k),idx(0,rings,k+1),idx(1,rings,k+1),idx(1,rings,k)))
+    obj=mesh_object("Wing_shoulder_wrapped_"+label,vv,ff)
+    obj["stage"]="continuous body-wrapped shoulder volume; feather layers pending"
+    # A longitudinal leaf covers the rear from shoulder to medial tailward tip.
+    # Its root follows the rump; the distal part extends gradually behind it.
+    # This replaces a constant-Y cross section that exposed only a V-shaped lip.
+    vv,ff=[],[];flight=CFG["flightEnvelope"]
+    flight_center=Vector(flight["centerXZ"])
+    for layer in [0,1]:
+        for ring in range(rings+1):
+            r=ring/rings
+            for k in range(1 if ring==0 else segments_w):
+                x,z=flight_center.lerp(closed_spline(flight["outlineXZ"],k/segments_w),r)
+                rx,front,back=body_values(z)
+                rear=(front+back)/2+(back-front)/2*math.sqrt(max(0,1-(x/rx)**2))
+                t=max(0,min(1,(flight["axisTopZ"]-z)/(flight["axisTopZ"]-flight["axisBottomZ"])))
+                axis_y=flight["axisTopY"]+(flight["axisBottomY"]-flight["axisTopY"])*t
+                root=max(0,min(1,(z-flight["rootAttachStartZ"])/(flight["axisTopZ"]-flight["rootAttachStartZ"])))
+                root=root*root*(3-2*root)
+                attach=max(0,min(1,(flight["axisTopZ"]-z)/.13))
+                attach=attach*attach*(3-2*attach)
+                dorsal_y=rear+.028*attach
+                # Keep the proximal leaf on the back, then join its straight
+                # tailward axis smoothly. This exposes a long folded volume
+                # instead of clipping away everything except two lower plates.
+                free_y=(axis_y+dorsal_y+math.sqrt((axis_y-dorsal_y)**2+.015**2))/2
+                base_y=free_y*(1-root)+min(axis_y,rear-.004)*root
+                thickness=flight["thickness"]*(.15+.85*(1-r*r))
+                y=base_y+thickness*(1 if layer==0 else -1)+side*.002*t
+                vv.append((side*x,y,z))
+    for layer in [0,1]:
+        for k in range(segments_w):ff.append((layer*count,idx(layer,1,k),idx(layer,1,k+1)))
+        for ring in range(1,rings):
+            for k in range(segments_w):ff.append((idx(layer,ring,k),idx(layer,ring,k+1),idx(layer,ring+1,k+1),idx(layer,ring+1,k)))
+    for k in range(segments_w):ff.append((idx(0,rings,k),idx(0,rings,k+1),idx(1,rings,k+1),idx(1,rings,k)))
+    mesh_object("Wing_folded_flight_bundle_"+label,vv,ff)
 def blade(name,start,end,width,mat=clay):
     start,end=Vector(start),Vector(end)
     axis=(end-start).normalized()

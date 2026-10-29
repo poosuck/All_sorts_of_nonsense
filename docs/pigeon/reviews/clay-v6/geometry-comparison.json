@@ -1,0 +1,21 @@
+{
+  "revision": "clay-v6",
+  "glb_sha256": "6e4d4a07196cca9fb7a37eebb45469696ff76cbb1f5bd9a0b2489b7acaf8acf4",
+  "baseline_commit": "0de64c9f92da06c2fb711761c909b8052bf7184a",
+  "baseline_revision": "clay-v5",
+  "baseline": {
+    "torso_fore_aft_span": 0.7553006410598755,
+    "torso_rear_limit": 0.3811810612678528,
+    "tail_tip_y": 0.7699999809265137,
+    "folded_wing_tip_y": 0.6439999938011169,
+    "tail_exposure_past_wing": 0.12599998712539673
+  },
+  "current": {
+    "torso_fore_aft_span": 0.8428356051445007,
+    "torso_rear_limit": 0.46459171175956726,
+    "tail_tip_y": 0.6700000166893005,
+    "folded_wing_tip_y": 0.648694634437561,
+    "tail_exposure_past_wing": 0.021305382251739502
+  },
+  "measurement_note": "Actual exported mesh positions in H~1 model coordinates; not measurements of R01; source GLB uses Y-up and -Z toward rear."
+}
