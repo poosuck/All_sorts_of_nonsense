@@ -1,0 +1,35 @@
+name: Pigeon clay build
+on:
+  push:
+    branches: [codex/pigeon-clay-v1]
+    paths:
+      - '.github/workflows/pigeon-clay.yml'
+      - 'scripts/pigeon-stage1/**'
+      - 'art/pigeon/profiles.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pigeon-clay-build
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.ref == 'refs/heads/codex/pigeon-clay-v1'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/pigeon-clay-v1
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender
+          blender --version
+      - name: Probe model tools
+        run: blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/probe_tools.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pigeon-clay-tools
+          path: docs/pigeon/reviews/clay-v1/tools.json
+          retention-days: 7
