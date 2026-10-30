@@ -13,7 +13,7 @@
 
 [웹 머리·목](web-clay-head-neck-four-views.png) · [전신](web-clay-five-views.png) · [얼굴](web-clay-head-three-views.png) · [Blender 촬영 기록](head-neck/capture-record.json) · [웹 검증](web-report.json)
 
-[Blender 원본](../../../../art/pigeon/pigeon.blend) · [GLB](../../../../src/assets/pigeon/pigeon.glb) · [프로필](../../../../art/pigeon/profiles.json) · [모델 기록](model-report.json)
+[Blender 원본](https://github.com/poosuck/All_sorts_of_nonsense/blob/10187264560ddd2acabc5b15633201684ba0a16e/art/pigeon/pigeon.blend) · [GLB](https://github.com/poosuck/All_sorts_of_nonsense/blob/10187264560ddd2acabc5b15633201684ba0a16e/src/assets/pigeon/pigeon.glb) · [프로필](https://github.com/poosuck/All_sorts_of_nonsense/blob/10187264560ddd2acabc5b15633201684ba0a16e/art/pigeon/profiles.json) · [모델 기록](model-report.json)
 
 목표 사진과의 완전 일치 판정은 아닙니다. 깃털의 미세 구조와 얼굴 조형에는 차이가 남으며, 사진 실측 없이 일치율을 제시하지 않습니다.
 

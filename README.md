@@ -58,11 +58,11 @@ npm run source:check  # 원본 체크섬과 생성 결과 검사
 
 ## 비둘기 모이주기 · R01 모델 연구
 
-사용자가 제공한 회색 비둘기 시트(R01)를 실제 3D 모델로 제작합니다. 현재 **clay-v11**은 측면의 긴 뒷목 사선 면을 줄이고, 뒤통수 아래의 얕은 굴곡에서 둥근 어깨로 연결되도록 수정한 버전입니다. 정면의 목 폭은 유지하며 앞뒤 두께를 조정했습니다. 색 작업은 보류합니다.
+현재 **clay-v12**는 사람의 뒤통수처럼 보이던 후두부 돌출과 그 아래 목 패임을 수정한 무채색 모델입니다. 머리 뒤쪽 두께를 줄이고, 뒤 윤곽이 목에서 다시 안으로 들어가지 않도록 어깨까지 연결했습니다. 정면 폭과 색·조명 설정은 유지합니다.
 
-`/pigeon`은 **무채색이 기본**입니다. 8방향과 **전신 / 얼굴 / 머리·목** 확대에서 같은 GLB를 확인합니다. **기존색**은 이전 재질을 확인하는 선택이며 이번에 색을 추가한 단계가 아닙니다. [최신 무채색 전후 비교·검증 기록](docs/pigeon/reviews/clay-v11/README.md) · [제작 기준](docs/pigeon/REFERENCE-BASIS.ko.md) · [제작 명세](docs/pigeon/MODEL-SPEC.ko.md)
+`/pigeon`은 **무채색이 기본**입니다. 8방향과 **전신 / 얼굴 / 머리·목** 확대에서 같은 GLB를 확인합니다. **기존색**은 이전 재질을 확인하는 선택이며 이번에 색을 추가한 단계가 아닙니다. [최신 무채색 전후 비교·검증 기록](docs/pigeon/reviews/clay-v12/README.md) · [제작 기준](docs/pigeon/REFERENCE-BASIS.ko.md) · [제작 명세](docs/pigeon/MODEL-SPEC.ko.md)
 
-GitHub 작업 브랜치는 [`codex/pigeon-clay-v1`](https://github.com/poosuck/All_sorts_of_nonsense/tree/codex/pigeon-clay-v1)입니다. [브랜치 ZIP](https://github.com/poosuck/All_sorts_of_nonsense/archive/refs/heads/codex/pigeon-clay-v1.zip)을 내려받아 압축을 풀고 `npm ci`, `npm run dev`를 실행한 뒤 http://localhost:5173/pigeon 에서 상단 **clay-v11**을 확인합니다. 일반 실행에는 Blender가 필요 없습니다.
+GitHub 작업 브랜치는 [`codex/pigeon-clay-v1`](https://github.com/poosuck/All_sorts_of_nonsense/tree/codex/pigeon-clay-v1)입니다. [브랜치 ZIP](https://github.com/poosuck/All_sorts_of_nonsense/archive/refs/heads/codex/pigeon-clay-v1.zip)을 내려받아 압축을 풀고 `npm ci`, `npm run dev`를 실행한 뒤 http://localhost:5173/pigeon 에서 상단 **clay-v12**을 확인합니다. 일반 실행에는 Blender가 필요 없습니다.
 
 모델 재생성에만 Blender 4.x·NumPy·Pillow가 필요합니다. `npm run pigeon:probe`, `npm run pigeon:build`로 원본 `art/pigeon/pigeon.blend`와 런타임 `src/assets/pigeon/pigeon.glb`를 같은 제작 소스에서 생성하고 해시를 기록합니다.
 

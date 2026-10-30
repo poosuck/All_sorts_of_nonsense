@@ -15,7 +15,7 @@ test("the shipped GLB is the recorded Blender anatomy model", async () => {
   const gltf = JSON.parse(bytes.subarray(20, 20+size).toString());
   const model = gltf.nodes.find(node => node.name === "Pigeon_R01");
   assert.ok(model);
-  assert.equal(model.extras.revision, "clay-v11");
+  assert.equal(model.extras.revision, "clay-v12");
   assert.equal(manifest.stage, "anatomy-and-plumage-study");
   assert.deepEqual(manifest.poses, ["stand"]);
   assert.ok(manifest.plumage.feathers > 1000);
@@ -35,4 +35,30 @@ test("the editable original and profile measurements match the asset manifest", 
   assert.equal(createHash("sha256").update(profiles).digest("hex"), manifest.profiles_sha256);
   assert.equal(manifest.reference_file_available, false);
   assert.match(manifest.reference_measurements, /estimates/);
+});
+test("the shipped nape expands toward the shoulders without an occipital neck notch", async () => {
+  const bytes = await read("src/assets/pigeon/pigeon.glb");
+  const jsonLength = bytes.readUInt32LE(12);
+  const gltf = JSON.parse(bytes.subarray(20, 20 + jsonLength).toString());
+  const body = gltf.meshes.find(mesh => mesh.name === "Body_neck_head_continuous");
+  const accessor = gltf.accessors[body.primitives[0].attributes.POSITION];
+  const view = gltf.bufferViews[accessor.bufferView];
+  assert.equal(accessor.componentType, 5126);
+  const start = 28 + jsonLength + (view.byteOffset || 0) + (accessor.byteOffset || 0);
+  const rows = new Map();
+  for (let i = 0; i < accessor.count; i++) {
+    const offset = start + i * (view.byteStride || 12);
+    const height = bytes.readFloatLE(offset + 4), z = bytes.readFloatLE(offset + 8);
+    if (height < .60 || height > .95) continue;
+    const key = height.toFixed(6);
+    const row = rows.get(key);
+    if (!row || z < row.rearZ) rows.set(key, { height, rearZ: z });
+  }
+  const ordered = [...rows.values()].sort((a, b) => a.height - b.height);
+  assert.ok(ordered.length > 20);
+  for (let i = 1; i < ordered.length; i++) {
+    // glTF +Y is height; the bird's rear points toward -Z.
+    assert.ok(ordered[i].rearZ >= ordered[i - 1].rearZ - 1e-5,
+      `Posterior contour reverses below the skull at height ${ordered[i].height}`);
+  }
 });

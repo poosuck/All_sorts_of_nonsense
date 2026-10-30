@@ -135,12 +135,20 @@ def body_values(z):
     if z<=neck_blend["startZ"]:return original
     cap=head["cap"]
     revised=cubic_values(head["sections"],z)
+    # A separate shape-preserving rear profile expands toward the shoulder.
+    # Do not carve a hollow below an ellipsoidal skull: that produces a
+    # human-like occiput. Front contour and frontal width stay independent.
+    revised[2]=smooth_values(head["rearSections"],z)[0]
     if z>cap["blendStartZ"]:
         f=math.sqrt(max(.000001,1-((z-cap["centerZ"])/cap["radiusZ"])**2))
         crown=[max(.0001,cap["radiusX"]*f),cap["centerY"]-cap["frontRadius"]*f,cap["centerY"]+cap["backRadius"]*f]
         t=max(0,min(1,(z-cap["blendStartZ"])/(cap["blendEndZ"]-cap["blendStartZ"])))
         blend=t*t*t*(10-15*t+6*t*t)
-        revised=[a*(1-blend)+b*blend for a,b in zip(revised,crown)]
+        rear_cap=head["rearCrownBlend"]
+        rear_t=max(0,min(1,(z-rear_cap["startZ"])/(rear_cap["endZ"]-rear_cap["startZ"])))
+        rear_blend=rear_t*rear_t*rear_t*(10-15*rear_t+6*rear_t*rear_t)
+        revised=[a*(1-(rear_blend if i==2 else blend))+b*(rear_blend if i==2 else blend)
+                 for i,(a,b) in enumerate(zip(revised,crown))]
     # Continue the head/neck curve into the upper breast. The former short
     # .70-.77 join retained an old front-neck notch below the new skull.
     t=max(0,min(1,(z-neck_blend["startZ"])/(neck_blend["endZ"]-neck_blend["startZ"])));blend=t*t*t*(10-15*t+6*t*t)

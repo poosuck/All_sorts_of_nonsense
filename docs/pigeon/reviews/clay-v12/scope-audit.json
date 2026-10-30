@@ -1,0 +1,21 @@
+{
+  "revision": "clay-v12",
+  "baseline_commit": "10187264560ddd2acabc5b15633201684ba0a16e",
+  "glb_sha256": "c7541dd1d897406fb6c792e465ae584505f06ba451c0010d8447d91e8a633032",
+  "body_x_positions_identical": true,
+  "body_vertex_count": 9600,
+  "body_below_height": 0.55,
+  "lower_body_vertices_preserved": 4880,
+  "material_parameters_unchanged": true,
+  "posterior_contour_reversals": {
+    "before": 5,
+    "after": 0,
+    "height_range": [
+      0.6,
+      0.95
+    ],
+    "tolerance": 1e-05
+  },
+  "comparison_cameras_lighting_samples_equal": true,
+  "note": "Scope/regression audit; not a reference-image likeness score."
+}
