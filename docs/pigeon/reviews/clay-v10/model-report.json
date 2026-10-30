@@ -1,0 +1,96 @@
+{
+  "revision": "clay-v10",
+  "stage": "anatomy-and-plumage-study",
+  "reference": "R01",
+  "reference_file_available": false,
+  "reference_measurements": "initial visual estimates only",
+  "authoring": "art/pigeon/pigeon.blend",
+  "blender": "4.3.2",
+  "geometry_source": "original profile loft; no legacy pigeon model",
+  "glb_sha256": "bc53d8bc9da36aea897d994e2db1d249cc95b0efbc578dc39942c1e347314a5f",
+  "blend_sha256": "c8581c5f2825bd374f0c59f99826149c91ba7ebe19b4ca479cec81485ac9abfc",
+  "profiles_sha256": "04c9a4c1c5a079fe883b600459c72e14e4fa8965c1d62f4522363e43e930a65a",
+  "glb_bytes": 4194772,
+  "triangles": 141534,
+  "mesh_count": 48,
+  "bounds_blender": {
+    "min": [
+      -0.3608276844024658,
+      -0.3800399899482727,
+      0.0022540870122611523
+    ],
+    "max": [
+      0.3607560694217682,
+      0.6299999952316284,
+      1.0
+    ],
+    "height": 0.9977459129877388,
+    "width_over_height": 0.7232139409756735,
+    "length_over_height": 1.0123218467067912
+  },
+  "views": {
+    "front": 0,
+    "left45": 45,
+    "left": 90,
+    "back-left45": 135,
+    "back": 180,
+    "back-right45": 225,
+    "right": 270,
+    "right45": 315
+  },
+  "plumage": {
+    "feathers": 8951,
+    "region_feathers": {
+      "wing_coverts": 412,
+      "folded_flights": 18,
+      "head": 2350,
+      "neck": 4000,
+      "breast": 2161,
+      "tail": 10
+    },
+    "added_triangles": 73570,
+    "mesh_batches": 17,
+    "objects": [
+      "Plumage_covert_1",
+      "Plumage_covert_2",
+      "Plumage_bar_1",
+      "Plumage_bar_0",
+      "Plumage_covert_0",
+      "Plumage_flight_0",
+      "Plumage_flight_1",
+      "Plumage_flight_2",
+      "Plumage_head_1",
+      "Plumage_head_2",
+      "Plumage_head_0",
+      "Plumage_neck_gradient",
+      "Plumage_breast_1",
+      "Plumage_breast_2",
+      "Plumage_breast_0",
+      "Plumage_tail_0",
+      "Plumage_tail_1"
+    ],
+    "base_material_updates": [
+      "Wing_shoulder_wrapped_Left",
+      "Wing_folded_flight_bundle_Left",
+      "Wing_shoulder_wrapped_Right",
+      "Wing_folded_flight_bundle_Right",
+      "Tail_anatomical_envelope"
+    ],
+    "limitations": [
+      "static standing feather layout; not rigged for wing spreading",
+      "thin double-sided feather laminae; no microscopic barb fibers",
+      "muted teal/purple colors; no final optical iridescence shader"
+    ]
+  },
+  "poses": [
+    "stand"
+  ],
+  "limitations": [
+    "static standing feather layout; not rigged for wing spreading",
+    "thin double-sided feather laminae; no microscopic barb fibers",
+    "muted teal/purple colors; no final optical iridescence shader",
+    "final PBR microdetail and colors require further reference matching",
+    "pose rig and seven poses not built",
+    "reference proportions not pixel measured"
+  ]
+}

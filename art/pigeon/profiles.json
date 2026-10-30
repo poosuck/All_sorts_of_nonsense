@@ -1,5 +1,5 @@
 {
-  "revision": "clay-v9",
+  "revision": "clay-v10",
   "stage": "head and neck anatomy refinement; neutral clay review before further color work",
   "reference": {
     "id": "R01",
@@ -206,7 +206,8 @@
     "rounded ellipsoidal underbelly buries upper tarsi",
     "raised short bill/cere and embedded amber eyes",
     "surface-following overlapping plumage; basic regional PBR colors",
-    "head/neck curve begins within upper breast; continuous front throat and round eye-level skull/nape; no color changes"
+    "head/neck curve begins within upper breast; continuous front throat and round eye-level skull/nape; no color changes",
+    "R01 silhouette correction: narrower upper skull, no under-head waist, short raised cheek/jaw, full curved throat; irregular tapered transition feathers"
   ],
   "head": {
     "sections": [
@@ -225,86 +226,92 @@
       [
         0.645,
         0.215,
-        -0.333,
+        -0.35,
         0.185
       ],
       [
         0.7,
-        0.174,
-        -0.32,
-        0.09
+        0.183,
+        -0.343,
+        0.11
       ],
       [
         0.755,
-        0.142,
-        -0.31,
-        0.005
+        0.158,
+        -0.329,
+        0.035
       ],
       [
         0.805,
-        0.129,
+        0.141,
+        -0.315,
+        -0.024
+      ],
+      [
+        0.825,
+        0.134,
         -0.31,
-        -0.048
+        -0.055
       ],
       [
         0.85,
-        0.135,
-        -0.323,
-        -0.065
+        0.129,
+        -0.322,
+        -0.079
       ],
       [
         0.88,
-        0.138,
-        -0.323,
-        -0.068
+        0.125,
+        -0.324,
+        -0.088
       ],
       [
         0.9,
-        0.13521183380163143,
-        -0.32031285431606504,
-        -0.07046490055218092
+        0.123537116416214,
+        -0.3224786010728625,
+        -0.08924052527905053
       ],
       [
         0.94,
-        0.11787494390242573,
-        -0.3036041126016132,
-        -0.08579171626017437
+        0.10885790320902655,
+        -0.3072122193373876,
+        -0.1016884980787455
       ],
       [
         0.975,
-        0.08280000000000005,
-        -0.26980000000000004,
-        -0.11679999999999996
+        0.07693770681320952,
+        -0.2740152150857379,
+        -0.12875682462239835
       ],
       [
         1.0,
-        0.00013800000000000002,
-        -0.190133,
-        -0.189878
+        0.000125,
+        -0.19413,
+        -0.193894
       ]
     ],
     "cap": {
-      "centerZ": 0.875,
-      "radiusZ": 0.125,
-      "radiusX": 0.138,
-      "frontRadius": 0.133,
-      "backRadius": 0.122,
-      "centerY": -0.19,
-      "blendStartZ": 0.86,
-      "blendEndZ": 0.94
+      "centerZ": 0.882,
+      "radiusZ": 0.118,
+      "radiusX": 0.125,
+      "frontRadius": 0.13,
+      "backRadius": 0.106,
+      "centerY": -0.194,
+      "blendStartZ": 0.88,
+      "blendEndZ": 0.95
     },
     "eye": {
-      "angleDegrees": 44,
+      "angleDegrees": 48,
       "height": 0.905,
-      "radius": 0.025,
+      "radius": 0.0235,
       "depth": 0.0085
     },
     "sculpt": {
-      "cheekAmplitude": 0.006,
-      "jawAmplitude": 0.003,
-      "socketDepth": 0.0045,
-      "cheekHeight": 0.835,
-      "jawHeight": 0.805,
+      "cheekAmplitude": 0.008,
+      "jawAmplitude": 0.0012,
+      "socketDepth": 0.0028,
+      "cheekHeight": 0.867,
+      "jawHeight": 0.841,
       "browHeightOffset": 0.016
     },
     "billSections": [

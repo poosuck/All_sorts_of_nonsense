@@ -1,0 +1,10 @@
+{
+  "revision": "clay-v10",
+  "baseline_commit": "8e29b95a70dbae67659056a2319573af46161b40",
+  "glb_sha256": "bc53d8bc9da36aea897d994e2db1d249cc95b0efbc578dc39942c1e347314a5f",
+  "body_below_height": 0.55,
+  "body_vertices_identical": 4880,
+  "material_parameters_unchanged": true,
+  "web_clay_captures": 15,
+  "reference": "R01 visual comparison; no pixel-level likeness score"
+}

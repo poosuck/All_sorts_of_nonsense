@@ -162,7 +162,7 @@ def anatomy_point(theta,z):
     for sign in [-1,1]:
         offset+=sculpt["cheekAmplitude"]*bump(sign*(eye_angle+.15),sculpt["cheekHeight"],.34,.030)
         offset-=sculpt["socketDepth"]*bump(sign*eye_angle,head["eye"]["height"],.19,.022)
-        offset+=.0015*bump(sign*eye_angle,head["eye"]["height"]+sculpt["browHeightOffset"],.25,.015)
+        offset+=.0008*bump(sign*eye_angle,head["eye"]["height"]+sculpt["browHeightOffset"],.25,.015)
     offset+=sculpt["jawAmplitude"]*bump(0,sculpt["jawHeight"],.55,.026)
     return point+Vector((math.sin(theta),-math.cos(theta),0))*offset*ease((z-.70)/.075)
 verts,faces = [],[]
@@ -331,10 +331,10 @@ for side,label in [(1,"Left"),(-1,"Right")]:
     radius=head["eye"]["radius"]
     center=surface-normal*.004
     ellipsoid("Eye_globe_"+label,center,(radius,radius*.96,head["eye"]["depth"]),eye_mat,normal)
-    ellipsoid("Pupil_landmark_"+label,center+normal*.008,(.013,.013,.0015),pupil_mat,normal)
+    ellipsoid("Pupil_landmark_"+label,center+normal*.008,(.0125,.0125,.0015),pupil_mat,normal)
     vv,ff=[],[]
     for j in range(5):
-        t=j/4;r=.024+.006*t
+        t=j/4;r=radius*.96+.0055*t
         for k in range(64):
             a=2*math.pi*k/64
             p=anatomy_point(angle+r*math.cos(a)/du.length,z+r*.95*math.sin(a))

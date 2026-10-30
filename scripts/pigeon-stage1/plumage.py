@@ -91,6 +91,8 @@ def add_plumage(collection, parent, cfg, anatomy_point, torso_surface,
         center_uv = root + delta * .50
         _, outward = point(center_uv)
         boundary = outline
+        if region == "neck":
+            boundary = [(0,0),(-.35,.18),(-.50,.45),(-.32,.78),(0,1),(.30,.80),(.48,.46),(.35,.18)]
         if region in {"wing_coverts", "folded_flights", "tail"}:
             # Broad blades need a continuous rounded rim rather than the ten
             # conspicuous straight segments of the small contour feathers.
@@ -269,30 +271,40 @@ def add_plumage(collection, parent, cfg, anatomy_point, torso_surface,
                 t = t*t*(3-2*t)
                 return tuple((va*(1-t)+vb*t)*tone for va, vb in zip(ca, cb))
 
-    # Continuous per-vertex color avoids the old gray/green/purple material
-    # rings. Narrower, irregularly staggered contour feathers overlap the fine
-    # head plumage and never start along one horizontal visible seam.
-    for row in range(25):
-        z = .853-.0125*row
-        theta = (row % 2)*.055
-        while theta < 2*math.pi:
-            backness = (1-math.cos(theta))/2
-            top = .853-.018*backness
-            bottom = .548+.10*backness
-            width = .010+.003*max(0, min(1, (.82-z)/.27))
-            p, n = torso_surface(theta, z)
-            du = (anatomy_point(theta+.001, z)-anatomy_point(theta-.001, z))/.002
-            step = width*.84/max(.08, du.length)
-            front_angle = abs(math.atan2(math.sin(theta), math.cos(theta)))
-            if bottom <= z <= top and not (front_angle < .29 and z > .80):
-                tone = rng.uniform(.96, 1.04)
-                feather("neck_gradient", "neck", lambda uv: torso_surface(uv.x, uv.y),
-                        (theta+rng.uniform(-.018, .018), z+rng.uniform(-.004, .004)),
-                        (.022*math.sin(theta), -.022*rng.uniform(.90, 1.10)),
-                        Vector((width/max(.08, du.length), 0)),
-                        .00035, .0008, (24-row)*.000025,
-                        coloring=lambda position, value=tone: neck_color(position, value))
-            theta += step
+    # Irregular surface samples replace horizontal scale rows. Upper cheek
+    # feathers start small and flush, then lengthen gradually toward the neck.
+    neck_rng = random.Random(80523)
+    accepted = 0
+    attempts = 0
+    while accepted < 4000 and attempts < 30000:
+        attempts += 1
+        theta = neck_rng.uniform(0, 2*math.pi)
+        z = neck_rng.uniform(.538, .889)
+        backness = (1-math.cos(theta))/2
+        bottom = .548+.10*backness+.008*math.sin(3*theta)
+        top = .867+.014*backness
+        if not bottom <= z <= top:
+            continue
+        du = (anatomy_point(theta+.001,z)-anatomy_point(theta-.001,z))/.002
+        if neck_rng.random() > min(1.0,du.length/.28):
+            continue
+        front_angle = abs(math.atan2(math.sin(theta),math.cos(theta)))
+        eye_delta = min(abs(math.atan2(math.sin(theta-eye_angle),math.cos(theta-eye_angle))),
+                        abs(math.atan2(math.sin(theta+eye_angle),math.cos(theta+eye_angle))))
+        if (eye_delta*du.length/.031)**2+((z-eye_height)/.032)**2 < 1:
+            continue
+        if (front_angle/.25)**2+((z-cere_height)/.028)**2 < 1:
+            continue
+        growth = max(0,min(1,(.872-z)/.30))
+        width = (.0045+.0068*growth)*neck_rng.uniform(.88,1.12)
+        length = (.008+.016*growth)*neck_rng.uniform(.85,1.15)
+        tone = neck_rng.uniform(.98,1.02)
+        feather("neck_gradient","neck",lambda uv:torso_surface(uv.x,uv.y),
+                (theta,z),(.055*math.sin(theta),-length),
+                Vector((width/max(.08,du.length),0)),
+                .00035,.00060,0,
+                coloring=lambda position,value=tone:neck_color(position,value))
+        accepted += 1
 
     # Fine, low-relief breast feathers. Only the visible front is populated;
     # wing-covered sides are deliberately excluded from the triangle budget.

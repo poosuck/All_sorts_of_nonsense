@@ -26,7 +26,7 @@
 
 ## 원본과 검증 자료
 
-- [Blender 원본](../../../../art/pigeon/pigeon.blend) · [GLB](../../../../src/assets/pigeon/pigeon.glb) · [프로필](../../../../art/pigeon/profiles.json) · [원본·GLB·프로필 해시](../../../../src/assets/pigeon/manifest.json)
+- [Blender 원본](https://github.com/poosuck/All_sorts_of_nonsense/blob/8e29b95a70dbae67659056a2319573af46161b40/art/pigeon/pigeon.blend) · [GLB](https://github.com/poosuck/All_sorts_of_nonsense/blob/8e29b95a70dbae67659056a2319573af46161b40/src/assets/pigeon/pigeon.glb) · [프로필](https://github.com/poosuck/All_sorts_of_nonsense/blob/8e29b95a70dbae67659056a2319573af46161b40/art/pigeon/profiles.json) · [원본·GLB·프로필 해시](https://github.com/poosuck/All_sorts_of_nonsense/blob/8e29b95a70dbae67659056a2319573af46161b40/src/assets/pigeon/manifest.json)
 - [모델 생성 기록](model-report.json) · [형상·변경 범위 확인](head-neck-audit.json) · [웹 촬영 기록](web-report.json)
 - 웹 촬영 구성은 무채색 전신 8방향·얼굴 3방향·머리–목 4방향으로 총 15장입니다. 같은 모델을 로드한 상태에서 시점과 관찰 범위를 전환합니다.
 - 원본은 `PIGEON_MODEL_ONLY=1`로 생성했습니다. Blender 전신 8방향 캡처는 별도로 생성하지 않았습니다.
