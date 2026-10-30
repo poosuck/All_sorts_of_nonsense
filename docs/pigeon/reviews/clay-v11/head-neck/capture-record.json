@@ -1,0 +1,181 @@
+{
+  "source_model_commit": null,
+  "revision": "clay-v11",
+  "glb_sha256": "a751c0b59ceecd2352351ea0b9d15ffd68dcde87c47053cc9ba35a58044361c8",
+  "blend_sha256": "e5510a1a93cd503bf72ee3769b046507e8416f5e39ed486509f5b2cdf36b0736",
+  "authoring_source": "/workspace/All_sorts_of_nonsense/art/pigeon/pigeon.blend",
+  "manifest_source": "/workspace/All_sorts_of_nonsense/src/assets/pigeon/manifest.json",
+  "source": "authoring file, mesh positions/topology and lighting unchanged; camera framing; render-only neutral clay material override",
+  "surface": "clay",
+  "framing": "head-neck",
+  "anatomy_surface_only": false,
+  "hidden_plumage_objects": [],
+  "geometry_sha256_before": "04926ad389010d23468b19f50721d65d122e736b59369083dce9b22b0ce2158d",
+  "geometry_sha256_after": "04926ad389010d23468b19f50721d65d122e736b59369083dce9b22b0ce2158d",
+  "lighting_unchanged": true,
+  "lighting": {
+    "lights": [
+      {
+        "name": "Studio fill",
+        "type": "AREA",
+        "energy": 200.0,
+        "color": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "size": 3.0,
+        "matrix_world": [
+          [
+            -0.4472135305404663,
+            -0.43643584847450256,
+            0.780720055103302,
+            4.0
+          ],
+          [
+            0.8944272398948669,
+            -0.2182178497314453,
+            0.3903599679470062,
+            2.0
+          ],
+          [
+            -3.138805482194584e-08,
+            0.8728715181350708,
+            0.48795005679130554,
+            3.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      {
+        "name": "Studio key",
+        "type": "AREA",
+        "energy": 600.0,
+        "color": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "size": 4.0,
+        "matrix_world": [
+          [
+            0.7999999523162842,
+            0.4013788402080536,
+            -0.4459765553474426,
+            -3.0
+          ],
+          [
+            -0.6000000238418579,
+            0.5351718068122864,
+            -0.5946352481842041,
+            -4.0
+          ],
+          [
+            4.4927116249482424e-08,
+            0.7432941198348999,
+            0.6689647436141968,
+            5.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      }
+    ],
+    "world_background": [
+      0.8199999928474426,
+      0.8199999928474426,
+      0.8199999928474426,
+      1.0
+    ],
+    "world_strength": 0.800000011920929,
+    "view_transform": "Standard",
+    "exposure": 0.0,
+    "gamma": 1.0
+  },
+  "render": {
+    "engine": "CYCLES",
+    "samples": 24,
+    "source_samples": 48,
+    "resolution": [
+      600,
+      600
+    ],
+    "color_mode": "RGB"
+  },
+  "reference": "conversation R01 reference sheet; visual comparison only",
+  "views": [
+    {
+      "view": "front",
+      "azimuth": 0,
+      "position": [
+        0.0,
+        -3.5199999809265137,
+        0.7400000095367432
+      ],
+      "target": [
+        0.0,
+        -0.11999999731779099,
+        0.7400000095367432
+      ],
+      "orthographic_scale": 0.66,
+      "file": "head-neck-front.png"
+    },
+    {
+      "view": "left45",
+      "azimuth": 45,
+      "position": [
+        2.404163122177124,
+        -2.524163007736206,
+        0.7400000095367432
+      ],
+      "target": [
+        0.0,
+        -0.11999999731779099,
+        0.7400000095367432
+      ],
+      "orthographic_scale": 0.66,
+      "file": "head-neck-left45.png"
+    },
+    {
+      "view": "left",
+      "azimuth": 90,
+      "position": [
+        3.4000000953674316,
+        -0.11999999731779099,
+        0.7400000095367432
+      ],
+      "target": [
+        0.0,
+        -0.11999999731779099,
+        0.7400000095367432
+      ],
+      "orthographic_scale": 0.66,
+      "file": "head-neck-left.png"
+    },
+    {
+      "view": "back-left45",
+      "azimuth": 135,
+      "position": [
+        2.404163122177124,
+        2.284163236618042,
+        0.7400000095367432
+      ],
+      "target": [
+        0.0,
+        -0.11999999731779099,
+        0.7400000095367432
+      ],
+      "orthographic_scale": 0.66,
+      "file": "head-neck-back-left45.png"
+    }
+  ]
+}

@@ -152,8 +152,10 @@ def add_plumage(collection, parent, cfg, anatomy_point, torso_surface,
     for side in [1, -1]:
         for row in range(11):
             z = .635-.035*row
-            width = .032 if row < 3 else (.043 if row < 7 else .047)
-            length = .052 if row < 3 else (.067 if row < 7 else .074)
+            # Small shoulder coverts bridge the fine nape feathers into the
+            # broad wing, rather than starting with a row of full-size plates.
+            width = [.021,.026,.030][row] if row < 3 else (.043 if row < 7 else .047)
+            length = [.040,.047,.052][row] if row < 3 else (.067 if row < 7 else .074)
             theta = math.radians(62) + (.5 if row % 2 else 0)*.10
             while theta < math.radians(179):
                 uv = Vector((theta, z))

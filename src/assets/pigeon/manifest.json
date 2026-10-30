@@ -1,5 +1,5 @@
 {
-  "revision": "clay-v10",
+  "revision": "clay-v11",
   "stage": "anatomy-and-plumage-study",
   "reference": "R01",
   "reference_file_available": false,
@@ -7,25 +7,25 @@
   "authoring": "art/pigeon/pigeon.blend",
   "blender": "4.3.2",
   "geometry_source": "original profile loft; no legacy pigeon model",
-  "glb_sha256": "bc53d8bc9da36aea897d994e2db1d249cc95b0efbc578dc39942c1e347314a5f",
-  "blend_sha256": "c8581c5f2825bd374f0c59f99826149c91ba7ebe19b4ca479cec81485ac9abfc",
-  "profiles_sha256": "04c9a4c1c5a079fe883b600459c72e14e4fa8965c1d62f4522363e43e930a65a",
-  "glb_bytes": 4194772,
-  "triangles": 141534,
+  "glb_sha256": "a751c0b59ceecd2352351ea0b9d15ffd68dcde87c47053cc9ba35a58044361c8",
+  "blend_sha256": "e5510a1a93cd503bf72ee3769b046507e8416f5e39ed486509f5b2cdf36b0736",
+  "profiles_sha256": "ca0bbcaf70ccbd4a7c034866a3fc698e6489c3cdd372304b4948a2f9804d70fb",
+  "glb_bytes": 4206356,
+  "triangles": 142052,
   "mesh_count": 48,
   "bounds_blender": {
     "min": [
-      -0.3608276844024658,
+      -0.3607623279094696,
       -0.3800399899482727,
       0.0022540870122611523
     ],
     "max": [
-      0.3607560694217682,
+      0.3608648180961609,
       0.6299999952316284,
       1.0
     ],
     "height": 0.9977459129877388,
-    "width_over_height": 0.7232139409756735,
+    "width_over_height": 0.7232574311877923,
     "length_over_height": 1.0123218467067912
   },
   "views": {
@@ -39,23 +39,23 @@
     "right45": 315
   },
   "plumage": {
-    "feathers": 8951,
+    "feathers": 8972,
     "region_feathers": {
-      "wing_coverts": 412,
+      "wing_coverts": 434,
       "folded_flights": 18,
       "head": 2350,
       "neck": 4000,
-      "breast": 2161,
+      "breast": 2160,
       "tail": 10
     },
-    "added_triangles": 73570,
+    "added_triangles": 74088,
     "mesh_batches": 17,
     "objects": [
       "Plumage_covert_1",
       "Plumage_covert_2",
+      "Plumage_covert_0",
       "Plumage_bar_1",
       "Plumage_bar_0",
-      "Plumage_covert_0",
       "Plumage_flight_0",
       "Plumage_flight_1",
       "Plumage_flight_2",
@@ -63,8 +63,8 @@
       "Plumage_head_2",
       "Plumage_head_0",
       "Plumage_neck_gradient",
-      "Plumage_breast_1",
       "Plumage_breast_2",
+      "Plumage_breast_1",
       "Plumage_breast_0",
       "Plumage_tail_0",
       "Plumage_tail_1"

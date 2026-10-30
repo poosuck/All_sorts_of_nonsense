@@ -10,7 +10,7 @@ test("one Blender GLB renders from all eight cameras and returns home", async ({
   await page.goto("/pigeon?view=front");
   const scene = page.getByTestId("pigeon-scene");
   await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 45000 });
-  await expect(scene).toHaveAttribute("data-revision", "clay-v10");
+  await expect(scene).toHaveAttribute("data-revision", "clay-v11");
   await expect(scene).toHaveAttribute("data-framing", "body");
   await expect(scene).toHaveAttribute("data-surface", "clay");
   await expect(scene).toHaveAttribute("data-source", "blender-glb");

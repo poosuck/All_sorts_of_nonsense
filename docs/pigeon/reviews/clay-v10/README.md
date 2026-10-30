@@ -13,7 +13,7 @@
 
 [전신 5방향](web-clay-five-views.png) · [얼굴 3방향](web-clay-head-three-views.png) · [Blender 촬영 기록](head-neck/capture-record.json) · [웹 검증 기록](web-report.json) · [모델 생성 기록](model-report.json)
 
-[Blender 원본](../../../../art/pigeon/pigeon.blend) · [GLB](../../../../src/assets/pigeon/pigeon.glb) · [매개변수](../../../../art/pigeon/profiles.json) · [해시](../../../../src/assets/pigeon/manifest.json)
+[Blender 원본](https://github.com/poosuck/All_sorts_of_nonsense/blob/3edc25ab81b700ce7f6c6d577a90ad4f782812ad/art/pigeon/pigeon.blend) · [GLB](https://github.com/poosuck/All_sorts_of_nonsense/blob/3edc25ab81b700ce7f6c6d577a90ad4f782812ad/src/assets/pigeon/pigeon.glb) · [매개변수](https://github.com/poosuck/All_sorts_of_nonsense/blob/3edc25ab81b700ce7f6c6d577a90ad4f782812ad/art/pigeon/profiles.json) · [해시](https://github.com/poosuck/All_sorts_of_nonsense/blob/3edc25ab81b700ce7f6c6d577a90ad4f782812ad/src/assets/pigeon/manifest.json)
 
 이 결과가 R01과 완전히 같다고 판정하지 않습니다. 미세 깃가지, 목깃의 입체 형태와 얼굴 조형은 계속 사진에 대조해야 하며, 광학적 목 광택과 리그·7종 자세는 아직 구현하지 않았습니다. 사진 원본 파일의 픽셀 실측 없이 외형 일치율을 제시하지 않습니다.
 

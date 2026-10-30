@@ -1,0 +1,17 @@
+{
+  "before": "bc53d8bc9da36aea897d994e2db1d249cc95b0efbc578dc39942c1e347314a5f",
+  "after": "a751c0b59ceecd2352351ea0b9d15ffd68dcde87c47053cc9ba35a58044361c8",
+  "surface": "clay",
+  "plumage_visible": true,
+  "rows": [
+    "clay-v10",
+    "clay-v11"
+  ],
+  "columns": [
+    "left45",
+    "left"
+  ],
+  "cameras_equal": true,
+  "lighting_equal": true,
+  "samples_equal": true
+}

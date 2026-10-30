@@ -15,7 +15,7 @@ test("the shipped GLB is the recorded Blender anatomy model", async () => {
   const gltf = JSON.parse(bytes.subarray(20, 20+size).toString());
   const model = gltf.nodes.find(node => node.name === "Pigeon_R01");
   assert.ok(model);
-  assert.equal(model.extras.revision, "clay-v10");
+  assert.equal(model.extras.revision, "clay-v11");
   assert.equal(manifest.stage, "anatomy-and-plumage-study");
   assert.deepEqual(manifest.poses, ["stand"]);
   assert.ok(manifest.plumage.feathers > 1000);
