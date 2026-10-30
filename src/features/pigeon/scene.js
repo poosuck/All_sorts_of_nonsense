@@ -28,11 +28,11 @@ function releaseTree(root) {
   materials.forEach((value) => value.dispose());
   geometries.forEach((value) => value.dispose());
 }
-export async function createPigeonStudy(host, { signal, initialView = "left45", initialFraming = "body", initialSurface = "color", onState, onError } = {}) {
+export async function createPigeonStudy(host, { signal, initialView = "left45", initialFraming = "body", initialSurface = "clay", onState, onError } = {}) {
   let renderer, controls, observer, frame = 0, disposed = false, count = 0;
   let currentView = VIEWS.some((v) => v.id === initialView) ? initialView : "left45";
-  let currentFraming = initialFraming === "head" ? "head" : "body";
-  let currentSurface = initialSurface === "clay" ? "clay" : "color";
+  let currentFraming = ["head", "head-neck"].includes(initialFraming) ? initialFraming : "body";
+  let currentSurface = initialSurface === "color" ? "color" : "clay";
   const originalMaterials = new Map(), clayMaterials = new Map();
   let loaded;
   const world = new THREE.Scene();
@@ -80,8 +80,9 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     if (!preset || disposed || !controls) return;
     currentView = preset.id;
     const a = THREE.MathUtils.degToRad(preset.angle);
-    if (currentFraming === "head") {
-      target.set(0, 0.855, 0.18);
+    if (currentFraming === "head" || currentFraming === "head-neck") {
+      if (currentFraming === "head") target.set(0, 0.855, 0.18);
+      else target.set(0, 0.74, 0.12);
       camera.position.set(3.4 * Math.sin(a), target.y, target.z + 3.4 * Math.cos(a));
     } else {
       target.set(0, 0.49, -0.08);
@@ -94,7 +95,7 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     requestDraw();
   }
   function setFraming(value) {
-    if (!["body", "head"].includes(value) || disposed || !controls) return;
+    if (!["body", "head", "head-neck"].includes(value) || disposed || !controls) return;
     currentFraming = value;
     setView(currentView);
     resize();
@@ -118,7 +119,7 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
   function resize() {
     if (disposed || !renderer) return;
     const width = Math.max(1, host.clientWidth), height = Math.max(1, host.clientHeight);
-    const half = currentFraming === "head" ? 0.245 : 0.71, aspect = width / height;
+    const half = currentFraming === "head" ? 0.245 : currentFraming === "head-neck" ? 0.33 : 0.71, aspect = width / height;
     camera.left = -half * Math.max(aspect, 1);
     camera.right = half * Math.max(aspect, 1);
     camera.top = half * Math.max(1 / aspect, 1);
@@ -191,7 +192,7 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     setSurface(currentSurface);
     setView(currentView);
     resize();
-    return { dispose, setView, setFraming, setSurface, reset: () => { currentFraming = "body"; setView("left45"); resize(); } };
+    return { dispose, setView, setFraming, setSurface, reset: () => { currentFraming = "body"; setSurface("clay"); setView("left45"); resize(); } };
   } catch (error) {
     dispose();
     throw error;

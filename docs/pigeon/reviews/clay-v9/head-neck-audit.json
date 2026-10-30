@@ -1,0 +1,84 @@
+{
+  "revision": "clay-v9",
+  "baseline_commit": "91e63aa2a185cd73acfaf1a9b33c4b4f039f8c8a",
+  "glb_sha256": "97adf75fa2c969b228dd2327d659edeac8695793cff0287cba9bc00ecd08f7f3",
+  "scope": {
+    "body_below_height": 0.55,
+    "body_vertices_compared": 4880,
+    "body_positions_identical": true,
+    "preserved_meshes": [
+      "Back_toe_Left",
+      "Back_toe_Right",
+      "Beak_Lower",
+      "Beak_Upper",
+      "Claw_Left_1",
+      "Claw_Left_2",
+      "Claw_Left_3",
+      "Claw_Right_1",
+      "Claw_Right_2",
+      "Claw_Right_3",
+      "Front_toe_Left_1",
+      "Front_toe_Left_2",
+      "Front_toe_Left_3",
+      "Front_toe_Right_1",
+      "Front_toe_Right_2",
+      "Front_toe_Right_3",
+      "Tail_anatomical_envelope",
+      "Tarsus_Left",
+      "Tarsus_Right",
+      "Wing_folded_flight_bundle_Left",
+      "Wing_folded_flight_bundle_Right"
+    ],
+    "material_parameters_identical": true,
+    "plumage_generator_unchanged": true
+  },
+  "curve_continuity": {
+    "finite_difference_step": 1e-06,
+    "joins": [
+      {
+        "height": 0.55,
+        "maximum_finite_difference_slope_change": 4.157896249523674e-06
+      },
+      {
+        "height": 0.645,
+        "maximum_finite_difference_slope_change": 4.210715109920216e-06
+      },
+      {
+        "height": 0.86,
+        "maximum_finite_difference_slope_change": 1.0140277506565099e-05
+      },
+      {
+        "height": 0.9,
+        "maximum_finite_difference_slope_change": 1.1627421248050496e-05
+      },
+      {
+        "height": 0.94,
+        "maximum_finite_difference_slope_change": 1.4172038542703547e-05
+      }
+    ]
+  },
+  "loft_front_neck_inset_over_endpoint_chord": {
+    "range_height": [
+      0.645,
+      0.805
+    ],
+    "before": 0.03880135592868478,
+    "after": 0.007192883833985697,
+    "units": "normalized model height; not reference-image measurements"
+  },
+  "eye_center_x_spacing": {
+    "before": 0.17024901509284973,
+    "after": 0.17623436450958252,
+    "units": "normalized model height"
+  },
+  "comparison": {
+    "cameras_equal": true,
+    "lighting_equal": true,
+    "samples_equal": true,
+    "surface": "same neutral clay override",
+    "anatomy_only": true,
+    "reference": "R01 visual comparison; no pixel measurements",
+    "render_script_sha256": "d0b888b76053467f8688de6ed5b5905d6206fb0915986579be05196701ddf165"
+  },
+  "note": "Geometry scope and continuity audit; not a claim of final reference likeness."
+}

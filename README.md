@@ -45,7 +45,7 @@ npm run source:check  # 원본 체크섬과 생성 결과 검사
 | --- | --- |
 | `/` | 별짓 홈, 카드 진열장, 짧은 Hover 애니메이션, 콘텐츠별 진입 |
 | `/pudding` | 기존 v24 푸딩 UI·동작, 홈 복귀, 볼륨 조절 |
-| `/pigeon` | 새 Blender 모델: 8방향·얼굴 확대·기본색/무채색 관찰 |
+| `/pigeon` | 무채색 Blender 모델: 8방향·얼굴/머리·목 확대·회전 관찰 |
 | 그 외 | 404 안내와 홈 복귀 |
 
 - 원본의 **커스터드 / 딸기 / 말차 / 초코 / 우유** 5종과 맛 선택 저장을 유지합니다.
@@ -58,11 +58,11 @@ npm run source:check  # 원본 체크섬과 생성 결과 검사
 
 ## 비둘기 모이주기 · R01 모델 연구
 
-사용자가 제공한 회색 비둘기 시트(R01)를 같은 3D 모델로 제작합니다. 현재 **clay-v8**은 둥근 두상·아랫배와 부리 위치를 조정하고, 날개 겹깃·검은 두 줄·머리의 가는 깃결·목과 가슴의 얇은 깃털 형상과 기본색을 추가한 버전입니다. `/pigeon`에서 8방향, 전신/얼굴, 기본색/무채색을 전환해 같은 GLB를 확인합니다.
+사용자가 제공한 회색 비둘기 시트(R01)를 같은 3D 모델로 제작합니다. 현재 **clay-v9**는 색 작업을 멈추고 머리와 목·몸통의 연결을 다듬은 버전입니다. 턱 아래 앞목의 패임을 줄이고, 눈높이의 두개골을 둥글게 채우며 뒤통수에서 등으로 이어지는 곡선을 수정했습니다. 부리 위치와 기존 재질 설정은 유지했습니다.
 
-체형을 먼저 대조하며, 무채색 보기에도 실제 깃털 형상이 유지됩니다. 최종 목 광택·미세 깃가지·리그와 7종 자세는 남아 있으며 R01과 완전히 일치한 완성 모델로 표시하지 않습니다. 원본 시트 파일은 저장소에 없어 비율은 시각 추정값입니다. [제작 명세](docs/pigeon/MODEL-SPEC.ko.md) · [제작 기준](docs/pigeon/REFERENCE-BASIS.ko.md) · [최신 실제 렌더·검증 기록](docs/pigeon/reviews/clay-v8/README.md)
+`/pigeon`은 **무채색이 기본**입니다. 8방향과 **전신 / 얼굴 / 머리·목** 확대에서 같은 GLB를 확인합니다. **기존색**은 이전 재질을 확인하는 선택이며 이번에 색을 추가한 단계가 아닙니다. [최신 무채색 전후 비교·검증 기록](docs/pigeon/reviews/clay-v9/README.md) · [제작 기준](docs/pigeon/REFERENCE-BASIS.ko.md) · [제작 명세](docs/pigeon/MODEL-SPEC.ko.md)
 
-GitHub 작업 브랜치는 [`codex/pigeon-clay-v1`](https://github.com/poosuck/All_sorts_of_nonsense/tree/codex/pigeon-clay-v1)입니다. [브랜치 ZIP](https://github.com/poosuck/All_sorts_of_nonsense/archive/refs/heads/codex/pigeon-clay-v1.zip)을 내려받아 압축을 풀고 `npm ci`, `npm run dev`를 실행한 뒤 http://localhost:5173/pigeon 에서 상단 **clay-v8**을 확인합니다. 일반 실행에는 Blender가 필요 없습니다.
+GitHub 작업 브랜치는 [`codex/pigeon-clay-v1`](https://github.com/poosuck/All_sorts_of_nonsense/tree/codex/pigeon-clay-v1)입니다. [브랜치 ZIP](https://github.com/poosuck/All_sorts_of_nonsense/archive/refs/heads/codex/pigeon-clay-v1.zip)을 내려받아 압축을 풀고 `npm ci`, `npm run dev`를 실행한 뒤 http://localhost:5173/pigeon 에서 상단 **clay-v9**를 확인합니다. 일반 실행에는 Blender가 필요 없습니다.
 
 모델 재생성에만 Blender 4.x·NumPy·Pillow가 필요합니다. `npm run pigeon:probe`, `npm run pigeon:build`로 원본 `art/pigeon/pigeon.blend`와 런타임 `src/assets/pigeon/pigeon.glb`를 같은 제작 소스에서 생성하고 해시를 기록합니다.
 

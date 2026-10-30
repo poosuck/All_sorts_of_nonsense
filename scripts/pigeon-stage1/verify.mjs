@@ -22,8 +22,11 @@ try {
   const errors = [], requests = [];
   page.on("pageerror", e => errors.push(e.message));
   page.on("request", r => { if (/\.glb(?:\?|$)/.test(r.url())) requests.push(r.url()); });
-  await page.goto("http://127.0.0.1:4175/pigeon?capture=1&view=front");
-  await page.waitForFunction(() => document.querySelector("[data-testid=pigeon-scene]")?.dataset.ready === "true");
+  await page.goto("http://127.0.0.1:4175/pigeon?capture=1&view=front&surface=clay");
+  await page.waitForFunction(() => {
+    const scene = document.querySelector("[data-testid=pigeon-scene]");
+    return scene?.dataset.ready === "true" && scene.dataset.surface === "clay";
+  });
   const views = ["front","left45","left","back-left45","back","back-right45","right","right45"];
   const captures = [];
   const imageData = new Map();
@@ -36,9 +39,14 @@ try {
       return scene.dataset.view === view && Number(scene.dataset.frame) > before;
     }, {view, before});
   }
-  async function capture(view, framing, surface = "color") {
+  async function capture(view, framing) {
+    const surface = "clay";
     await selectView(view);
-    const stem = "web-" + (surface === "clay" ? "clay-" : "") + (framing === "head" ? "head-" : "") + view;
+    const actual = await page.getByTestId("pigeon-scene").evaluate(scene => ({
+      framing: scene.dataset.framing, surface: scene.dataset.surface,
+    }));
+    if (actual.framing !== framing || actual.surface !== surface) throw new Error("Capture state mismatch: " + JSON.stringify(actual));
+    const stem = "web-clay-" + (framing === "body" ? "" : framing + "-") + view;
     const path = output + "/" + stem + ".png";
     const bytes = await page.locator("canvas").screenshot({ path });
     imageData.set(stem, "data:image/png;base64," + bytes.toString("base64"));
@@ -79,21 +87,19 @@ try {
     await writeFile(output + "/" + filename, Buffer.from(data, "base64"));
   }
   const fiveViews = ["front", "left45", "left", "back-left45", "back"];
-  await contactSheet(fiveViews.map(view => "web-" + view), fiveViews, 320, "web-five-views.png");
-  await contactSheet(["front", "left45", "left"].map(view => "web-head-" + view), ["front", "left45", "left"], 400, "web-head-three-views.png");
-  await page.locator(".study-surface button").nth(1).evaluate(button => button.click());
-  await page.waitForFunction(() => document.querySelector("[data-testid=pigeon-scene]").dataset.surface === "clay");
-  for (const view of ["front", "left45", "left"]) await capture(view, "head", "clay");
-  await page.locator(".study-framing button").nth(0).evaluate(button => button.click());
-  await page.waitForFunction(() => document.querySelector("[data-testid=pigeon-scene]").dataset.framing === "body");
-  for (const view of fiveViews) await capture(view, "body", "clay");
   await contactSheet(fiveViews.map(view => "web-clay-" + view), fiveViews, 320, "web-clay-five-views.png");
   await contactSheet(["front", "left45", "left"].map(view => "web-clay-head-" + view), ["front", "left45", "left"], 400, "web-clay-head-three-views.png");
+  await page.locator(".study-framing button").nth(2).evaluate(button => button.click());
+  await page.waitForFunction(() => document.querySelector("[data-testid=pigeon-scene]").dataset.framing === "head-neck");
+  const headNeckViews = ["front", "left45", "left", "back-left45"];
+  for (const view of headNeckViews) await capture(view, "head-neck");
+  await contactSheet(headNeckViews.map(view => "web-clay-head-neck-" + view), headNeckViews, 400, "web-clay-head-neck-four-views.png");
+  if (captures.length !== 15 || captures.some(capture => capture.surface !== "clay")) throw new Error("Expected 15 clay-only captures");
   if (errors.length) throw new Error(errors.join("\n"));
   if (requests.length !== 1) throw new Error("Unexpected model requests: " + requests.length);
   const manifest=JSON.parse(await readFile("src/assets/pigeon/manifest.json","utf8"));
   const record={ run:process.env.GITHUB_RUN_ID || null, commit:process.env.GITHUB_SHA || null, revision:manifest.revision,
-    glb_sha256:manifest.glb_sha256, renderer:"Chromium / Three.js / same GLB", tests:4, passed:true, requests,captures,errors };
+    glb_sha256:manifest.glb_sha256, renderer:"Chromium / Three.js / same GLB", surface:"clay", tests:4, passed:true, requests,captures,errors };
   await writeFile(output+"/web-report.json",JSON.stringify(record,null,2)+"\n");
   console.log("PIGEON_WEB_REPORT " + JSON.stringify(record));
 } finally {

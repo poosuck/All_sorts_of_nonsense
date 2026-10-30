@@ -8,8 +8,8 @@ const query = new URLSearchParams(location.search);
 const capture = query.get("capture") === "1";
 const requested = query.get("view");
 const view = ref(VIEWS.some((v) => v.id === requested) ? requested : "left45");
-const framing = ref(query.get("frame") === "head" ? "head" : "body");
-const surface = ref(query.get("surface") === "clay" ? "clay" : "color");
+const framing = ref(["head", "head-neck"].includes(query.get("frame")) ? query.get("frame") : "body");
+const surface = ref(query.get("surface") === "color" ? "color" : "clay");
 const state = ref({ frame: 0, revision: "", source: "", triangles: 0 });
 let study, controller, alive = true;
 async function start() {
@@ -41,7 +41,7 @@ async function start() {
 function setView(value) { view.value = value; study?.setView(value); }
 function setFraming(value) { framing.value = value; study?.setFraming(value); }
 function setSurface(value) { surface.value = value; study?.setSurface(value); }
-function reset() { view.value = "left45"; framing.value = "body"; study?.reset(); }
+function reset() { view.value = "left45"; framing.value = "body"; surface.value = "clay"; study?.reset(); }
 onMounted(start);
 onBeforeUnmount(() => { alive = false; controller?.abort(); study?.dispose(); });
 </script>
@@ -51,11 +51,11 @@ onBeforeUnmount(() => { alive = false; controller?.abort(); study?.dispose(); })
     <header class="study-header">
       <RouterLink to="/" class="study-home" aria-label="별짓 홈으로">← <b>별짓<span>✳</span></b></RouterLink>
       <span class="study-header-note">쓸모없는 관찰, 두 번째.</span>
-      <span class="study-stage">모델 검토<span v-if="ready"> · {{ state.revision }}</span></span>
+      <span class="study-stage">두상·목 검토<span v-if="ready"> · {{ state.revision }}</span></span>
     </header>
     <div class="study-layout">
       <section class="study-model" aria-labelledby="pigeon-heading">
-        <div class="study-heading"><span>THE COLLECTION / NO. 002</span><h1 id="pigeon-heading">비둘기 모이주기</h1><p>둥근 체형과 포개진 깃털.</p></div>
+        <div class="study-heading"><span>THE COLLECTION / NO. 002</span><h1 id="pigeon-heading">비둘기 모이주기</h1><p>머리에서 목, 가슴으로 이어지는 곡선.</p></div>
         <div ref="mount" class="pigeon-viewport" data-testid="pigeon-scene"
           :data-ready="ready" :data-view="view" :data-framing="framing" :data-surface="surface" :data-frame="state.frame"
           :data-revision="state.revision" :data-source="state.source" :data-triangles="state.triangles" />
@@ -67,14 +67,15 @@ onBeforeUnmount(() => { alive = false; controller?.abort(); study?.dispose(); })
       </section>
       <aside class="study-controls" aria-label="비둘기 관찰 시점">
         <span class="study-eyebrow">OBSERVATION / 01</span>
-        <h2>가까이 살펴봅니다<span>·</span></h2>
-        <p class="study-intro">같은 비둘기를 여덟 방향에서 살펴보세요.</p>
+        <h2>형태를 살펴봅니다<span>·</span></h2>
+        <p class="study-intro">무채색으로 두상과 목의 연결을 살펴보세요.</p>
         <div class="study-framing" aria-label="관찰 범위">
           <button :aria-pressed="framing === 'body'" :disabled="!ready" @click="setFraming('body')">전신</button>
           <button :aria-pressed="framing === 'head'" :disabled="!ready" @click="setFraming('head')">얼굴</button>
+          <button :aria-pressed="framing === 'head-neck'" :disabled="!ready" @click="setFraming('head-neck')">머리·목</button>
         </div>
         <div class="study-surface" aria-label="표면 보기">
-          <button :aria-pressed="surface === 'color'" :disabled="!ready" @click="setSurface('color')">기본색</button>
+          <button :aria-pressed="surface === 'color'" :disabled="!ready" @click="setSurface('color')">기존색</button>
           <button :aria-pressed="surface === 'clay'" :disabled="!ready" @click="setSurface('clay')">무채색</button>
         </div>
         <div class="study-views">
@@ -82,10 +83,10 @@ onBeforeUnmount(() => { alive = false; controller?.abort(); study?.dispose(); })
             :disabled="!ready" @click="setView(item.id)">{{ item.label }}</button>
         </div>
         <button class="study-reset" :disabled="!ready" @click="reset">↺ 기본 시점으로</button>
-        <div class="study-note"><b>체형과 깃털을 다듬는 중입니다.</b><p>목과 날개의 겹깃, 기본색을 반영했습니다. 얼굴을 확대해 두상과 부리의 연결도 살펴보세요. 동작은 아직 준비 중입니다.</p></div>
+        <div class="study-note"><b>두상과 목의 형태를 다듬는 중입니다.</b><p>둥근 머리, 부리 아래 턱선, 뒤통수에서 등으로 이어지는 곡선을 확인합니다. 머리·목 보기에서 가슴까지의 연결을 확대할 수 있습니다.</p></div>
       </aside>
     </div>
-    <footer class="study-footer"><span>서 있는 비둘기, 형태와 깃털 연구.</span><span>작은 차이를 관찰합니다.</span></footer>
+    <footer class="study-footer"><span>서 있는 비둘기, 두상과 목의 형태 연구.</span><span>작은 차이를 관찰합니다.</span></footer>
   </div>
 </template>
 
@@ -111,7 +112,7 @@ onBeforeUnmount(() => { alive = false; controller?.abort(); study?.dispose(); })
 .study-controls h2 span { color:#8c9b68; }
 .study-intro { font-size:11px; color:#7e8477; line-height:1.9; word-break:keep-all; margin:0 0 24px; }
 .study-views,.study-framing,.study-surface { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
-.study-framing { margin-bottom:7px; }
+.study-framing { margin-bottom:7px; grid-template-columns:repeat(3,minmax(0,1fr)); }
 .study-surface { margin-bottom:14px; }
 .study-views button,.study-framing button,.study-surface button { min-height:39px; border:1px solid #d9ded0; border-radius:7px; font-size:10px; background:#fafbf6; padding:8px 4px; }
 .study-views button[aria-pressed=true],.study-framing button[aria-pressed=true],.study-surface button[aria-pressed=true] { background:#344330; color:#f6f8ef; border-color:#344330; }

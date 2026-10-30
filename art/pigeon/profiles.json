@@ -1,6 +1,6 @@
 {
-  "revision": "clay-v8",
-  "stage": "anatomy and static feather geometry with basic regional PBR colors; final microdetail/iridescence and pose rig remain",
+  "revision": "clay-v9",
+  "stage": "head and neck anatomy refinement; neutral clay review before further color work",
   "reference": {
     "id": "R01",
     "source": "user's 8-direction and pose sheet in conversation",
@@ -205,77 +205,96 @@
     "tail tip mostly covered by folded flights",
     "rounded ellipsoidal underbelly buries upper tarsi",
     "raised short bill/cere and embedded amber eyes",
-    "surface-following overlapping plumage; basic regional PBR colors"
+    "surface-following overlapping plumage; basic regional PBR colors",
+    "head/neck curve begins within upper breast; continuous front throat and round eye-level skull/nape; no color changes"
   ],
   "head": {
     "sections": [
       [
+        0.495,
+        0.306,
+        -0.378,
+        0.39
+      ],
+      [
+        0.58,
+        0.26,
+        -0.355,
+        0.285
+      ],
+      [
+        0.645,
+        0.215,
+        -0.333,
+        0.185
+      ],
+      [
         0.7,
-        0.17,
-        -0.29,
+        0.174,
+        -0.32,
         0.09
       ],
       [
         0.755,
         0.142,
-        -0.307,
-        -0.015
+        -0.31,
+        0.005
       ],
       [
         0.805,
-        0.138,
-        -0.313,
-        -0.07
+        0.129,
+        -0.31,
+        -0.048
       ],
       [
         0.85,
-        0.13,
-        -0.324,
-        -0.09
+        0.135,
+        -0.323,
+        -0.065
       ],
       [
         0.88,
-        0.127,
-        -0.325,
-        -0.095
+        0.138,
+        -0.323,
+        -0.068
       ],
       [
         0.9,
-        0.11976016270298198,
-        -0.3187259704667157,
-        -0.09659018480795882
+        0.13521183380163143,
+        -0.32031285431606504,
+        -0.07046490055218092
       ],
       [
         0.94,
-        0.10310344799110419,
-        -0.3019349274103873,
-        -0.1106946609752747
+        0.11787494390242573,
+        -0.3036041126016132,
+        -0.08579171626017437
       ],
       [
         0.975,
-        0.07188544460999327,
-        -0.27046516593749326,
-        -0.13712926061250572
+        0.08280000000000005,
+        -0.26980000000000004,
+        -0.11679999999999996
       ],
       [
-        1,
-        0.000124,
-        -0.198125,
-        -0.19789500000000002
+        1.0,
+        0.00013800000000000002,
+        -0.190133,
+        -0.189878
       ]
     ],
     "cap": {
-      "centerZ": 0.865,
-      "radiusZ": 0.135,
-      "radiusX": 0.124,
-      "frontRadius": 0.125,
-      "backRadius": 0.105,
-      "centerY": -0.198,
+      "centerZ": 0.875,
+      "radiusZ": 0.125,
+      "radiusX": 0.138,
+      "frontRadius": 0.133,
+      "backRadius": 0.122,
+      "centerY": -0.19,
       "blendStartZ": 0.86,
       "blendEndZ": 0.94
     },
     "eye": {
-      "angleDegrees": 50,
+      "angleDegrees": 44,
       "height": 0.905,
       "radius": 0.025,
       "depth": 0.0085
@@ -376,7 +395,11 @@
         ]
       }
     ],
-    "cereVoxelSize": 0.0018
+    "cereVoxelSize": 0.0018,
+    "neckBlend": {
+      "startZ": 0.55,
+      "endZ": 0.645
+    }
   },
   "wingCoverts": {
     "outlineDegreesHeight": [

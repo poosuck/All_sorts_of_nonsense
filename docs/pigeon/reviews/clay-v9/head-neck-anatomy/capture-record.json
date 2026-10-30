@@ -1,0 +1,199 @@
+{
+  "source_model_commit": null,
+  "revision": "clay-v9",
+  "glb_sha256": "97adf75fa2c969b228dd2327d659edeac8695793cff0287cba9bc00ecd08f7f3",
+  "blend_sha256": "6fc6225aae0276b4eb3a37a209604de31df0f5110f4ad4b9f36d618c79e4683b",
+  "authoring_source": "/workspace/All_sorts_of_nonsense/art/pigeon/pigeon.blend",
+  "manifest_source": "/workspace/All_sorts_of_nonsense/src/assets/pigeon/manifest.json",
+  "source": "authoring file, mesh positions/topology and lighting unchanged; camera framing; render-only neutral clay material override; Plumage_* objects hidden for anatomy review",
+  "surface": "clay",
+  "framing": "head-neck",
+  "anatomy_surface_only": true,
+  "hidden_plumage_objects": [
+    "Plumage_bar_0",
+    "Plumage_bar_1",
+    "Plumage_breast_0",
+    "Plumage_breast_1",
+    "Plumage_breast_2",
+    "Plumage_covert_0",
+    "Plumage_covert_1",
+    "Plumage_covert_2",
+    "Plumage_flight_0",
+    "Plumage_flight_1",
+    "Plumage_flight_2",
+    "Plumage_head_0",
+    "Plumage_head_1",
+    "Plumage_head_2",
+    "Plumage_neck_gradient",
+    "Plumage_tail_0",
+    "Plumage_tail_1"
+  ],
+  "geometry_sha256_before": "58682c3f5967e627dcd22acd7748174c61a8ae015275054bd41bd7290d6c7ed5",
+  "geometry_sha256_after": "58682c3f5967e627dcd22acd7748174c61a8ae015275054bd41bd7290d6c7ed5",
+  "lighting_unchanged": true,
+  "lighting": {
+    "lights": [
+      {
+        "name": "Studio fill",
+        "type": "AREA",
+        "energy": 200.0,
+        "color": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "size": 3.0,
+        "matrix_world": [
+          [
+            -0.4472135305404663,
+            -0.43643584847450256,
+            0.780720055103302,
+            4.0
+          ],
+          [
+            0.8944272398948669,
+            -0.2182178497314453,
+            0.3903599679470062,
+            2.0
+          ],
+          [
+            -3.138805482194584e-08,
+            0.8728715181350708,
+            0.48795005679130554,
+            3.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      {
+        "name": "Studio key",
+        "type": "AREA",
+        "energy": 600.0,
+        "color": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "size": 4.0,
+        "matrix_world": [
+          [
+            0.7999999523162842,
+            0.4013788402080536,
+            -0.4459765553474426,
+            -3.0
+          ],
+          [
+            -0.6000000238418579,
+            0.5351718068122864,
+            -0.5946352481842041,
+            -4.0
+          ],
+          [
+            4.4927116249482424e-08,
+            0.7432941198348999,
+            0.6689647436141968,
+            5.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      }
+    ],
+    "world_background": [
+      0.8199999928474426,
+      0.8199999928474426,
+      0.8199999928474426,
+      1.0
+    ],
+    "world_strength": 0.800000011920929,
+    "view_transform": "Standard",
+    "exposure": 0.0,
+    "gamma": 1.0
+  },
+  "render": {
+    "engine": "CYCLES",
+    "samples": 24,
+    "source_samples": 48,
+    "resolution": [
+      600,
+      600
+    ],
+    "color_mode": "RGB"
+  },
+  "reference": "conversation R01 reference sheet; visual comparison only",
+  "views": [
+    {
+      "view": "front",
+      "azimuth": 0,
+      "position": [
+        0.0,
+        -3.5199999809265137,
+        0.7400000095367432
+      ],
+      "target": [
+        0.0,
+        -0.11999999731779099,
+        0.7400000095367432
+      ],
+      "orthographic_scale": 0.66,
+      "file": "head-neck-front.png"
+    },
+    {
+      "view": "left45",
+      "azimuth": 45,
+      "position": [
+        2.404163122177124,
+        -2.524163007736206,
+        0.7400000095367432
+      ],
+      "target": [
+        0.0,
+        -0.11999999731779099,
+        0.7400000095367432
+      ],
+      "orthographic_scale": 0.66,
+      "file": "head-neck-left45.png"
+    },
+    {
+      "view": "left",
+      "azimuth": 90,
+      "position": [
+        3.4000000953674316,
+        -0.11999999731779099,
+        0.7400000095367432
+      ],
+      "target": [
+        0.0,
+        -0.11999999731779099,
+        0.7400000095367432
+      ],
+      "orthographic_scale": 0.66,
+      "file": "head-neck-left.png"
+    },
+    {
+      "view": "back-left45",
+      "azimuth": 135,
+      "position": [
+        2.404163122177124,
+        2.284163236618042,
+        0.7400000095367432
+      ],
+      "target": [
+        0.0,
+        -0.11999999731779099,
+        0.7400000095367432
+      ],
+      "orthographic_scale": 0.66,
+      "file": "head-neck-back-left45.png"
+    }
+  ]
+}

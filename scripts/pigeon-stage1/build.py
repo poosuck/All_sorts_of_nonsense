@@ -131,7 +131,8 @@ head=CFG["head"]
 eye_angle=math.radians(head["eye"]["angleDegrees"])
 def body_values(z):
     original=body_base_values(z)
-    if z<=.70:return original
+    neck_blend=head["neckBlend"]
+    if z<=neck_blend["startZ"]:return original
     cap=head["cap"]
     revised=cubic_values(head["sections"],z)
     if z>cap["blendStartZ"]:
@@ -140,7 +141,9 @@ def body_values(z):
         t=max(0,min(1,(z-cap["blendStartZ"])/(cap["blendEndZ"]-cap["blendStartZ"])))
         blend=t*t*t*(10-15*t+6*t*t)
         revised=[a*(1-blend)+b*blend for a,b in zip(revised,crown)]
-    t=max(0,min(1,(z-.70)/.07));blend=t*t*t*(10-15*t+6*t*t)
+    # Continue the head/neck curve into the upper breast. The former short
+    # .70-.77 join retained an old front-neck notch below the new skull.
+    t=max(0,min(1,(z-neck_blend["startZ"])/(neck_blend["endZ"]-neck_blend["startZ"])));blend=t*t*t*(10-15*t+6*t*t)
     return [a*(1-blend)+b*blend for a,b in zip(original,revised)]
 def anatomy_point(theta,z):
     rx,front,back=body_values(z)

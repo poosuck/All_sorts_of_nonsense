@@ -1,5 +1,5 @@
 {
-  "revision": "clay-v8",
+  "revision": "clay-v9",
   "stage": "anatomy-and-plumage-study",
   "reference": "R01",
   "reference_file_available": false,
@@ -7,11 +7,11 @@
   "authoring": "art/pigeon/pigeon.blend",
   "blender": "4.3.2",
   "geometry_source": "original profile loft; no legacy pigeon model",
-  "glb_sha256": "b298e8cf6a640d02fc77d05f7df5a429036a84ba43672ff4e07f5314a96c9b63",
-  "blend_sha256": "6acbd4741060543bc8a2ea384bc833e8f1fc3b8e668e485985140348ac07d0f3",
-  "profiles_sha256": "a6a5a4d0d4887a338f29af97e90c7f01eaf0464b3a586fd684e7735350aa50e5",
-  "glb_bytes": 3760772,
-  "triangles": 132654,
+  "glb_sha256": "97adf75fa2c969b228dd2327d659edeac8695793cff0287cba9bc00ecd08f7f3",
+  "blend_sha256": "6fc6225aae0276b4eb3a37a209604de31df0f5110f4ad4b9f36d618c79e4683b",
+  "profiles_sha256": "51c67e7773dcdb7216357dca61e0cbc854d44de4c224c7d816fef639dde377a8",
+  "glb_bytes": 3787360,
+  "triangles": 133234,
   "mesh_count": 48,
   "bounds_blender": {
     "min": [
@@ -39,16 +39,16 @@
     "right45": 315
   },
   "plumage": {
-    "feathers": 7263,
+    "feathers": 7321,
     "region_feathers": {
       "wing_coverts": 412,
       "folded_flights": 18,
       "head": 2350,
-      "neck": 2310,
-      "breast": 2163,
+      "neck": 2369,
+      "breast": 2162,
       "tail": 10
     },
-    "added_triangles": 64690,
+    "added_triangles": 65270,
     "mesh_batches": 17,
     "objects": [
       "Plumage_covert_1",
@@ -63,9 +63,9 @@
       "Plumage_head_2",
       "Plumage_head_0",
       "Plumage_neck_gradient",
-      "Plumage_breast_0",
       "Plumage_breast_1",
       "Plumage_breast_2",
+      "Plumage_breast_0",
       "Plumage_tail_0",
       "Plumage_tail_1"
     ],

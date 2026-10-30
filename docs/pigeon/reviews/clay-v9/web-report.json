@@ -1,0 +1,121 @@
+{
+  "run": null,
+  "commit": null,
+  "revision": "clay-v9",
+  "glb_sha256": "97adf75fa2c969b228dd2327d659edeac8695793cff0287cba9bc00ecd08f7f3",
+  "renderer": "Chromium / Three.js / same GLB",
+  "surface": "clay",
+  "tests": 4,
+  "passed": true,
+  "requests": [
+    "http://127.0.0.1:4175/assets/pigeon-BkIhK1K9.glb"
+  ],
+  "captures": [
+    {
+      "view": "front",
+      "framing": "body",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-front.png",
+      "bytes": 87188
+    },
+    {
+      "view": "left45",
+      "framing": "body",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-left45.png",
+      "bytes": 93819
+    },
+    {
+      "view": "left",
+      "framing": "body",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-left.png",
+      "bytes": 97349
+    },
+    {
+      "view": "back-left45",
+      "framing": "body",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-back-left45.png",
+      "bytes": 90509
+    },
+    {
+      "view": "back",
+      "framing": "body",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-back.png",
+      "bytes": 78864
+    },
+    {
+      "view": "back-right45",
+      "framing": "body",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-back-right45.png",
+      "bytes": 85203
+    },
+    {
+      "view": "right",
+      "framing": "body",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-right.png",
+      "bytes": 94666
+    },
+    {
+      "view": "right45",
+      "framing": "body",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-right45.png",
+      "bytes": 93079
+    },
+    {
+      "view": "front",
+      "framing": "head",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-head-front.png",
+      "bytes": 120768
+    },
+    {
+      "view": "left45",
+      "framing": "head",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-head-left45.png",
+      "bytes": 119288
+    },
+    {
+      "view": "left",
+      "framing": "head",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-head-left.png",
+      "bytes": 116794
+    },
+    {
+      "view": "front",
+      "framing": "head-neck",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-head-neck-front.png",
+      "bytes": 158476
+    },
+    {
+      "view": "left45",
+      "framing": "head-neck",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-head-neck-left45.png",
+      "bytes": 154115
+    },
+    {
+      "view": "left",
+      "framing": "head-neck",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-head-neck-left.png",
+      "bytes": 149898
+    },
+    {
+      "view": "back-left45",
+      "framing": "head-neck",
+      "surface": "clay",
+      "path": "docs/pigeon/reviews/clay-v9/web-clay-head-neck-back-left45.png",
+      "bytes": 127132
+    }
+  ],
+  "errors": []
+}
