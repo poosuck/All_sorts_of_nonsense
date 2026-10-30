@@ -178,6 +178,8 @@ rows,segments = 120,80
 for j in range(rows):
     u=(1-math.cos(math.pi*j/(rows-1)))/2
     z = sections[0][0]+(sections[-1][0]-sections[0][0])*u
+    if z > .85:
+        z = .85 + (z-.85)*(head["topZ"]-.85)/(sections[-1][0]-.85)
     rx,front,back = body_values(z)
     for i in range(segments):
         theta = 2*math.pi*i/segments
@@ -339,7 +341,7 @@ for side,label in [(1,"Left"),(-1,"Right")]:
     radius=head["eye"]["radius"]
     center=surface-normal*.004
     ellipsoid("Eye_globe_"+label,center,(radius,radius*.96,head["eye"]["depth"]),eye_mat,normal)
-    ellipsoid("Pupil_landmark_"+label,center+normal*.008,(.0125,.0125,.0015),pupil_mat,normal)
+    ellipsoid("Pupil_landmark_"+label,center+normal*.008,(.014,.014,.0015),pupil_mat,normal)
     vv,ff=[],[]
     for j in range(5):
         t=j/4;r=radius*.96+.0055*t

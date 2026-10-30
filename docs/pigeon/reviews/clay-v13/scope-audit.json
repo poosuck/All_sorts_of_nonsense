@@ -1,0 +1,12 @@
+{
+  "revision": "clay-v13",
+  "baseline_commit": "f31a423e565b1037283628fa949bbb9dde7bae46",
+  "glb_sha256": "9e275ab93bde5200b1fca114d6d30b5ec644cc9963b745e8c8d24218381e3d5a",
+  "body_below_height": 0.495,
+  "lower_body_vertices_identical": 4480,
+  "material_parameters_identical": true,
+  "authoring_top_z_before": 1.0,
+  "authoring_top_z_after": 0.9769999980926514,
+  "same_cameras_lighting_samples": true,
+  "note": "Native comparison preserves authoring coordinates; web viewer normalizes each final model height. No photo likeness score."
+}

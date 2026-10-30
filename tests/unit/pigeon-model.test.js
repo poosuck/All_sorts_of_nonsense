@@ -15,7 +15,7 @@ test("the shipped GLB is the recorded Blender anatomy model", async () => {
   const gltf = JSON.parse(bytes.subarray(20, 20+size).toString());
   const model = gltf.nodes.find(node => node.name === "Pigeon_R01");
   assert.ok(model);
-  assert.equal(model.extras.revision, "clay-v12");
+  assert.equal(model.extras.revision, "clay-v13");
   assert.equal(manifest.stage, "anatomy-and-plumage-study");
   assert.deepEqual(manifest.poses, ["stand"]);
   assert.ok(manifest.plumage.feathers > 1000);
@@ -33,6 +33,9 @@ test("the editable original and profile measurements match the asset manifest", 
   const [blend, profiles] = await Promise.all([read("art/pigeon/pigeon.blend"), read("art/pigeon/profiles.json")]);
   assert.equal(createHash("sha256").update(blend).digest("hex"), manifest.blend_sha256);
   assert.equal(createHash("sha256").update(profiles).digest("hex"), manifest.profiles_sha256);
+  const profile = JSON.parse(profiles);
+  assert.ok(Math.abs(manifest.bounds_blender.max[2] - profile.head.topZ) < 1e-5,
+    "Crown and head feathers must stop at the shortened head height");
   assert.equal(manifest.reference_file_available, false);
   assert.match(manifest.reference_measurements, /estimates/);
 });

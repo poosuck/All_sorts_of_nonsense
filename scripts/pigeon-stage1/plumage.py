@@ -92,7 +92,8 @@ def add_plumage(collection, parent, cfg, anatomy_point, torso_surface,
         _, outward = point(center_uv)
         boundary = outline
         if region == "neck":
-            boundary = [(0,0),(-.35,.18),(-.50,.45),(-.32,.78),(0,1),(.30,.80),(.48,.46),(.35,.18)]
+            boundary = [(0,0),(-.30,.13),(-.50,.40),(-.43,.72),(-.20,.93),
+                        (0,1),(.22,.92),(.42,.72),(.48,.40),(.30,.13)]
         if region in {"wing_coverts", "folded_flights", "tail"}:
             # Broad blades need a continuous rounded rim rather than the ten
             # conspicuous straight segments of the small contour feathers.
@@ -216,7 +217,7 @@ def add_plumage(collection, parent, cfg, anatomy_point, torso_surface,
     attempts = 0
     while accepted < 2350 and attempts < 12000:
         attempts += 1
-        z = head_rng.uniform(.819, .995)
+        z = head_rng.uniform(.819, cfg["head"]["topZ"]-.005)
         theta = head_rng.uniform(0, 2*math.pi)
         du = (anatomy_point(theta+.001, z)-anatomy_point(theta-.001, z))/.002
         # Uniform chart samples are thinned near the pole to maintain a
@@ -278,7 +279,7 @@ def add_plumage(collection, parent, cfg, anatomy_point, torso_surface,
     neck_rng = random.Random(80523)
     accepted = 0
     attempts = 0
-    while accepted < 4000 and attempts < 30000:
+    while accepted < 3100 and attempts < 30000:
         attempts += 1
         theta = neck_rng.uniform(0, 2*math.pi)
         z = neck_rng.uniform(.538, .889)
@@ -298,13 +299,13 @@ def add_plumage(collection, parent, cfg, anatomy_point, torso_surface,
         if (front_angle/.25)**2+((z-cere_height)/.028)**2 < 1:
             continue
         growth = max(0,min(1,(.872-z)/.30))
-        width = (.0045+.0068*growth)*neck_rng.uniform(.88,1.12)
-        length = (.008+.016*growth)*neck_rng.uniform(.85,1.15)
+        width = (.0060+.0085*growth)*neck_rng.uniform(.88,1.12)
+        length = (.009+.011*growth)*neck_rng.uniform(.85,1.15)
         tone = neck_rng.uniform(.98,1.02)
         feather("neck_gradient","neck",lambda uv:torso_surface(uv.x,uv.y),
                 (theta,z),(.055*math.sin(theta),-length),
                 Vector((width/max(.08,du.length),0)),
-                .00035,.00060,0,
+                .00080,.00090,0,
                 coloring=lambda position,value=tone:neck_color(position,value))
         accepted += 1
 

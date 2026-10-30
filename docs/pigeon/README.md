@@ -1,8 +1,8 @@
 # 비둘기 R01 모델 제작
 
-현재 **clay-v12**는 사람의 뒤통수처럼 보이던 후두부 돌출과 그 아래 목 패임을 수정한 무채색 모델입니다. 머리 뒤쪽 두께를 줄이고, 뒤 윤곽이 목에서 다시 안으로 들어가지 않도록 어깨까지 연결했습니다. 정면 폭과 색·조명 설정은 유지합니다.
+현재 **clay-v13**은 낮고 앞뒤로 넓은 두상, 짧은 턱 아래 굴곡, 더 세워진 뒷목과 어깨 연결을 수정한 무채색 모델입니다. 눈·부리 비율을 맞추고 목깃을 짧고 넓은 실제 겹깃으로 조정했습니다. 사진과 완전히 일치한 완성 판정은 아닙니다.
 
-- [최신 무채색 전후 비교·검증 기록](reviews/clay-v12/README.md)
+- [최신 무채색 전후 비교·검증 기록](reviews/clay-v13/README.md)
 - [clay-v8 체형·겹깃 기록](reviews/clay-v8/README.md)
 - [clay-v7 두상 수정 기록](reviews/clay-v7/README.md)
 - [첫 체형 초안 기록](reviews/clay-v1/README.md)
@@ -26,6 +26,6 @@ npm ci
 npm run dev
 ```
 
-http://localhost:5173/pigeon 에서 상단 **clay-v12**을 확인합니다. **머리·목** 버튼으로 두상부터 가슴·등까지 확대하며, 직접 진입은 http://localhost:5173/pigeon?frame=head-neck 입니다. 초기화하면 무채색 전신 기본 시점으로 돌아갑니다. 작업 브랜치의 변경이며 master 병합·Netlify 배포를 뜻하지 않습니다.
+http://localhost:5173/pigeon 에서 상단 **clay-v13**을 확인합니다. **머리·목** 버튼으로 두상부터 가슴·등까지 확대하며, 직접 진입은 http://localhost:5173/pigeon?frame=head-neck 입니다. 초기화하면 무채색 전신 기본 시점으로 돌아갑니다. 작업 브랜치의 변경이며 master 병합·Netlify 배포를 뜻하지 않습니다.
 
 [원본 기능 명세](pigeon_feeding_spec_v1.0.md)는 후속 게임 기능의 참고 문서입니다.

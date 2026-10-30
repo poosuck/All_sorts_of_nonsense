@@ -1,5 +1,5 @@
 {
-  "revision": "clay-v12",
+  "revision": "clay-v13",
   "stage": "head and neck anatomy refinement; neutral clay review before further color work",
   "reference": {
     "id": "R01",
@@ -209,7 +209,8 @@
     "head/neck curve begins within upper breast; continuous front throat and round eye-level skull/nape; no color changes",
     "R01 silhouette correction: narrower upper skull, no under-head waist, short raised cheek/jaw, full curved throat; irregular tapered transition feathers",
     "side-view correction: posterior neck reduced independently of frontal width; short nape hollow and rounded shoulder transition",
-    "remove human-like occipital notch: reduce rear skull depth, monotone nape expansion and higher rounded shoulder; no posterior hollow"
+    "remove human-like occipital notch: reduce rear skull depth, monotone nape expansion and higher rounded shoulder; no posterior hollow",
+    "R01 side comparison: lower/wider cranium, defined sub-bill throat, higher rounded shoulder, larger iris and fitted bill, short overlapping neck laminae"
   ],
   "head": {
     "sections": [
@@ -229,83 +230,89 @@
         0.645,
         0.215,
         -0.35,
-        0.2
+        0.15
       ],
       [
         0.7,
         0.183,
-        -0.333,
-        0.135
+        -0.342,
+        0.04
       ],
       [
         0.755,
         0.158,
-        -0.314,
-        0.07
+        -0.323,
+        0.0
       ],
       [
         0.805,
         0.141,
-        -0.309,
-        0.01
+        -0.301,
+        -0.035
       ],
       [
         0.825,
-        0.134,
-        -0.31,
-        -0.02
-      ],
-      [
-        0.85,
-        0.129,
-        -0.322,
+        0.139,
+        -0.307,
         -0.05
       ],
       [
+        0.85,
+        0.136,
+        -0.33,
+        -0.063
+      ],
+      [
         0.88,
-        0.125,
-        -0.324,
-        -0.085
+        0.134,
+        -0.342,
+        -0.09
       ],
       [
         0.9,
-        0.123537116416214,
-        -0.3224786010728625,
-        -0.1
+        0.12936853672310292,
+        -0.33650609136153764,
+        -0.09892967076223348
       ],
       [
         0.94,
-        0.10885790320902655,
-        -0.3072122193373876,
-        -0.12258921549487858
+        0.10210248341290007,
+        -0.30731418298481494,
+        -0.11980999411502821
+      ],
+      [
+        0.963,
+        0.0668056251002401,
+        -0.2695242380255359,
+        -0.14684030196784587
       ],
       [
         0.975,
-        0.07693770681320952,
-        -0.2740152150857379,
-        -0.14352886433053455
+        0.02600405430229379,
+        -0.22584077189241863,
+        -0.1780861145491728
       ],
       [
-        1.0,
-        0.000125,
-        -0.19413,
-        -0.193918
+        0.977,
+        0.00013450000000000002,
+        -0.19814400000000001,
+        -0.19789700000000002
       ]
     ],
     "cap": {
-      "centerZ": 0.882,
-      "radiusZ": 0.118,
-      "radiusX": 0.125,
-      "frontRadius": 0.13,
-      "backRadius": 0.082,
-      "centerY": -0.194,
+      "centerZ": 0.871,
+      "radiusZ": 0.106,
+      "radiusX": 0.1345,
+      "frontRadius": 0.144,
+      "backRadius": 0.103,
+      "centerY": -0.198,
       "blendStartZ": 0.88,
       "blendEndZ": 0.95
     },
     "eye": {
-      "angleDegrees": 48,
+      "angleDegrees": 50,
       "height": 0.905,
-      "radius": 0.0235,
+      "radius": 0.0275,
       "depth": 0.0085
     },
     "sculpt": {
@@ -327,7 +334,7 @@
       ],
       [
         0.2,
-        -0.329388,
+        -0.3346044,
         0.0231,
         0.875,
         0.848,
@@ -335,7 +342,7 @@
       ],
       [
         0.46,
-        -0.348288,
+        -0.3591744,
         0.0203,
         0.8675999999999999,
         0.8436,
@@ -343,7 +350,7 @@
       ],
       [
         0.7,
-        -0.365676,
+        -0.3817788,
         0.0147,
         0.8529999999999999,
         0.834,
@@ -351,7 +358,7 @@
       ],
       [
         0.9,
-        -0.377016,
+        -0.3965208,
         0.006999999999999999,
         0.8360000000000001,
         0.8240000000000001,
@@ -359,7 +366,7 @@
       ],
       [
         1,
-        -0.38004,
+        -0.400452,
         0.0007,
         0.8220000000000001,
         0.8210000000000001,
@@ -370,7 +377,7 @@
       {
         "center": [
           -0.012,
-          -0.338,
+          -0.34600000000000003,
           0.871
         ],
         "scale": [
@@ -382,7 +389,7 @@
       {
         "center": [
           0.012,
-          -0.338,
+          -0.34600000000000003,
           0.871
         ],
         "scale": [
@@ -394,7 +401,7 @@
       {
         "center": [
           0,
-          -0.334,
+          -0.342,
           0.868
         ],
         "scale": [
@@ -406,7 +413,7 @@
     ],
     "cereVoxelSize": 0.0018,
     "neckBlend": {
-      "startZ": 0.55,
+      "startZ": 0.495,
       "endZ": 0.645
     },
     "rearSections": [
@@ -420,69 +427,74 @@
       ],
       [
         0.61,
-        0.245
+        0.235
       ],
       [
         0.645,
-        0.2
+        0.15
       ],
       [
         0.67,
-        0.17
+        0.095
       ],
       [
         0.7,
-        0.135
-      ],
-      [
-        0.73,
-        0.1
-      ],
-      [
-        0.755,
-        0.07
-      ],
-      [
-        0.78,
         0.04
       ],
       [
+        0.73,
+        0.018
+      ],
+      [
+        0.755,
+        0.0
+      ],
+      [
+        0.78,
+        -0.017
+      ],
+      [
         0.805,
-        0.01
+        -0.035
       ],
       [
         0.825,
-        -0.02
-      ],
-      [
-        0.85,
         -0.05
       ],
       [
+        0.85,
+        -0.063
+      ],
+      [
         0.88,
-        -0.085
+        -0.09
       ],
       [
         0.9,
-        -0.1
+        -0.09892967076223348
       ],
       [
         0.94,
-        -0.12258921549487858
+        -0.11980999411502821
+      ],
+      [
+        0.963,
+        -0.14684030196784587
       ],
       [
         0.975,
-        -0.14352886433053455
+        -0.1780861145491728
       ],
       [
-        1.0,
-        -0.193918
+        0.977,
+        -0.19789700000000002
       ]
     ],
     "rearCrownBlend": {
       "startZ": 0.94,
-      "endZ": 0.98
-    }
+      "endZ": 0.967
+    },
+    "topZ": 0.977
   },
   "wingCoverts": {
     "outlineDegreesHeight": [
