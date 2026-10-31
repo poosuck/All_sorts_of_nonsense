@@ -15,7 +15,8 @@
     "source:sync": "node scripts/sync-pudding-source.mjs",
     "source:check": "node scripts/sync-pudding-source.mjs --check",
     "pigeon:build": "blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/build.py",
-    "pigeon:probe": "blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/probe_tools.py"
+    "pigeon:probe": "blender -b --factory-startup -t 2 --python-exit-code 1 --python scripts/pigeon-stage1/probe_tools.py",
+    "pigeon:editor": "node scripts/build-pigeon-editor.mjs"
   },
   "dependencies": {
     "@lucide/vue": "1.31.0",

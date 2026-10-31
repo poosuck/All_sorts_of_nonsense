@@ -46,6 +46,7 @@ npm run source:check  # 원본 체크섬과 생성 결과 검사
 | `/` | 별짓 홈, 카드 진열장, 짧은 Hover 애니메이션, 콘텐츠별 진입 |
 | `/pudding` | 기존 v24 푸딩 UI·동작, 홈 복귀, 볼륨 조절 |
 | `/pigeon` | 무채색 Blender 모델: 8방향·얼굴/머리·목 확대·회전 관찰 |
+| `/pigeon?edit=1` | 머리·목·몸통 직접 조정, 원본 비교, 자동 저장, JSON·GLB·PNG 내보내기 |
 | 그 외 | 404 안내와 홈 복귀 |
 
 - 원본의 **커스터드 / 딸기 / 말차 / 초코 / 우유** 5종과 맛 선택 저장을 유지합니다.
@@ -57,6 +58,8 @@ npm run source:check  # 원본 체크섬과 생성 결과 검사
 - 키보드는 푸딩 영역에 초점을 맞춘 뒤 Enter/Space로 타격할 수 있습니다. 슬라이더는 방향키로 조절합니다.
 
 ## 비둘기 모이주기 · R01 모델 연구
+
+[직접 조정하는 편집기](docs/pigeon/editor/README.md)를 추가했습니다. [단독 실행 ZIP](https://raw.githubusercontent.com/poosuck/All_sorts_of_nonsense/codex/pigeon-clay-v1/downloads/pigeon-editor.zip)을 풀고 `pigeon-editor.html`을 Chrome·Edge에서 열면 설치 없이 사용할 수 있습니다. 기존 프로젝트에서는 http://localhost:5173/pigeon?edit=1 로 접속합니다.
 
 현재 **clay-v13**은 낮고 앞뒤로 넓은 두상, 짧은 턱 아래 굴곡, 더 세워진 뒷목과 어깨 연결을 수정한 무채색 모델입니다. 눈·부리 비율을 맞추고 목깃을 짧고 넓은 실제 겹깃으로 조정했습니다. 사진과 완전히 일치한 완성 판정은 아닙니다.
 

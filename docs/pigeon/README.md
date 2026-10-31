@@ -3,6 +3,7 @@
 현재 **clay-v13**은 낮고 앞뒤로 넓은 두상, 짧은 턱 아래 굴곡, 더 세워진 뒷목과 어깨 연결을 수정한 무채색 모델입니다. 눈·부리 비율을 맞추고 목깃을 짧고 넓은 실제 겹깃으로 조정했습니다. 사진과 완전히 일치한 완성 판정은 아닙니다.
 
 - [최신 무채색 전후 비교·검증 기록](reviews/clay-v13/README.md)
+- [직접 형태 편집하기 · 설치 없는 실행 파일과 사용법](editor/README.md)
 - [clay-v8 체형·겹깃 기록](reviews/clay-v8/README.md)
 - [clay-v7 두상 수정 기록](reviews/clay-v7/README.md)
 - [첫 체형 초안 기록](reviews/clay-v1/README.md)

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import manifest from "../../assets/pigeon/manifest.json";
+import { createShapeEditor } from "./shape-editor.js";
 
 const modelUrl = new URL("../../assets/pigeon/pigeon.glb", import.meta.url).href;
 export const VIEWS = [
@@ -34,7 +35,7 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
   let currentFraming = ["head", "head-neck"].includes(initialFraming) ? initialFraming : "body";
   let currentSurface = initialSurface === "color" ? "color" : "clay";
   const originalMaterials = new Map(), clayMaterials = new Map();
-  let loaded;
+  let loaded, shapeEditor;
   const world = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.05, 30);
   const target = new THREE.Vector3(0, 0.49, -0.08);
@@ -192,7 +193,47 @@ export async function createPigeonStudy(host, { signal, initialView = "left45", 
     setSurface(currentSurface);
     setView(currentView);
     resize();
-    return { dispose, setView, setFraming, setSurface, reset: () => { currentFraming = "body"; setSurface("clay"); setView("left45"); resize(); } };
+    return {
+      dispose, setView, setFraming, setSurface,
+      setShape(value) {
+        if (disposed) return;
+        shapeEditor ??= createShapeEditor(loaded);
+        shapeEditor.apply(value);
+        requestDraw();
+      },
+      setFeathers(visible) {
+        if (disposed) return;
+        loaded.traverse(node => { if (node.name.startsWith("Plumage_")) node.visible = visible; });
+        requestDraw();
+      },
+      async exportGLB(shape) {
+        if (disposed) throw new Error("편집 화면이 닫혔습니다.");
+        // Clone materials/geometry so exporting cannot change the live gray preview.
+        const copy = loaded.clone(true);
+        const sourceMeshes = [];
+        loaded.traverse(node => { if (node.isMesh) sourceMeshes.push(node); });
+        let index = 0;
+        copy.traverse(node => {
+          node.visible = true;
+          if (!node.isMesh) return;
+          const source = sourceMeshes[index++];
+          node.geometry = source.geometry.clone();
+          const material = originalMaterials.get(source);
+          node.material = Array.isArray(material) ? material.map(item => item.clone()) : material.clone();
+        });
+        copy.userData.shapeEdit = { baseRevision: manifest.revision, baseSha256: manifest.glb_sha256, values: { ...shape } };
+        try {
+          const { GLTFExporter } = await import("three/addons/exporters/GLTFExporter.js");
+          return await new GLTFExporter().parseAsync(copy, { binary: true });
+        } finally { releaseTree(copy); }
+      },
+      screenshot() {
+        if (disposed) throw new Error("편집 화면이 닫혔습니다.");
+        renderer.render(world, camera);
+        return renderer.domElement.toDataURL("image/png");
+      },
+      reset: () => { currentFraming = "body"; setSurface("clay"); setView("left45"); resize(); },
+    };
   } catch (error) {
     dispose();
     throw error;

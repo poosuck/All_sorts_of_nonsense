@@ -1,0 +1,18 @@
+{
+  "htmlSha256": "d18992c1a0df02de840b7aee4e4a372cacc9c285e4b69f0021e6afd7163afbcb",
+  "zipSha256": "c4fff78574782eea0a0641bd8407f45686c4fa6194e85e1c734e59e740135819",
+  "htmlBytes": 6291287,
+  "zipBytes": 3546910,
+  "selfContainedOffline": true,
+  "fileProtocolVerified": false,
+  "fileProtocolLimitation": "Managed Chromium blocks file:// navigation; local HTML supplied as one intercepted document instead.",
+  "networkRequests": 0,
+  "errors": [],
+  "export": {
+    "meshes": 48,
+    "editedBodyMaxY": 0.9458081126213074,
+    "includesHiddenFeathers": true
+  },
+  "resetRestoresExactRenderedImage": true,
+  "reloadRestoresSavedValues": true
+}
